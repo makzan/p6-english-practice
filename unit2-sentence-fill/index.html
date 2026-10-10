@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>Unit 2 Vocabulary · Sentence Fill</title>
+<style>
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body {
+    margin: 0; min-height: 100vh; padding: 14px;
+    font-family: "Arial Rounded MT Bold", "Comic Sans MS", "PingFang TC", "Microsoft JhengHei", "Noto Sans TC", sans-serif;
+    background: linear-gradient(135deg, #a8edea 0%, #fed6e3 45%, #c2e9fb 100%);
+    background-attachment: fixed; color: #263238;
+  }
+  h1 { text-align: center; font-size: clamp(1.25rem, 5vw, 2rem); color: #00695c; text-shadow: 2px 2px 0 #fff; margin: 6px 0 2px; }
+  .sub { text-align: center; color: #00897b; margin: 0 0 14px; font-size: 1.05rem; }
+  .card { background: #fff; border-radius: 26px; max-width: 720px; margin: 0 auto; padding: 20px 18px 24px; box-shadow: 0 10px 28px rgba(0,80,80,.2); border: 5px solid #4dd0e1; }
+  .hidden { display: none !important; }
+  button { font-family: inherit; cursor: pointer; border: none; }
+  .intro { font-size: 1.08rem; line-height: 1.7; background: #e0f7fa; border-radius: 16px; padding: 12px 14px; margin-bottom: 14px; }
+  .start { display: block; margin: 10px auto 0; font-size: 1.5rem; font-weight: bold; color: #fff; background: #00897b; border-radius: 20px; padding: 16px 36px; box-shadow: 0 6px 0 #004d40; }
+  .start:active { transform: translateY(4px); box-shadow: 0 2px 0 #004d40; }
+  .topbar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
+  .pill { background: #e0f2f1; border-radius: 999px; padding: 6px 12px; font-weight: bold; color: #00695c; font-size: 1rem; }
+  .pill.star { background: #fff8e1; color: #f57f17; }
+  .pill.fire { background: #fbe9e7; color: #d84315; }
+  .homebtn { background: #eceff1; border-radius: 999px; padding: 6px 12px; font-size: 1rem; }
+  .bar { flex: 1 1 100%; height: 14px; background: #e0e0e0; border-radius: 999px; overflow: hidden; }
+  .bar > div { height: 100%; width: 0; background: linear-gradient(90deg, #26a69a, #29b6f6); transition: width .4s; }
+  .retry { display: inline-block; background: #ffca28; color: #6d4c00; border-radius: 12px; padding: 3px 10px; font-size: .9rem; margin-bottom: 8px; }
+  .sentence {
+    font-size: clamp(1.25rem, 4.8vw, 1.7rem); line-height: 1.75; background: #fffde7;
+    border-radius: 18px; padding: 16px 14px; margin: 8px 0 12px; border: 3px dashed #ffd54f;
+    color: #1a237e; font-weight: 600;
+  }
+  .blank {
+    display: inline-block; min-width: 4.5em; padding: 2px 10px; margin: 0 2px;
+    border-bottom: 4px solid #00897b; background: #e0f2f1; border-radius: 8px 8px 0 0;
+    color: #00695c; text-align: center; font-weight: bold;
+  }
+  .blank.filled { background: #b2dfdb; border-bottom-color: #004d40; }
+  .blank.wrong { background: #ffcdd2; border-bottom-color: #c62828; color: #b71c1c; }
+  .blank.right { background: #c8e6c9; border-bottom-color: #2e7d32; color: #1b5e20; }
+  .choices { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 6px; }
+  @media (min-width: 520px) { .choices { grid-template-columns: 1fr 1fr 1fr; } }
+  .choice {
+    background: #e0f7fa; color: #006064; font-size: clamp(1.05rem, 4vw, 1.3rem); font-weight: bold;
+    border-radius: 16px; padding: 14px 8px; min-height: 60px; box-shadow: 0 5px 0 #80deea;
+  }
+  .choice:active { transform: translateY(3px); box-shadow: 0 2px 0 #80deea; }
+  .choice.right { background: #c8e6c9; box-shadow: 0 5px 0 #66bb6a; color: #1b5e20; }
+  .choice.wrong { background: #ffcdd2; box-shadow: 0 5px 0 #e57373; color: #b71c1c; }
+  .choice:disabled { cursor: default; }
+  .speak { display: block; margin: 8px auto; background: #0288d1; color: #fff; font-size: 1.15rem; font-weight: bold; border-radius: 999px; padding: 10px 20px; box-shadow: 0 4px 0 #01579b; }
+  .speak:active { transform: translateY(3px); box-shadow: 0 1px 0 #01579b; }
+  .fb { text-align: center; font-size: 1.3rem; font-weight: bold; margin-top: 12px; min-height: 1.5em; }
+  .fb.good { color: #2e7d32; } .fb.bad { color: #c62828; }
+  .why { background: #fff3e0; border-left: 6px solid #ff9800; border-radius: 10px; padding: 10px 12px; margin: 10px 0; font-size: 1.1rem; line-height: 1.6; text-align: left; }
+  .why b { color: #e65100; }
+  .mean { color: #546e7a; font-size: .95rem; }
+  .next { display: block; margin: 14px auto 0; font-size: 1.4rem; font-weight: bold; color: #fff; background: #fb8c00; border-radius: 20px; padding: 14px 30px; box-shadow: 0 6px 0 #e65100; min-width: 200px; }
+  .next:active { transform: translateY(4px); box-shadow: 0 2px 0 #e65100; }
+  .bigemoji { font-size: 4rem; text-align: center; animation: bounce 1s infinite; }
+  .row { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+  .row .next, .row .start { margin: 10px 0 0; }
+  table.sum { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 1.05rem; }
+  table.sum th, table.sum td { padding: 8px 6px; text-align: left; border-bottom: 2px solid #e0e0e0; }
+  table.sum th { background: #e0f2f1; color: #00695c; }
+  .missed { background: #fff8e1; border-radius: 12px; padding: 6px 10px; margin: 4px 0; font-size: 1rem; }
+  .missed b { color: #00897b; }
+  @keyframes bounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+  .confetti { position: fixed; top: -30px; font-size: 1.7rem; pointer-events: none; animation: fall linear forwards; z-index: 99; }
+  @keyframes fall { to { transform: translateY(110vh) rotate(720deg); opacity: .6; } }
+</style>
+</head>
+<body>
+<h1>🐢 Unit 2 Vocabulary · Sentence Fill 🌊</h1>
+<div class="sub">揀啱生字，填入句子！Save the Animals!</div>
+
+<div class="card" id="home">
+  <div class="intro">
+    📖 每題一句英文句子，有一個空格。<br>
+    🔘 從 <b>6 個生字</b>入面揀啱嗰個填入。<br>
+    🔊 可以撳「聽句子」聽讀音。<br>
+    ❌ 答錯會睇到正確答案同中文提示，之後再出一條類似題。<br>
+    ⭐ 一次答啱有星星！共約 15 題。
+  </div>
+  <p style="text-align:center;color:#00695c;font-weight:bold" id="bankInfo"></p>
+  <button class="start" id="startBtn">🚀 開始！</button>
+</div>
+
+<div class="card hidden" id="quiz">
+  <div class="topbar">
+    <button class="homebtn" id="homeBtn">🏠 返回</button>
+    <span class="pill" id="progTxt">1 / 15</span>
+    <span class="pill star">⭐ <span id="stars">0</span></span>
+    <span class="pill fire">🔥 <span id="streak">0</span></span>
+    <div class="bar"><div id="bar"></div></div>
+  </div>
+  <div class="retry hidden" id="retryTag">🔁 再試類似題</div>
+  <div class="sentence" id="sentence"></div>
+  <button class="speak" id="speakBtn">🔊 聽句子</button>
+  <div class="choices" id="choices"></div>
+  <div class="fb" id="fb"></div>
+  <div id="why"></div>
+  <button class="next hidden" id="nextBtn">下一題 ➡️</button>
+</div>
+
+<div class="card hidden" id="finish">
+  <div class="bigemoji" id="finEmoji">🏆</div>
+  <h2 style="text-align:center;color:#00695c;margin:6px 0" id="finTitle">完成！</h2>
+  <p style="text-align:center;font-size:1.2rem" id="finSummary"></p>
+  <div id="missedBox"></div>
+  <div class="row">
+    <button class="start" id="againBtn">🔄 再玩一次</button>
+    <button class="next" id="backBtn">🏠 返回主頁</button>
+  </div>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  // ---- Vocabulary bank (productive + receptive) ----
+  var VOCAB = {
+    mammal: { zh: "哺乳動物", pos: "n.", en: "an animal that feeds its babies with milk" },
+    species: { zh: "物種", pos: "n.", en: "a group of animals or plants of the same kind" },
+    endangered: { zh: "瀕臨絕種的", pos: "adj.", en: "in danger of dying out completely" },
+    threatened: { zh: "受到威脅的", pos: "adj.", en: "in danger of being harmed" },
+    vulnerable: { zh: "脆弱的", pos: "adj.", en: "easy to hurt or damage" },
+    extinct: { zh: "已絕種的", pos: "adj.", en: "no longer living on Earth" },
+    habitat: { zh: "棲息地", pos: "n.", en: "the natural home of an animal or plant" },
+    survive: { zh: "生存", pos: "v.", en: "to continue to live" },
+    exist: { zh: "存在", pos: "v.", en: "to be real or alive" },
+    shelter: { zh: "庇護所", pos: "n.", en: "a safe place that protects you" },
+    trapped: { zh: "被困住的", pos: "adj.", en: "unable to escape; caught" },
+    disappear: { zh: "消失", pos: "v.", en: "to go away and no longer be seen" },
+    poach: { zh: "盜獵", pos: "v.", en: "to hunt animals illegally" },
+    pollute: { zh: "污染", pos: "v.", en: "to make air, water or land dirty" },
+    capture: { zh: "捕捉", pos: "v.", en: "to catch an animal or person" },
+    illegal: { zh: "非法的", pos: "adj.", en: "against the law" },
+    chemicals: { zh: "化學物質", pos: "n.", en: "substances made by chemistry" },
+    damage: { zh: "損害", pos: "v.", en: "to harm or spoil something" },
+    environment: { zh: "環境", pos: "n.", en: "the air, water and land around us" },
+    preserve: { zh: "保存／保護", pos: "v.", en: "to keep something safe for the future" },
+    "cut down": { zh: "砍倒", pos: "phr. v.", en: "to make a tree fall by cutting" },
+    "burn down": { zh: "燒毀", pos: "phr. v.", en: "to destroy by fire" },
+    "dump into": { zh: "倒入", pos: "phr. v.", en: "to throw waste into a place" },
+    "speak up": { zh: "大聲說出", pos: "phr. v.", en: "to say what you think clearly" },
+    "take action": { zh: "採取行動", pos: "phr.", en: "to do something to solve a problem" },
+    charity: { zh: "慈善（機構）", pos: "n.", en: "an organisation that helps people or animals" },
+    donate: { zh: "捐贈", pos: "v.", en: "to give money or things to help" },
+    refuse: { zh: "拒絕", pos: "v.", en: "to say no to something" },
+    volunteer: { zh: "義工", pos: "n.", en: "a person who works without pay" },
+    raise: { zh: "提高（意識）", pos: "v.", en: "to make people more aware" },
+    inspire: { zh: "啟發", pos: "v.", en: "to make someone want to do something good" },
+    persuade: { zh: "說服", pos: "v.", en: "to make someone agree by talking" },
+    policy: { zh: "政策", pos: "n.", en: "a plan or rule made by a government or group" },
+    support: { zh: "支持", pos: "v.", en: "to help by giving money, time or encouragement" },
+    // receptive
+    population: { zh: "人口", pos: "n.", en: "the number of people living in a place" },
+    conservation: { zh: "保育", pos: "n.", en: "protecting nature and wildlife" },
+    ecosystem: { zh: "生態系", pos: "n.", en: "plants and animals living together in a place" },
+    deforestation: { zh: "砍伐森林", pos: "n.", en: "cutting down too many trees" },
+    "natural disasters": { zh: "自然災害", pos: "n.", en: "events like floods, earthquakes and fires" },
+    biodiversity: { zh: "生物多樣性", pos: "n.", en: "the variety of living things" },
+    reptiles: { zh: "爬蟲類", pos: "n.", en: "cold-blooded animals like snakes and lizards" },
+    amphibians: { zh: "兩棲類", pos: "n.", en: "animals that live on land and in water, like frogs" },
+    "carbon footprint": { zh: "碳足跡", pos: "n.", en: "how much carbon a person or activity produces" },
+    "carbon emission": { zh: "碳排放", pos: "n.", en: "carbon dioxide released into the air" },
+    // near-miss distractors not in productive list
+    harm: { zh: "傷害", pos: "v.", en: "to hurt (often for living things)" },
+    conserve: { zh: "節約／保育", pos: "v.", en: "to use carefully so something lasts" },
+    law: { zh: "法律", pos: "n.", en: "a rule made by the government that everyone must follow" }
+  };
+
+  // Classic near-miss pairs (wrong → correct tip focus)
+  var CONFUSE = {
+    endangered: "trapped", trapped: "endangered",
+    harm: "damage", damage: "harm",
+    ecosystem: "environment", environment: "ecosystem",
+    conserve: "preserve", preserve: "conserve",
+    law: "policy", policy: "law",
+    donate: "support", support: "donate",
+    survive: "exist", exist: "survive",
+    habitat: "shelter", shelter: "habitat",
+    threatened: "endangered", vulnerable: "endangered",
+    extinct: "endangered",
+    "carbon footprint": "carbon emission", "carbon emission": "carbon footprint",
+    reptiles: "amphibians", amphibians: "reptiles",
+    population: "biodiversity", biodiversity: "population",
+    deforestation: "conservation", conservation: "deforestation",
+    pollute: "damage", capture: "poach", poach: "capture",
+    persuade: "inspire", inspire: "persuade",
+    refuse: "donate", charity: "volunteer", volunteer: "charity",
+    mammal: "species", species: "mammal",
+    illegal: "policy", chemicals: "pollute",
+    "cut down": "burn down", "burn down": "cut down",
+    "dump into": "pollute", "speak up": "take action", "take action": "speak up",
+    disappear: "extinct", raise: "inspire"
+  };
+
+  // ---- Question bank ----
+  // before/after = text around blank; answer = correct word; tip = Cantonese tip; pool = preferred distractors
+  var ITEMS = [
+    // === Section D (12 corrected) ===
+    { id: "d1", before: "We helped the ", after: " turtle escape from the fishing net, and it swam back into the ocean happily.", answer: "trapped", tip: "turtle 被困喺漁網入面，要用 <b>trapped</b>（被困住的）。<b>endangered</b> 係「瀕臨絕種」，唔係呢度意思。", pool: ["endangered", "threatened", "vulnerable", "extinct", "illegal"] },
+    { id: "d2", before: "There are many ", after: " of birds in the forest, including parrots and eagles.", answer: "species", tip: "好多種唔同嘅雀 → <b>species</b>（物種）。", pool: ["mammal", "habitat", "population", "reptiles", "amphibians"] },
+    { id: "d3", before: "Dinosaurs no longer ", after: " on Earth because they died out millions of years ago.", answer: "exist", tip: "恐龍已經冇再「存在」→ <b>exist</b>。唔好同 <b>survive</b>（生存／捱過）撈亂。", pool: ["survive", "disappear", "refuse", "inspire", "capture"] },
+    { id: "d4", before: "Factories pour dangerous ", after: " into the river, which makes the water unsafe.", answer: "chemicals", tip: "工廠倒危險「化學物質」→ <b>chemicals</b>。", pool: ["species", "charity", "policy", "habitat", "shelter"] },
+    { id: "d5", before: "Plastic can ", after: " the environment and make the sea animals sick.", answer: "damage", tip: "損害環境／物件 → <b>damage</b>。<b>harm</b> 較多用喺傷害生物，呢度工作紙標準答案係 damage。", pool: ["harm", "pollute", "preserve", "refuse", "inspire"] },
+    { id: "d6", before: "We must protect the ", after: " for future generations, so they can enjoy clean air and water.", answer: "environment", tip: "清潔空氣同水 = 保護整體「環境」→ <b>environment</b>。<b>ecosystem</b> 係「生態系」（動植物互相關係），意思窄啲。", pool: ["ecosystem", "habitat", "shelter", "charity", "policy"] },
+    { id: "d7", before: "We must ", after: " the forest so animals have a safe place to live in the future.", answer: "preserve", tip: "為未來保存／保護森林 → <b>preserve</b>。<b>conserve</b> 偏重「節約使用」，工作紙標準答案係 preserve。", pool: ["conserve", "pollute", "capture", "refuse", "donate"] },
+    { id: "d8", before: "Factories should not ", mid: " their waste ", after: " the river because it kills the fish.", answer: "dump into", parts: ["dump", "into"], tip: "把垃圾「倒入」河 → 成個片語 <b>dump into</b>。", pool: ["cut down", "burn down", "speak up", "take action", "pollute"], note: "（片語：兩個空格）" },
+    { id: "d9", before: "Every Saturday, he works as a ", after: " at the animal shelter. He does not get paid.", answer: "volunteer", tip: "冇人工做嘢 → <b>volunteer</b>（義工）。", pool: ["charity", "mammal", "species", "policy", "shelter"] },
+    { id: "d10", before: "His story about saving turtles ", after: " me to help animals too.", answer: "inspires", tip: "啟發我去做 → <b>inspires</b>（啟發）。唔好同 <b>persuades</b>（說服）撈亂。", pool: ["persuades", "refuses", "donates", "damages", "survives"], forms: true },
+    { id: "d11", before: "The government made a new ", after: " to stop people from cutting down trees.", answer: "policy", tip: "政府訂立嘅計劃／政策 → <b>policy</b>。<b>law</b> 係人人都要跟嘅「法律」，工作紙標準答案係 policy。", pool: ["law", "charity", "habitat", "shelter", "species"] },
+    { id: "d12", before: "Many people ", after: " our charity by giving money and time.", answer: "support", tip: "用時間同金錢「支持」慈善 → <b>support</b>。<b>donate</b> 係「捐贈」本身（通常後面接錢／物），呢度係支持成個 charity。", pool: ["donate", "refuse", "capture", "pollute", "inspire"] },
+
+    // === New productive sentences ===
+    { id: "n1", before: "Whales and dolphins are ", after: " because they feed their babies with milk.", answer: "mammals", tip: "用母乳餵幼獸 → <b>mammals</b>（哺乳動物）。", pool: ["species", "reptiles", "amphibians", "volunteers", "habitats"], forms: true },
+    { id: "n2", before: "Pandas are ", after: " animals. There are only a few thousand left in the wild.", answer: "endangered", tip: "數量好少、瀕臨絕種 → <b>endangered</b>。唔好同 <b>trapped</b>（被困）撈亂。", pool: ["trapped", "illegal", "vulnerable", "extinct", "threatened"] },
+    { id: "n3", before: "Many sea turtles are ", after: " by plastic and fishing nets in the ocean.", answer: "threatened", tip: "受到威脅 → <b>threatened</b>。", pool: ["trapped", "illegal", "extinct", "inspired", "refused"] },
+    { id: "n4", before: "Baby birds are very ", after: " and need their parents to protect them.", answer: "vulnerable", tip: "容易受傷／脆弱 → <b>vulnerable</b>。", pool: ["illegal", "extinct", "trapped", "endangered", "threatened"] },
+    { id: "n5", before: "The dodo bird is ", after: ". The last one died hundreds of years ago.", answer: "extinct", tip: "已經完全絕種 → <b>extinct</b>。", pool: ["endangered", "threatened", "vulnerable", "trapped", "illegal"] },
+    { id: "n6", before: "The rainforest is the natural ", after: " of many monkeys and colourful birds.", answer: "habitat", tip: "動物天然嘅「棲息地」→ <b>habitat</b>。唔好同 <b>shelter</b>（庇護所／臨時藏身處）撈亂。", pool: ["shelter", "environment", "ecosystem", "charity", "policy"] },
+    { id: "n7", before: "Only the strongest animals can ", after: " in the cold Antarctic winter.", answer: "survive", tip: "捱過困難環境繼續活 → <b>survive</b>。", pool: ["exist", "refuse", "inspire", "capture", "disappear"] },
+    { id: "n8", before: "The animal ", after: " gives food and a safe home to lost dogs and cats.", answer: "shelter", tip: "動物庇護所 → <b>shelter</b>。", pool: ["habitat", "charity", "policy", "species", "volunteer"] },
+    { id: "n9", before: "Some rare animals may ", after: " from the wild if we do not protect them.", answer: "disappear", tip: "從野外消失 → <b>disappear</b>。", pool: ["exist", "survive", "refuse", "inspire", "capture"] },
+    { id: "n10", before: "It is wrong to ", after: " elephants for their ivory tusks.", answer: "poach", tip: "非法獵殺野生動物 → <b>poach</b>（盜獵）。", pool: ["capture", "preserve", "donate", "persuade", "inspire"] },
+    { id: "n11", before: "Oil from ships can ", after: " the sea and kill coral reefs.", answer: "pollute", tip: "污染海水 → <b>pollute</b>。", pool: ["preserve", "damage", "inspire", "refuse", "support"] },
+    { id: "n12", before: "Scientists ", after: " wild birds carefully so they can study them and then set them free.", answer: "capture", tip: "捕捉（之後放生）→ <b>capture</b>。唔好同 <b>poach</b>（盜獵）撈亂。", pool: ["poach", "preserve", "donate", "refuse", "inspire"] },
+    { id: "n13", before: "Selling ivory is ", after: " in most countries. People who break the rule can go to prison.", answer: "illegal", tip: "違法嘅 → <b>illegal</b>。", pool: ["endangered", "extinct", "vulnerable", "threatened", "trapped"] },
+    { id: "n14", before: "People should not ", after: " too many trees, or animals will lose their homes.", answer: "cut down", tip: "砍倒樹 → <b>cut down</b>（成個片語）。", pool: ["burn down", "dump into", "speak up", "take action", "preserve"], note: "（片語）" },
+    { id: "n15", before: "A big forest fire can ", after: " whole villages and animal homes.", answer: "burn down", tip: "燒毀 → <b>burn down</b>。", pool: ["cut down", "dump into", "speak up", "take action", "preserve"], note: "（片語）" },
+    { id: "n16", before: "Students should ", after: " when they see someone throwing rubbish into the sea.", answer: "speak up", tip: "敢於開口反對 → <b>speak up</b>。", pool: ["cut down", "burn down", "dump into", "take action", "refuse"], note: "（片語）" },
+    { id: "n17", before: "We must ", after: " now to stop plastic pollution before it is too late.", answer: "take action", tip: "採取實際行動 → <b>take action</b>。", pool: ["speak up", "cut down", "burn down", "dump into", "refuse"], note: "（片語）" },
+    { id: "n18", before: "Our school raised money for a wildlife ", after: " that rescues injured animals.", answer: "charity", tip: "慈善機構 → <b>charity</b>。", pool: ["volunteer", "policy", "habitat", "shelter", "species"] },
+    { id: "n19", before: "You can ", after: " old clothes to people in need instead of throwing them away.", answer: "donate", tip: "捐贈衣物／錢 → <b>donate</b>。呢度後面接「舊衫」，唔係 support。", pool: ["support", "refuse", "inspire", "capture", "pollute"] },
+    { id: "n20", before: "Please do not ", after: " to help. Every small action can make a difference!", answer: "refuse", tip: "唔好拒絕幫忙 → <b>refuse</b>。", pool: ["donate", "inspire", "support", "preserve", "capture"] },
+    { id: "n21", before: "Posters and videos can ", after: " awareness about protecting sharks.", answer: "raise", tip: "提高意識 → <b>raise</b> awareness。", pool: ["inspire", "persuade", "refuse", "donate", "damage"] },
+    { id: "n22", before: "Can you ", after: " your parents to use reusable shopping bags?", answer: "persuade", tip: "說服人去做 → <b>persuade</b>。", pool: ["inspire", "refuse", "donate", "capture", "damage"] },
+
+    // === Receptive vocab sentences ===
+    { id: "r1", before: "Every living thing is part of an ", after: ", and together they form the rich biodiversity of our world.", answer: "ecosystem", tip: "動植物互相依存嘅「生態系」→ <b>ecosystem</b>。呢度講 living things 之間嘅關係，唔係廣義嘅 environment。", pool: ["environment", "habitat", "shelter", "population", "conservation"] },
+    { id: "r2", before: "The rich ", after: " of our world includes millions of different plants and animals.", answer: "biodiversity", tip: "生物多樣性 → <b>biodiversity</b>。", pool: ["population", "ecosystem", "conservation", "deforestation", "habitat"] },
+    { id: "r3", before: "", after: " is a big problem because we cut down too many trees for farms and buildings.", answer: "Deforestation", tip: "大規模砍伐森林 → <b>Deforestation</b>。", pool: ["Conservation", "Biodiversity", "Population", "Pollution", "Education"], forms: true },
+    { id: "r4", before: "Floods, earthquakes and forest fires are examples of ", after: ".", answer: "natural disasters", tip: "天災 → <b>natural disasters</b>。", pool: ["carbon footprint", "carbon emission", "conservation", "biodiversity", "deforestation"] },
+    { id: "r5", before: "The human ", after: " is growing, so we need more food, water and space.", answer: "population", tip: "人口 → <b>population</b>。", pool: ["biodiversity", "conservation", "ecosystem", "habitat", "species"] },
+    { id: "r6", before: "Many ", after: " projects are working to protect nature and wildlife.", answer: "conservation", tip: "保育計劃 → <b>conservation</b>。", pool: ["deforestation", "population", "biodiversity", "reptiles", "amphibians"] },
+    { id: "r7", before: "Snakes and lizards are ", after: ". They are cold-blooded and usually have dry skin.", answer: "reptiles", tip: "爬蟲類 → <b>reptiles</b>。青蛙係 amphibians。", pool: ["amphibians", "mammals", "species", "habitats", "volunteers"], forms: true },
+    { id: "r8", before: "Frogs and toads are ", after: " because they can live both on land and in water.", answer: "amphibians", tip: "兩棲類 → <b>amphibians</b>。", pool: ["reptiles", "mammals", "species", "habitats", "volunteers"], forms: true },
+    { id: "r9", before: "Walking to school instead of taking a car can reduce your ", after: ".", answer: "carbon footprint", tip: "個人產生嘅碳排放總量 → <b>carbon footprint</b>（碳足跡）。", pool: ["carbon emission", "natural disasters", "biodiversity", "conservation", "population"] },
+    { id: "r10", before: "Factories should reduce their ", after: " to fight climate change.", answer: "carbon emission", tip: "工廠排放嘅二氧化碳 → <b>carbon emission</b>（碳排放）。", pool: ["carbon footprint", "natural disasters", "biodiversity", "conservation", "population"] }
+  ];
+
+  // "inspires" / "persuades" etc. — tip forms in VOCAB lookup
+  function lookup(word) {
+    var k = word.toLowerCase();
+    if (VOCAB[k]) return VOCAB[k];
+    // strip common verb endings
+    if (VOCAB[k.replace(/s$/, "")]) return VOCAB[k.replace(/s$/, "")];
+    if (VOCAB[k.replace(/es$/, "")]) return VOCAB[k.replace(/es$/, "")];
+    if (VOCAB[k.replace(/ies$/, "y")]) return VOCAB[k.replace(/ies$/, "y")];
+    return null;
+  }
+  function zhOf(word) { var v = lookup(word); return v ? v.zh : ""; }
+  function enOf(word) { var v = lookup(word); return v ? v.en : ""; }
+
+  var ROUND = 15, MAX_RETRY = 2;
+  var GOOD = ["🌟 好叻呀！", "🎉 完全正確！", "💯 犀利！", "🚀 勁呀！", "👏 Excellent!", "😎 Well done!", "🐢 海龜都讚你！"];
+  var BAD = ["💪 唔緊要，睇吓提示！", "🙂 差少少！記住呢個分別啦！", "🌱 錯咗先學得識！", "🤗 加油！等陣再試！"];
+
+  function $(id) { return document.getElementById(id); }
+  function pick(a) { return a[Math.floor(Math.random() * a.length)]; }
+  function shuffle(a) { a = a.slice(); for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+  function show(id) { ["home", "quiz", "finish"].forEach(function (s) { $(s).classList.toggle("hidden", s !== id); }); window.scrollTo(0, 0); }
+
+  // Build 6 options for an item
+  function buildChoices(item) {
+    var correct = item.answer;
+    var opts = [correct];
+    var pool = (item.pool || []).slice();
+    // add confuse pair
+    var conf = CONFUSE[correct.toLowerCase()];
+    if (conf && opts.indexOf(conf) < 0 && opts.indexOf(capLike(conf, correct)) < 0) pool.unshift(capLike(conf, correct));
+    pool = shuffle(pool);
+    for (var i = 0; i < pool.length && opts.length < 6; i++) {
+      var w = pool[i];
+      if (!w) continue;
+      w = capLike(w, correct);
+      if (opts.indexOf(w) >= 0) continue;
+      if (w.toLowerCase() === correct.toLowerCase()) continue;
+      opts.push(w);
+    }
+    // fill from same POS / random vocab if needed
+    var keys = shuffle(Object.keys(VOCAB));
+    for (var k = 0; k < keys.length && opts.length < 6; k++) {
+      var cand = capLike(keys[k], correct);
+      if (opts.indexOf(cand) >= 0) continue;
+      if (cand.toLowerCase() === correct.toLowerCase()) continue;
+      opts.push(cand);
+    }
+    return shuffle(opts);
+  }
+  function capLike(word, model) {
+    if (model[0] === model[0].toUpperCase() && model[0] !== model[0].toLowerCase()) {
+      return word.charAt(0).toUpperCase() + word.slice(1);
+    }
+    return word;
+  }
+
+  // Speech
+  var synth = ("speechSynthesis" in window) ? window.speechSynthesis : null;
+  var voice = null;
+  function pickVoice() {
+    if (!synth) return;
+    var vs = synth.getVoices() || [];
+    var prefs = [
+      function (v) { return /en-GB/i.test(v.lang) && /google|natural|daniel/i.test(v.name); },
+      function (v) { return /en-GB/i.test(v.lang); },
+      function (v) { return /en-US/i.test(v.lang); },
+      function (v) { return /^en/i.test(v.lang); }
+    ];
+    for (var i = 0; i < prefs.length; i++) for (var j = 0; j < vs.length; j++) if (prefs[i](vs[j])) { voice = vs[j]; return; }
+  }
+  if (synth) {
+    pickVoice();
+    if (synth.addEventListener) synth.addEventListener("voiceschanged", pickVoice);
+    else synth.onvoiceschanged = pickVoice;
+  }
+  function speakSentence(item, chosen) {
+    if (!synth) return;
+    if (!voice) pickVoice();
+    var full;
+    if (item.parts && chosen) full = item.before + item.parts[0] + item.mid + item.parts[1] + item.after;
+    else if (item.parts) full = item.before + "blank" + item.mid + "blank" + item.after;
+    else full = item.before + (chosen || "blank") + item.after;
+    synth.cancel();
+    var u = new SpeechSynthesisUtterance(full);
+    if (voice) { u.voice = voice; u.lang = voice.lang; } else u.lang = "en-GB";
+    u.rate = 0.85;
+    setTimeout(function () { synth.speak(u); }, 50);
+  }
+
+  var S = null;
+
+  $("bankInfo").textContent = "題庫共 " + ITEMS.length + " 條句子 📚";
+
+  function start() {
+    var qs = shuffle(ITEMS).slice(0, Math.min(ROUND, ITEMS.length)).map(function (it) {
+      return { item: it, attempt: 0, choices: buildChoices(it) };
+    });
+    S = { queue: qs, current: null, done: 0, stars: 0, streak: 0, best: 0, missed: {}, totalFirst: qs.length };
+    show("quiz");
+    next();
+  }
+
+  function updateBar() {
+    var total = S.done + S.queue.length + (S.current ? 1 : 0);
+    $("progTxt").textContent = "第 " + Math.min(S.done + 1, total) + " / " + total + " 題";
+    $("bar").style.width = Math.round(S.done / total * 100) + "%";
+    $("stars").textContent = S.stars;
+    $("streak").textContent = S.streak;
+  }
+
+  function renderSentence(item, fill, cls) {
+    var c = "blank" + (cls ? " " + cls : "") + (fill ? " filled" : "");
+    var html;
+    if (item.parts && item.parts.length === 2) {
+      var a = fill ? item.parts[0] : "______";
+      var b = fill ? item.parts[1] : "______";
+      html = item.before + '<span class="' + c + '">' + a + "</span>" + item.mid + '<span class="' + c + '">' + b + "</span>" + item.after;
+    } else {
+      html = item.before + '<span class="' + c + '">' + (fill || "______") + "</span>" + item.after;
+    }
+    if (item.note) html += ' <span class="mean">' + item.note + "</span>";
+    $("sentence").innerHTML = html;
+  }
+
+  function next() {
+    S.current = S.queue.shift() || null;
+    if (!S.current) { finish(); return; }
+    var q = S.current, item = q.item;
+    S.answered = false;
+    $("retryTag").classList.toggle("hidden", q.attempt === 0);
+    renderSentence(item, null, "");
+    $("fb").textContent = ""; $("fb").className = "fb";
+    $("why").innerHTML = "";
+    $("nextBtn").classList.add("hidden");
+    var box = $("choices"); box.innerHTML = "";
+    q.choices.forEach(function (w) {
+      var b = document.createElement("button");
+      b.className = "choice";
+      b.textContent = (w.toLowerCase() === "dump into") ? "dump … into" : w;
+      b.setAttribute("data-ans", w);
+      b.addEventListener("click", function () { choose(b.getAttribute("data-ans"), b); });
+      box.appendChild(b);
+    });
+    updateBar();
+  }
+
+  function choose(word, btn) {
+    if (S.answered) return;
+    S.answered = true;
+    var q = S.current, item = q.item;
+    var correct = word.toLowerCase() === item.answer.toLowerCase();
+    Array.prototype.forEach.call($("choices").children, function (c) {
+      c.disabled = true;
+      if (c.textContent.toLowerCase() === item.answer.toLowerCase()) c.classList.add("right");
+    });
+    if (correct) {
+      btn.classList.add("right");
+      renderSentence(item, item.answer, "right");
+      if (q.attempt === 0) S.stars++;
+      S.streak++; if (S.streak > S.best) S.best = S.streak;
+      $("fb").className = "fb good";
+      $("fb").innerHTML = pick(GOOD) + (S.streak >= 3 ? " 🔥 連續 " + S.streak + " 題！" : "");
+      confetti(S.streak >= 5 ? 14 : 7);
+      speakSentence(item, item.answer);
+    } else {
+      btn.classList.add("wrong");
+      renderSentence(item, word, "wrong");
+      S.streak = 0;
+      S.missed[item.answer] = (S.missed[item.answer] || 0) + 1;
+      $("fb").className = "fb bad";
+      $("fb").innerHTML = pick(BAD) + '<div style="margin-top:6px;color:#2e7d32">正確答案：<b>' + item.answer + "</b></div>";
+      var mean = zhOf(item.answer);
+      var tip = item.tip || "";
+      var wrongZh = zhOf(word);
+      $("why").innerHTML = '<div class="why">💡 ' + tip +
+        (mean ? '<div class="mean" style="margin-top:6px"><b>' + item.answer + "</b> = " + mean + (enOf(item.answer) ? " · " + enOf(item.answer) : "") + "</div>" : "") +
+        (wrongZh ? '<div class="mean">你揀咗 <b>' + word + "</b> = " + wrongZh + "</div>" : "") +
+        "</div>";
+      // requeue similar: prefer same answer family or random unused
+      if (q.attempt < MAX_RETRY) {
+        var similar = findSimilar(item, q.attempt);
+        if (similar) S.queue.push({ item: similar, attempt: q.attempt + 1, choices: buildChoices(similar) });
+      }
+    }
+    S.done++;
+    $("nextBtn").classList.remove("hidden");
+    $("nextBtn").textContent = S.queue.length ? "下一題 ➡️" : "睇成績 🏆";
+    updateBar();
+  }
+
+  function findSimilar(item, attempt) {
+    // Prefer another item with same answer, else same confuse-pair answer, else random not-yet-seen-ish
+    var used = {};
+    if (S.current) used[S.current.item.id] = true;
+    S.queue.forEach(function (q) { used[q.item.id] = true; });
+    var same = ITEMS.filter(function (it) { return it.answer.toLowerCase() === item.answer.toLowerCase() && !used[it.id]; });
+    if (same.length) return pick(same);
+    var conf = CONFUSE[item.answer.toLowerCase()];
+    if (conf) {
+      var pair = ITEMS.filter(function (it) { return it.answer.toLowerCase() === conf && !used[it.id]; });
+      if (pair.length) return pick(pair);
+    }
+    var rest = ITEMS.filter(function (it) { return !used[it.id]; });
+    return rest.length ? pick(rest) : null;
+  }
+
+  function finish() {
+    show("finish");
+    var pct = S.totalFirst ? S.stars / S.totalFirst : 0;
+    $("finEmoji").textContent = pct === 1 ? "🏆" : pct >= 0.8 ? "🥇" : pct >= 0.6 ? "🥈" : "💪";
+    $("finTitle").textContent = pct === 1 ? "全部一次答啱！超級犀利！" : pct >= 0.8 ? "好叻呀！差少少就滿分！" : pct >= 0.6 ? "唔錯呀！繼續努力！" : "完成咗！多練幾次一定會進步！";
+    $("finSummary").innerHTML = "⭐ " + S.stars + " / " + S.totalFirst + " 題一次答啱　🔥 最高連續 " + S.best + " 題";
+    var box = $("missedBox"); box.innerHTML = "";
+    var keys = Object.keys(S.missed);
+    if (!keys.length) {
+      box.innerHTML = '<p style="text-align:center;color:#2e7d32;font-weight:bold;font-size:1.2rem">🥇 全部一次答啱！Perfect！</p>';
+    } else {
+      box.innerHTML = '<p style="font-weight:bold;color:#e65100">📝 呢啲字要多啲練習：</p>';
+      keys.forEach(function (w) {
+        var d = document.createElement("div");
+        d.className = "missed";
+        d.innerHTML = "<b>" + w + "</b> " + zhOf(w) + " <small>（錯 " + S.missed[w] + " 次）</small>";
+        box.appendChild(d);
+      });
+    }
+    confetti(pct >= 0.8 ? 36 : 12);
+  }
+
+  function confetti(n) {
+    var icons = ["🎉", "⭐", "🌟", "🎊", "🐢", "🌊", "🌈"];
+    for (var i = 0; i < n; i++) {
+      var s = document.createElement("span");
+      s.className = "confetti";
+      s.textContent = icons[Math.floor(Math.random() * icons.length)];
+      s.style.left = Math.random() * 100 + "vw";
+      s.style.animationDuration = (1.4 + Math.random() * 2) + "s";
+      document.body.appendChild(s);
+      (function (el) { setTimeout(function () { if (el.parentNode) el.parentNode.removeChild(el); }, 4000); })(s);
+    }
+  }
+
+  $("startBtn").addEventListener("click", start);
+  $("againBtn").addEventListener("click", start);
+  $("backBtn").addEventListener("click", function () { show("home"); });
+  $("homeBtn").addEventListener("click", function () { if (confirm("要返回主頁嗎？今輪進度會冇咗。")) show("home"); });
+  $("nextBtn").addEventListener("click", next);
+  $("speakBtn").addEventListener("click", function () {
+    if (!S || !S.current) return;
+    var fill = S.answered ? S.current.item.answer : null;
+    speakSentence(S.current.item, fill);
+  });
+  document.addEventListener("keydown", function (e) {
+    if ($("quiz").classList.contains("hidden") || !S || !S.current) return;
+    if (e.key === "Enter" && S.answered) { e.preventDefault(); next(); return; }
+    if (!S.answered && /^[1-6]$/.test(e.key)) {
+      var btn = $("choices").children[+e.key - 1];
+      if (btn) btn.click();
+    }
+  });
+
+  // Expose for tests
+  window.__SF = {
+    ITEMS: ITEMS, VOCAB: VOCAB, buildChoices: buildChoices, CONFUSE: CONFUSE,
+    start: start, state: function () { return S; }
+  };
+})();
+</script>
+</body>
+</html>
