@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>小六英文練習 P6 English Practice</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; min-height: 100vh; padding: 20px;
+    font-family: "Arial Rounded MT Bold", "Comic Sans MS", "PingFang TC", "Microsoft JhengHei", "Noto Sans TC", sans-serif;
+    background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 35%, #a1c4fd 75%, #c2e9fb 100%);
+    background-attachment: fixed; color: #333;
+  }
+  header { text-align: center; margin: 10px 0 24px; }
+  header .emoji { font-size: 3.5rem; display: inline-block; animation: bounce 1.2s infinite; }
+  h1 { font-size: clamp(1.6rem, 6vw, 2.6rem); color: #5a2d82; text-shadow: 2px 2px 0 #fff; margin: 8px 0 4px; }
+  header p { color: #6b4f8f; font-size: 1.15rem; margin: 0; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; max-width: 960px; margin: 0 auto; }
+  /* To add a new practice: copy one <a class="card"> block below and change link / text / colour */
+  .card {
+    display: block; text-decoration: none; color: #073b4c; background: #fff;
+    border-radius: 26px; padding: 24px 20px; border: 5px solid var(--c, #ffd166);
+    box-shadow: 0 8px 0 var(--c, #ffd166), 0 12px 24px rgba(90,45,130,.2);
+    transition: transform .15s;
+  }
+  .card:hover, .card:focus { transform: translateY(-4px) rotate(-1deg); }
+  .card:active { transform: translateY(4px); }
+  .card .icon { font-size: 3rem; }
+  .card h2 { margin: 8px 0 6px; font-size: 1.5rem; color: #5a2d82; }
+  .card p { margin: 0 0 12px; font-size: 1.05rem; color: #555; line-height: 1.5; }
+  .tag { display: inline-block; background: var(--c, #ffd166); color: #fff; font-weight: bold; border-radius: 999px; padding: 4px 12px; font-size: .95rem; margin-right: 6px; }
+  .card.soon { opacity: .55; pointer-events: none; border-style: dashed; box-shadow: none; }
+  footer { text-align: center; margin-top: 32px; color: #6b4f8f; font-size: .95rem; }
+  @keyframes bounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+</style>
+</head>
+<body>
+  <header>
+    <div class="emoji">🦉</div>
+    <h1>小六英文練習 P6 English Practice</h1>
+    <p>揀一個練習，開始挑戰啦！💪✨</p>
+  </header>
+
+  <main class="grid">
+    <a class="card" href="unit2-vocabulary/" style="--c:#06d6a0">
+      <div class="icon">🐼🌳</div>
+      <h2>Unit 2 Vocabulary</h2>
+      <p>串字練習：睇中文、聽讀音，喺心入面串一次再對答案！（34 個生字）</p>
+      <span class="tag">🔤 串字</span><span class="tag" style="background:#118ab2">🔊 有讀音</span>
+    </a>
+
+    <div class="card soon" style="--c:#8338ec">
+      <div class="icon">🚀</div>
+      <h2>更多練習</h2>
+      <p>即將推出…敬請期待！</p>
+    </div>
+  </main>
+
+  <footer>Have fun learning English! 🌈</footer>
+</body>
+</html>
