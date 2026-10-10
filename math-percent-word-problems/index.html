@@ -1,0 +1,1484 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>小六數學 百分數應用題 練習</title>
+<style>
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body {
+    margin: 0; min-height: 100vh; padding: 14px;
+    font-family: "Arial Rounded MT Bold", "PingFang TC", "Microsoft JhengHei", "Noto Sans TC", sans-serif;
+    background: linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 45%, #84fab0 100%);
+    background-attachment: fixed; color: #263238;
+  }
+  h1 { text-align: center; font-size: clamp(1.3rem, 5vw, 2.1rem); color: #1b5e20; text-shadow: 2px 2px 0 #fff; margin: 6px 0 2px; }
+  .sub { text-align: center; color: #2e7d32; margin: 0 0 14px; font-size: 1.05rem; }
+  .card { background: #fff; border-radius: 26px; max-width: 760px; margin: 0 auto; padding: 20px 18px 24px; box-shadow: 0 10px 28px rgba(0,80,40,.22); border: 5px solid #ffd54f; }
+  .hidden { display: none !important; }
+  button { font-family: inherit; cursor: pointer; border: none; }
+  /* fractions */
+  .fr { display: inline-flex; flex-direction: column; vertical-align: middle; text-align: center; margin: 0 .1em; font-size: .85em; line-height: 1.1; }
+  .fr .fn { border-bottom: .09em solid currentColor; padding: 0 .18em .04em; }
+  .fr .fd { padding: .04em .18em 0; }
+  .num { white-space: nowrap; display: inline-flex; align-items: center; }
+  .mw { margin-right: .04em; }
+  .op { margin: 0 .12em; color: #d81b60; font-weight: bold; }
+  .par { color: #6a1b9a; font-weight: bold; }
+  /* home */
+  .topics { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; margin-top: 10px; }
+  .topic { background: #f1f8e9; border-radius: 20px; padding: 18px 12px; font-size: 1.2rem; font-weight: bold; color: #1b5e20; box-shadow: 0 6px 0 #aed581; transition: transform .1s; }
+  .topic .ti { font-size: 2.4rem; display: block; margin-bottom: 4px; }
+  .topic:active { transform: translateY(4px); box-shadow: 0 2px 0 #aed581; }
+  .topic.mix { background: #fff3e0; box-shadow: 0 6px 0 #ffb74d; color: #e65100; grid-column: 1 / -1; font-size: 1.45rem; }
+  .intro { font-size: 1.08rem; line-height: 1.7; background: #e8f5e9; border-radius: 16px; padding: 10px 14px; }
+  /* quiz */
+  .topbar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
+  .pill { background: #e8f5e9; border-radius: 999px; padding: 6px 12px; font-weight: bold; color: #1b5e20; font-size: 1rem; }
+  .pill.star { background: #fff8e1; color: #f57f17; }
+  .pill.fire { background: #fbe9e7; color: #d84315; }
+  .homebtn { background: #eceff1; border-radius: 999px; padding: 6px 12px; font-size: 1rem; }
+  .bar { flex: 1 1 100%; height: 14px; background: #e0e0e0; border-radius: 999px; overflow: hidden; }
+  .bar > div { height: 100%; width: 0; background: linear-gradient(90deg, #66bb6a, #26c6da); transition: width .4s; }
+  .tag { display: inline-block; background: #7e57c2; color: #fff; border-radius: 12px; padding: 4px 12px; font-size: .95rem; }
+  .retry { display: inline-block; background: #ffca28; color: #6d4c00; border-radius: 12px; padding: 4px 10px; font-size: .9rem; margin-left: 6px; }
+  .prompt { font-size: 1.3rem; margin: 12px 0 6px; line-height: 1.5; }
+  .expr { font-size: clamp(1.8rem, 7.5vw, 2.8rem); font-weight: bold; text-align: center; margin: 10px 0; color: #0d47a1; line-height: 1.6; overflow-x: auto; overflow-y: hidden; padding: 6px 0; }
+  .figbox { text-align: center; margin: 8px 0; }
+  svg.fig { width: min(320px, 85%); height: auto; max-height: 260px; }
+  svg.fig .sh { fill: #9e9e9e; stroke: #212121; stroke-width: 2; stroke-linejoin: round; }
+  svg.fig .un { fill: #fff; stroke: #212121; stroke-width: 2; stroke-linejoin: round; }
+  .hint { text-align: center; color: #6d4c41; background: #fff8e1; border-radius: 12px; padding: 6px 10px; margin: 6px auto; font-size: 1.05rem; max-width: 520px; }
+  .mcq { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 10px; }
+  .opt { background: #e3f2fd; color: #0d47a1; font-size: clamp(1.4rem, 6vw, 2rem); font-weight: bold; border-radius: 18px; padding: 16px 8px; min-height: 84px; box-shadow: 0 6px 0 #90caf9; }
+  .opt:active { transform: translateY(4px); box-shadow: 0 2px 0 #90caf9; }
+  .opt.right { background: #c8e6c9; box-shadow: 0 6px 0 #66bb6a; color: #1b5e20; }
+  .opt.wrong { background: #ffcdd2; box-shadow: 0 6px 0 #e57373; color: #b71c1c; }
+  .opt:disabled { cursor: default; }
+  /* keypad */
+  .ansrow { display: flex; justify-content: center; align-items: center; gap: 10px; margin: 10px 0 4px; }
+  .kfrac { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+  .kline { width: 120px; height: 5px; background: #37474f; border-radius: 3px; }
+  .kbox { min-width: 110px; height: 64px; border: 4px dashed #90a4ae; border-radius: 14px; font-size: 2rem; font-weight: bold; color: #0d47a1; background: #fafafa; display: flex; align-items: center; justify-content: center; padding: 0 8px; }
+  .kbox.w { min-width: 90px; height: 80px; }
+  .kbox.act { border: 4px solid #ff7043; background: #fff3e0; box-shadow: 0 0 0 4px rgba(255,112,67,.2); }
+  .kbox:empty::after { content: attr(data-ph); color: #b0bec5; font-size: 1rem; font-weight: normal; }
+  .ktip { text-align: center; color: #78909c; font-size: .95rem; margin-bottom: 8px; }
+  .keys { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; max-width: 380px; margin: 0 auto; }
+  .key { background: #ede7f6; color: #4527a0; font-size: 1.8rem; font-weight: bold; border-radius: 16px; padding: 12px 0; box-shadow: 0 5px 0 #b39ddb; }
+  .key:active { transform: translateY(3px); box-shadow: 0 2px 0 #b39ddb; }
+  .key.fn { background: #eceff1; color: #455a64; font-size: 1.25rem; box-shadow: 0 5px 0 #b0bec5; }
+  .big { display: block; margin: 14px auto 0; font-size: 1.45rem; font-weight: bold; color: #fff; border-radius: 20px; padding: 14px 30px; min-width: 220px; box-shadow: 0 6px 0 rgba(0,0,0,.2); }
+  .big:active { transform: translateY(4px); box-shadow: 0 2px 0 rgba(0,0,0,.2); }
+  .submit { background: #43a047; }
+  .next { background: #fb8c00; }
+  .feedback { text-align: center; font-size: 1.35rem; font-weight: bold; margin-top: 12px; min-height: 1.5em; }
+  .feedback.good { color: #2e7d32; }
+  .feedback.bad { color: #c62828; }
+  .feedback.info { color: #ef6c00; font-size: 1.15rem; }
+  .why { background: #fff3e0; border-left: 6px solid #ff9800; border-radius: 10px; padding: 8px 12px; margin: 10px 0; font-size: 1.1rem; }
+  .solution { background: #f3e5f5; border-radius: 16px; padding: 10px 14px; margin-top: 12px; }
+  .solution h3 { margin: 4px 0 8px; color: #6a1b9a; font-size: 1.15rem; }
+  .step { padding: 6px 0; border-bottom: 1px dashed #ce93d8; }
+  .step:last-child { border-bottom: none; }
+  .snote { color: #8e24aa; font-size: .98rem; }
+  .shtml { font-size: 1.45rem; color: #263238; line-height: 1.8; overflow-x: auto; overflow-y: hidden; padding: 4px 0; }
+  .sdetail { font-size: 1.2rem; color: #455a64; background: #fff; border-radius: 8px; padding: 2px 8px; display: inline-block; margin-top: 2px; line-height: 1.7; }
+  .linkbtn { background: none; color: #6a1b9a; text-decoration: underline; font-size: 1.05rem; display: block; margin: 8px auto 0; }
+  /* finish */
+  table.sum { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 1.05rem; }
+  table.sum th, table.sum td { padding: 8px 6px; text-align: center; border-bottom: 2px solid #e0e0e0; }
+  table.sum th { background: #e8f5e9; color: #1b5e20; }
+  .bigemoji { font-size: 4rem; text-align: center; animation: bounce 1s infinite; }
+  .row { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+  .row .big { margin: 10px 0 0; }
+  @keyframes bounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+  @keyframes pop { 0% { transform: scale(.85); } 60% { transform: scale(1.05); } 100% { transform: scale(1); } }
+  .pop { animation: pop .3s ease; }
+  .confetti { position: fixed; top: -30px; font-size: 1.7rem; pointer-events: none; animation: fall linear forwards; z-index: 99; }
+  @keyframes fall { to { transform: translateY(110vh) rotate(720deg); opacity: .6; } }
+  @media (max-width: 420px) { .kbox { min-width: 90px; height: 56px; font-size: 1.7rem; } .key { font-size: 1.6rem; } }
+
+  .problem { font-size: clamp(1.2rem, 4.6vw, 1.55rem); line-height: 1.7; background: #fffde7; border-radius: 16px; padding: 12px 14px; margin: 10px 0; border: 3px dashed #ffd54f; }
+  .problem b { color: #c62828; }
+  .stephead { font-size: 1.2rem; font-weight: bold; color: #4527a0; margin: 14px 0 6px; }
+  .stephead .num1 { display: inline-block; background: #7e57c2; color: #fff; border-radius: 50%; width: 1.6em; height: 1.6em; line-height: 1.6em; text-align: center; margin-right: 6px; }
+  .flist { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  @media (max-width: 560px) { .flist { grid-template-columns: 1fr; } }
+  .fopt { background: #ede7f6; color: #311b92; font-size: clamp(1.15rem, 4.6vw, 1.5rem); font-weight: bold; border-radius: 16px; padding: 14px 8px; min-height: 64px; box-shadow: 0 5px 0 #b39ddb; }
+  .fopt:active { transform: translateY(3px); box-shadow: 0 2px 0 #b39ddb; }
+  .fopt.right, .opt.right { background: #c8e6c9; box-shadow: 0 5px 0 #66bb6a; color: #1b5e20; }
+  .fopt.wrong, .opt.wrong { background: #ffcdd2; box-shadow: 0 5px 0 #e57373; color: #b71c1c; }
+  .fopt:disabled, .opt:disabled { cursor: default; }
+  .opt { font-size: clamp(1.25rem, 5vw, 1.7rem); min-height: 70px; }
+  .tipbtn { background: #fff3e0; color: #e65100; border-radius: 999px; padding: 8px 16px; font-size: 1.05rem; font-weight: bold; box-shadow: 0 4px 0 #ffcc80; }
+  .diagram { background: #fafafa; border: 2px solid #e0e0e0; border-radius: 14px; padding: 8px; margin: 10px 0; text-align: center; }
+  .diagram svg.seg { width: 100%; max-width: 640px; height: auto; font-family: inherit; }
+  .diagram .rule { font-size: 1.1rem; color: #6a1b9a; font-weight: bold; margin-top: 4px; }
+  .chosen { text-align: center; font-size: 1.5rem; font-weight: bold; color: #311b92; background: #ede7f6; border-radius: 12px; padding: 6px; margin-bottom: 8px; }
+  .fb { text-align: center; font-size: 1.25rem; font-weight: bold; margin-top: 10px; min-height: 1.4em; }
+  .fb.good { color: #2e7d32; } .fb.bad { color: #c62828; }
+</style>
+</head>
+<body>
+<h1>📏 小六數學：百分數應用題 🧩</h1>
+<div class="sub">先揀啱列式，再計出答案！</div>
+
+<div class="card" id="home">
+  <div class="intro">
+    🧠 每題分<b>兩步</b>：① 揀正確列式　② 計出答案。<br>
+    💡 唔肯定？撳「睇線段圖」幫你諗！<br>
+    ✅ 兩步都一次答啱有 ⭐；❌ 答錯會睇到步驟，之後再出一條類似題。<br>
+    📌 口訣：<b>單位“1” × 百分率 = 所求量</b>　|　<b>已知量 ÷ 對應百分率 = 單位“1”</b>
+  </div>
+  <div class="topics" id="topics"></div>
+</div>
+
+<div class="card hidden" id="quiz">
+  <div class="topbar">
+    <button class="homebtn" id="homeBtn">🏠 返回</button>
+    <span class="pill" id="progTxt"></span>
+    <span class="pill star">⭐ <span id="stars">0</span></span>
+    <span class="pill fire">🔥 <span id="streak">0</span></span>
+    <div class="bar"><div id="bar"></div></div>
+  </div>
+  <div><span class="tag" id="tag"></span><span class="retry hidden" id="retryTag">🔁 再試類似題</span></div>
+  <div class="problem" id="problem"></div>
+  <button class="tipbtn" id="tipBtn">💡 睇線段圖</button>
+  <div class="diagram hidden" id="diagram"></div>
+
+  <div class="stephead"><span class="num1">1</span>揀正確列式</div>
+  <div class="flist" id="formulas"></div>
+  <div class="fb" id="fb1"></div>
+  <div id="why1"></div>
+
+  <div id="part2" class="hidden">
+    <div class="stephead"><span class="num1">2</span>計出答案</div>
+    <div class="chosen" id="chosen"></div>
+    <div class="mcq" id="answers"></div>
+    <div class="fb" id="fb2"></div>
+    <div id="why2"></div>
+    <button class="linkbtn hidden" id="showSolBtn">📖 睇計算步驟</button>
+    <div class="solution hidden" id="solution"></div>
+    <button class="big next hidden" id="nextBtn">下一題 ➡️</button>
+  </div>
+</div>
+
+<div class="card hidden" id="finish">
+  <div class="bigemoji" id="finEmoji">🏆</div>
+  <h2 style="text-align:center;color:#4527a0;margin:6px 0" id="finTitle">完成！</h2>
+  <p style="text-align:center;font-size:1.2rem" id="finSummary"></p>
+  <table class="sum" id="sumTable"></table>
+  <div class="row">
+    <button class="big submit" id="againBtn">🔄 再玩一次</button>
+    <button class="big next" id="backBtn">🏠 揀其他主題</button>
+  </div>
+</div>
+<script>
+var MathCore = (function () {
+  "use strict";
+  // ---------- random helpers ----------
+  var rand = Math.random;
+  function setRandom(fn) { rand = fn; }
+  function rnd(a, b) { return a + Math.floor(rand() * (b - a + 1)); }
+  function pick(arr) { return arr[Math.floor(rand() * arr.length)]; }
+  function chance(p) { return rand() < p; }
+  function shuffle(arr) {
+    var a = arr.slice();
+    for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(rand() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; }
+    return a;
+  }
+  function wpick(items) {
+    var tot = 0, i;
+    for (i = 0; i < items.length; i++) tot += items[i][0];
+    var r = rand() * tot;
+    for (i = 0; i < items.length; i++) { r -= items[i][0]; if (r < 0) return items[i][1]; }
+    return items[items.length - 1][1];
+  }
+  function nonMult(lo, hi, m) { var k; do { k = rnd(lo, hi); } while (k % m === 0); return k; }
+
+  // ---------- exact fractions ----------
+  function gcd(a, b) { a = Math.abs(a); b = Math.abs(b); while (b) { var t = a % b; a = b; b = t; } return a; }
+  function lcm(a, b) { return a / gcd(a, b) * b; }
+  function Frac(n, d) {
+    if (d === undefined) d = 1;
+    if (!Number.isInteger(n) || !Number.isInteger(d)) throw new Error("non-integer " + n + "/" + d);
+    if (d === 0) throw new Error("division by zero");
+    if (d < 0) { n = -n; d = -d; }
+    var g = gcd(n, d) || 1;
+    this.n = n / g; this.d = d / g;
+    if (!Number.isSafeInteger(this.n) || !Number.isSafeInteger(this.d)) throw new Error("overflow");
+  }
+  function F(n, d) { return new Frac(n, d); }
+  Frac.prototype.add = function (o) { return F(this.n * o.d + o.n * this.d, this.d * o.d); };
+  Frac.prototype.sub = function (o) { return F(this.n * o.d - o.n * this.d, this.d * o.d); };
+  Frac.prototype.mul = function (o) { return F(this.n * o.n, this.d * o.d); };
+  Frac.prototype.div = function (o) { if (o.n === 0) throw new Error("division by zero"); return F(this.n * o.d, this.d * o.n); };
+  Frac.prototype.eq = function (o) { return this.n === o.n && this.d === o.d; };
+  Frac.prototype.isInt = function () { return this.d === 1; };
+  Frac.prototype.isTerm = function () { var d = this.d; while (d % 2 === 0) d /= 2; while (d % 5 === 0) d /= 5; return d === 1; };
+  Frac.prototype.decPlaces = function () { if (!this.isTerm()) return Infinity; var p = 1, k = 0; while (p % this.d !== 0) { p *= 10; k++; } return k; };
+  Frac.prototype.toNumber = function () { return this.n / this.d; };
+  Frac.prototype.toString = function () { return this.d === 1 ? String(this.n) : this.n + "/" + this.d; };
+  var HUNDRED = F(100);
+
+  function decStr(f) {
+    if (!f.isTerm()) throw new Error("not terminating: " + f);
+    var k = f.decPlaces(), p = Math.pow(10, k);
+    var N = f.n * (p / f.d), neg = N < 0;
+    var s = String(Math.abs(N));
+    if (k > 0) { while (s.length <= k) s = "0" + s; s = s.slice(0, s.length - k) + "." + s.slice(s.length - k); }
+    return (neg ? "−" : "") + s;
+  }
+
+  // ---------- HTML rendering ----------
+  function fracH(n, d) { return '<span class="fr"><span class="fn">' + n + '</span><span class="fd">' + d + '</span></span>'; }
+  function mixedH(f) {
+    var sign = f.n < 0 ? "−" : "", n = Math.abs(f.n), d = f.d;
+    if (d === 1) return sign + n;
+    var w = Math.floor(n / d), r = n - w * d;
+    return '<span class="num">' + sign + (w ? '<span class="mw">' + w + '</span>' : "") + fracH(r, d) + '</span>';
+  }
+  function improperH(f) { return f.d === 1 ? String(f.n) : (f.n < 0 ? "−" : "") + fracH(Math.abs(f.n), f.d); }
+  function pctH(f) { var P = f.mul(HUNDRED); return (P.isTerm() ? decStr(P) : mixedH(P)) + "%"; }
+  function pctMixedH(f) { return mixedH(f.mul(HUNDRED)) + "%"; }
+  function decH(f) { return decStr(f); }
+  var OPH = { "+": "+", "−": "−", "×": "×", "÷": "÷" };
+
+  function fmtDec(v) { return v.isTerm() && v.decPlaces() <= 6 ? decStr(v) : null; }
+  function fmtPct(v) {
+    var P = v.mul(HUNDRED);
+    if (P.isTerm()) return P.decPlaces() <= 4 ? decStr(P) + "%" : null;
+    return P.d <= 1000 ? mixedH(P) + "%" : null;
+  }
+
+  // ---------- options ----------
+  function opt(vOrFn, fmtFn, why) {
+    try {
+      var v = typeof vOrFn === "function" ? vOrFn() : vOrFn;
+      if (!v) return null;
+      var h = fmtFn(v);
+      if (h == null) return null;
+      return { v: v, html: h, why: why || "" };
+    } catch (e) { return null; }
+  }
+  function buildOptions(correct, cands, fallback) {
+    var opts = [correct];
+    function ok(c) {
+      if (!c || !c.v || c.html == null) return false;
+      if (c.v.n <= 0) return false;
+      for (var i = 0; i < opts.length; i++) if (opts[i].v.eq(c.v) || opts[i].html === c.html) return false;
+      return true;
+    }
+    var i;
+    for (i = 0; i < cands.length && opts.length < 4; i++) if (ok(cands[i])) opts.push(cands[i]);
+    for (i = 0; i < fallback.length && opts.length < 4; i++) if (ok(fallback[i])) opts.push(fallback[i]);
+    if (opts.length < 4) throw new Error("not enough options");
+    correct.correct = true;
+    return shuffle(opts);
+  }
+  function deltaFallback(ans, deltas, fmtFn) {
+    var out = [];
+    deltas.forEach(function (d) {
+      out.push(opt(function () { return ans.add(d); }, fmtFn, ""));
+      out.push(opt(function () { return ans.sub(d); }, fmtFn, ""));
+    });
+    return shuffle(out);
+  }
+  function coprimeNum(d) { var n; do { n = rnd(1, d - 1); } while (gcd(n, d) !== 1); return n; }
+  function properFrac(dens) { var d = pick(dens); return F(coprimeNum(d), d); }
+  function step(note, html, detail) { return { note: note || "", html: html, detail: detail || "" }; }
+
+  var TOPICS = {
+    p2f: { name: "百分數 → 最簡分數", icon: "🍕" },
+    f2p: { name: "分數 → 百分數", icon: "💯" },
+    p2d: { name: "百分數 → 小數", icon: "🔽" },
+    d2p: { name: "小數 → 百分數", icon: "🔼" },
+    eq: { name: "邊個數值相等？", icon: "⭐" },
+    fig: { name: "著色圖形", icon: "🥧" },
+    calc: { name: "四則混合計算", icon: "🧮" }
+  };
+
+  // ======================================================
+  // 1. % -> simplest fraction (keypad)
+  // ======================================================
+  function genP2F() {
+    for (var tries = 0; tries < 100; tries++) {
+      var kind = pick(["int", "int", "big", "dec1", "dec1", "dec2", "frac", "frac"]);
+      var P, disp, steps = [];
+      if (kind === "int") P = F(nonMult(1, 99, 100));
+      else if (kind === "big") P = F(pick([110, 120, 125, 140, 150, 175, 180, 225, 245, 250, 290, 320, 350, 375, 412]));
+      else if (kind === "dec1") P = F(chance(0.5) ? pick([125, 375, 625, 875, 25, 75, 54, 45, 15, 35, 175, 225, 62, 48, 12, 5]) : nonMult(1, 999, 10), 10);
+      else if (kind === "dec2") P = F(pick([8, 25, 4, 5, 12, 16, 75, 125, 2, 45, 36, 64]), 100);
+      else { var c = pick([3, 3, 6, 7, 9, 3]); var b = coprimeNum(c); var w = chance(0.75) ? rnd(1, 66) : 0; P = F(w * c + b, c); }
+      var ans = P.div(HUNDRED);
+      if (ans.isInt()) continue;
+      disp = (kind === "frac" ? mixedH(P) : decStr(P)) + "%";
+      var simp = '<b>' + improperH(ans) + '</b>' + (ans.n > ans.d ? ' = <b>' + mixedH(ans) + '</b>' : "");
+      if (kind === "int" || kind === "big") {
+        var g = gcd(P.n, 100);
+        steps.push(step("百分數 = 以 100 為分母嘅分數", disp + " = " + fracH(P.n, 100)));
+        steps.push(step(g > 1 ? "約簡：分子分母同時除以 " + g : "已經係最簡", "= " + simp));
+      } else if (kind === "dec1" || kind === "dec2") {
+        var m = kind === "dec1" ? 10 : 100, top = P.mul(F(m)).n, bot = 100 * m;
+        steps.push(step("先寫成分母 100 嘅分數", disp + " = " + fracH(decStr(P), 100)));
+        steps.push(step("分子有小數：分子分母同時乘以 " + m, "= " + fracH(top, bot)));
+        steps.push(step("約簡：分子分母同時除以 " + gcd(top, bot), "= " + simp));
+      } else {
+        steps.push(step(P.n > P.d ? "帶分數先化成假分數" : "", disp + " = " + improperH(P) + "%"));
+        steps.push(step("% 即係 × " + fracH(1, 100), "= " + improperH(P) + " × " + fracH(1, 100) + " = " + fracH(P.n, P.d * 100)));
+        steps.push(step("約簡成最簡分數", "= " + simp));
+      }
+      return {
+        topic: "p2f", kind: "key", requireSimplest: true,
+        prompt: "把百分數化成<b>最簡分數</b>：", expr: disp + " = ？",
+        answer: ans, answerH: mixedH(ans), steps: steps, errors: [
+          { v: P, why: "記得要除以 100（% 即係 " + fracH(1, 100) + "）！" },
+          { v: P.div(F(10)), why: "小數點位置錯咗，% 係除以 100 呀！" }
+        ], meta: { P: P }
+      };
+    }
+    throw new Error("genP2F failed");
+  }
+
+  // ======================================================
+  // 2. fraction -> % (MCQ)
+  // ======================================================
+  function genF2P() {
+    var kind = pick(["term", "term", "non", "non", "mixed", "mixed", "unsimp"]);
+    var n, d, w = 0;
+    if (kind === "term") { d = pick([2, 4, 5, 8, 10, 20, 25, 40, 50]); n = coprimeNum(d); if (chance(0.15)) n += d; }
+    else if (kind === "non") { d = pick([3, 6, 9, 12, 15, 30, 150, 7]); n = coprimeNum(d); }
+    else if (kind === "mixed") { w = rnd(1, 4); d = pick([2, 4, 5, 8, 3, 6, 9, 12]); n = coprimeNum(d); }
+    else { var b = pick([4, 5, 10, 20, 25, 50]); var a = coprimeNum(b); var k = pick([2, 4, 5, 8, 10]); n = a * k; d = b * k; }
+    var N = w * d + n;
+    var f = F(N, d);
+    var rawH = w ? '<span class="num"><span class="mw">' + w + '</span>' + fracH(n, d) + '</span>' : fracH(n, d);
+    var correct = opt(f, fmtPct);
+    var fp = F(n, d);
+    var P = f.mul(HUNDRED);
+    var cands = shuffle([
+      opt(function () { return f.div(HUNDRED); }, fmtPct, "分數化百分數要 × 100%，唔係直接加 % 喎！"),
+      opt(function () { return f.div(F(10)); }, fmtPct, "應該 × 100，你好似只係 × 10。"),
+      opt(function () { return F(d, N); }, fmtPct, "分子同分母倒轉咗！")
+    ]);
+    if (w) {
+      cands.unshift(opt(fp, fmtPct, "帶分數嘅整數部分唔見咗！要先化成假分數。"));
+      cands.unshift(opt(function () { return F(w, 100).add(fp); }, fmtPct, "整數部分都要 × 100！先化成假分數再計。"));
+    }
+    if (!P.isTerm()) {
+      cands.unshift(opt(function () { return F(Math.floor(P.n * 10 / P.d), 1000); }, fmtPct, "除唔盡，要用分數表示餘數，唔好截斷小數。"));
+      cands.push(opt(function () { var wq = Math.floor(P.n / P.d), r = P.n - wq * P.d; return F(wq * P.d + (P.d - r), P.d).div(HUNDRED); }, fmtPct, "餘數寫錯咗，檢查吓除法。"));
+    }
+    var fb = deltaFallback(f, [F(1, 100), F(5, 100), F(10, 100), F(2, 100), F(1, 10)], fmtPct);
+    var options = buildOptions(correct, cands, fb);
+    var steps = [];
+    if (w) steps.push(step("帶分數先化成假分數", rawH + " = " + fracH(N, d)));
+    steps.push(step("分數化百分數：乘以 100%", (w ? fracH(N, d) : rawH) + " = " + fracH(N, d) + " × 100% = " + fracH(N * 100, d) + "%"));
+    steps.push(step(P.isTerm() ? "計出結果" : "除唔盡，用帶分數表示", "= <b>" + correct.html + "</b>"));
+    return {
+      topic: "f2p", kind: "mcq", prompt: "把分數化成<b>百分數</b>：", expr: rawH + " = ？",
+      answer: f, options: options, answerH: correct.html, steps: steps
+    };
+  }
+
+  // ======================================================
+  // 3. % -> decimal (MCQ)
+  // ======================================================
+  function genP2D() {
+    var kind = pick(["int", "big", "dec", "dec", "mixed", "mixed"]);
+    var P, w = 0, b = 0, c = 1;
+    if (kind === "int") P = F(rnd(1, 99));
+    else if (kind === "big") P = F(chance(0.5) ? pick([120, 305, 500, 750, 902, 108]) : rnd(101, 999));
+    else if (kind === "dec") P = chance(0.5) ? F(nonMult(1, 999, 10), 10) : F(nonMult(1, 99, 10), 100);
+    else { w = pick([0, rnd(1, 9), rnd(1, 9), rnd(100, 150)]); c = pick([2, 4, 5, 8, 10, 10, 20, 25]); b = coprimeNum(c); P = F(w * c + b, c); }
+    var disp = (kind === "mixed" ? mixedH(P) : decStr(P)) + "%";
+    var ans = P.div(HUNDRED);
+    var correct = opt(ans, fmtDec);
+    var cands = shuffle([
+      opt(function () { return P.div(F(1000)); }, fmtDec, "小數點要向左移兩個位，唔係三個位！"),
+      opt(function () { return P; }, fmtDec, "刪去「%」之後，要把小數點向左移兩個位！"),
+      opt(function () { return P.div(F(10)); }, fmtDec, "小數點只係移咗一個位，要移兩個位！"),
+      opt(function () { return P.mul(HUNDRED); }, fmtDec, "小數點移錯方向！百分數化小數係向左移。")
+    ]);
+    if (kind === "mixed" && w > 0) cands.unshift(opt(function () { return F(w).add(F(b, 100)).div(HUNDRED); }, fmtDec, "分數部分要先化成小數：" + fracH(b, c) + " = " + decStr(F(b, c)) + "。"));
+    var fb = deltaFallback(ans, [F(1, 100), F(1, 10), F(1, 1000), F(1)], fmtDec);
+    var options = buildOptions(correct, cands, fb);
+    var steps = [];
+    if (kind === "mixed") steps.push(step("先把分數部分化成小數", disp + " = " + decStr(P) + "%"));
+    steps.push(step("刪去「%」，小數點向左移兩個位", (kind === "mixed" ? decStr(P) + "%" : disp) + " = <b>" + correct.html + "</b>"));
+    return { topic: "p2d", kind: "mcq", prompt: "把百分數化成<b>小數</b>：", expr: disp + " = ？", answer: ans, options: options, answerH: correct.html, steps: steps };
+  }
+
+  // ======================================================
+  // 4. decimal -> % (MCQ)
+  // ======================================================
+  function genD2P() {
+    var v = pick([
+      function () { return F(rnd(1, 9), 10); },
+      function () { return F(nonMult(1, 99, 10), 100); },
+      function () { return F(nonMult(100, 999, 10), 100); },
+      function () { return F(nonMult(1, 9999, 10), 10000); },
+      function () { return F(nonMult(100, 999, 10), 10); },
+      function () { return F(nonMult(100, 999, 10), 1000); }
+    ])();
+    var correct = opt(v, fmtPct);
+    var cands = shuffle([
+      opt(function () { return v.div(F(10)); }, fmtPct, "小數點要向右移<b>兩個</b>位，唔係一個位！"),
+      opt(function () { return v.mul(F(10)); }, fmtPct, "移多咗一個位，只需要向右移兩個位。"),
+      opt(function () { return v.div(HUNDRED); }, fmtPct, "唔可以直接加「%」，要先把小數點向右移兩個位！"),
+      opt(function () { return v.mul(HUNDRED); }, fmtPct, "小數點移多咗！只需要向右移兩個位。")
+    ]);
+    var fb = deltaFallback(v, [F(1, 100), F(1, 10), F(1, 1000)], fmtPct);
+    var options = buildOptions(correct, cands, fb);
+    var steps = [step("小數點向右移兩個位，再加上「%」", decStr(v) + " = <b>" + correct.html + "</b>")];
+    return { topic: "d2p", kind: "mcq", prompt: "把小數化成<b>百分數</b>：", expr: decStr(v) + " = ？", answer: v, options: options, answerH: correct.html, steps: steps };
+  }
+
+  // ======================================================
+  // 5. which value is equal (MCQ)
+  // ======================================================
+  function genEq() {
+    var v;
+    do { v = F(rnd(1, 999), pick([10, 100, 1000])); } while (v.isInt());
+    function allowed(val, form) { if (form === "frac") return !val.isInt() && val.d <= 50; if (form === "dec") return fmtDec(val) != null; return fmtPct(val) != null; }
+    function render(val, form) { if (!allowed(val, form)) return null; return form === "dec" ? decStr(val) : form === "pct" ? fmtPct(val) : mixedH(val); }
+    var xForms = ["dec", "pct", "dec", "pct"]; if (allowed(v, "frac")) xForms.push("frac");
+    var xForm = pick(xForms);
+    var others = ["dec", "pct", "frac"].filter(function (f) { return f !== xForm && allowed(v, f); });
+    var cForm = pick(others);
+    var correct = { v: v, html: render(v, cForm), why: "" };
+    var mults = [[F(10), "小數點移錯咗一個位！"], [F(1, 10), "小數點移錯咗一個位！"], [HUNDRED, "百分數同小數之間，小數點要移兩個位，留意方向！"], [F(1, 100), "百分數同小數之間，小數點要移兩個位，留意方向！"], [F(1000), "小數點移錯咗三個位！"], [F(1, 1000), "小數點移錯咗三個位！"]];
+    var cands = shuffle(mults.map(function (m) {
+      var val = v.mul(m[0]);
+      var forms = shuffle(["dec", "pct", "pct", "dec", "frac"]);
+      for (var i = 0; i < forms.length; i++) { var h = render(val, forms[i]); if (h) return { v: val, html: h, why: m[1] }; }
+      return null;
+    }));
+    var fb = [F(2), F(1, 2), F(5)].map(function (m) { var val = v.mul(m); return { v: val, html: render(val, "dec") || render(val, "pct"), why: "" }; });
+    var options = buildOptions(correct, cands, fb);
+    var X = render(v, xForm);
+    var chain = [decStr(v), fmtPct(v)];
+    if (allowed(v, "frac")) chain.push(mixedH(v));
+    var steps = [
+      step("百分數 ↔ 小數：小數點移兩個位（化百分數向右移，化小數向左移）", chain.join(" = ")),
+      step("所以同 " + X + " 相等嘅係", "<b>" + correct.html + "</b>")
+    ];
+    return { topic: "eq", kind: "mcq", prompt: "下面邊一個數值同佢<b>相等</b>？", expr: X, answer: v, options: options, answerH: correct.html, steps: steps };
+  }
+
+  // ======================================================
+  // 6. shaded figures
+  // ======================================================
+  function P2(x, y) { return x.toFixed(2) + "," + y.toFixed(2); }
+  function figPie() {
+    var n = pick([3, 4, 5, 6, 8]), splits = [], i;
+    for (i = 0; i < n; i++) splits.push(chance(0.45));
+    if (!splits.some(Boolean)) splits[rnd(0, n - 1)] = true;
+    if (splits.every(Boolean) && chance(0.7)) splits[rnd(0, n - 1)] = false;
+    var pieces = [], step0 = 2 * Math.PI / n;
+    for (i = 0; i < n; i++) {
+      var a0 = -Math.PI / 2 + i * step0;
+      if (splits[i]) { pieces.push({ a0: a0, a1: a0 + step0 / 2, u: 1 }); pieces.push({ a0: a0 + step0 / 2, a1: a0 + step0, u: 1 }); }
+      else pieces.push({ a0: a0, a1: a0 + step0, u: 2 });
+    }
+    var cx = 110, cy = 110, r = 100;
+    var svg = '<svg viewBox="0 0 220 220" class="fig">';
+    pieces.forEach(function (p) {
+      p.area = (p.a1 - p.a0) / (2 * Math.PI);
+      p.path = "M" + P2(cx, cy) + " L" + P2(cx + r * Math.cos(p.a0), cy + r * Math.sin(p.a0)) + " A" + r + "," + r + " 0 " + ((p.a1 - p.a0) > Math.PI ? 1 : 0) + " 1 " + P2(cx + r * Math.cos(p.a1), cy + r * Math.sin(p.a1)) + " Z";
+    });
+    return { pieces: pieces, T: 2 * n, n: n, kind: "pie", hasSplit: splits.some(Boolean), unitName: "細扇形", bigName: "大扇形", draw: function () {
+      pieces.forEach(function (p) { svg += '<path d="' + p.path + '" class="' + (p.sh ? "sh" : "un") + '"/>'; });
+      return svg + "</svg>";
+    } };
+  }
+  function figGrid() {
+    var rows = rnd(1, 3), cols = rnd(2, 4); if (rows * cols < 4) cols = 4;
+    var s = 60, pieces = [], anySplit = false, total = rows * cols;
+    for (var y = 0; y < rows; y++) for (var x = 0; x < cols; x++) {
+      var X0 = 10 + x * s, Y0 = 10 + y * s, X1 = X0 + s, Y1 = Y0 + s;
+      if (chance(0.45)) {
+        anySplit = true;
+        if (chance(0.5)) { pieces.push({ pts: [[X0, Y0], [X1, Y0], [X1, Y1]], u: 1 }); pieces.push({ pts: [[X0, Y0], [X0, Y1], [X1, Y1]], u: 1 }); }
+        else { pieces.push({ pts: [[X0, Y0], [X1, Y0], [X0, Y1]], u: 1 }); pieces.push({ pts: [[X1, Y0], [X1, Y1], [X0, Y1]], u: 1 }); }
+      } else pieces.push({ pts: [[X0, Y0], [X1, Y0], [X1, Y1], [X0, Y1]], u: 2 });
+    }
+    if (!anySplit) { pieces.pop(); var X0b = 10 + (cols - 1) * s, Y0b = 10 + (rows - 1) * s; pieces.push({ pts: [[X0b, Y0b], [X0b + s, Y0b], [X0b + s, Y0b + s]], u: 1 }); pieces.push({ pts: [[X0b, Y0b], [X0b, Y0b + s], [X0b + s, Y0b + s]], u: 1 }); anySplit = true; }
+    pieces.forEach(function (p) {
+      var a = 0; for (var i = 0; i < p.pts.length; i++) { var q1 = p.pts[i], q2 = p.pts[(i + 1) % p.pts.length]; a += q1[0] * q2[1] - q2[0] * q1[1]; }
+      p.area = Math.abs(a) / 2 / (s * s * total);
+    });
+    var W = cols * s + 20, H = rows * s + 20;
+    return { pieces: pieces, T: 2 * total, n: total, kind: "grid", hasSplit: anySplit, unitName: "三角形", bigName: "正方形", draw: function () {
+      var svg = '<svg viewBox="0 0 ' + W + " " + H + '" class="fig">';
+      pieces.forEach(function (p) { svg += '<polygon points="' + p.pts.map(function (q) { return q.join(","); }).join(" ") + '" class="' + (p.sh ? "sh" : "un") + '"/>'; });
+      return svg + "</svg>";
+    } };
+  }
+  function figStrip() {
+    var m = pick([6, 8, 10, 12]), w = 50, h = 70, pieces = [];
+    for (var i = 0; i < m; i++) {
+      var j;
+      if (i % 2 === 0) { j = i / 2; pieces.push({ pts: [[j * w, h], [(j + 1) * w, h], [j * w + w / 2, 0]], u: 1 }); }
+      else { j = (i - 1) / 2; pieces.push({ pts: [[j * w + w / 2, 0], [(j + 1) * w + w / 2, 0], [(j + 1) * w, h]], u: 1 }); }
+    }
+    pieces.forEach(function (p) { p.area = 1 / m; });
+    var W = (m / 2) * w + w / 2;
+    return { pieces: pieces, T: m, n: m, kind: "strip", hasSplit: false, unitName: "三角形", draw: function () {
+      var svg = '<svg viewBox="-5 -5 ' + (W + 10) + " " + (h + 10) + '" class="fig">';
+      pieces.forEach(function (p) { svg += '<polygon points="' + p.pts.map(function (q) { return q.join(","); }).join(" ") + '" class="' + (p.sh ? "sh" : "un") + '"/>'; });
+      return svg + "</svg>";
+    } };
+  }
+  function genFig() {
+    for (var tries = 0; tries < 100; tries++) {
+      var fig = wpick([[3, figPie], [2, figGrid], [1, figStrip]])();
+      var idx = shuffle(fig.pieces.map(function (_, i) { return i; }));
+      var k = rnd(1, fig.pieces.length - 1);
+      for (var i = 0; i < k; i++) fig.pieces[idx[i]].sh = true;
+      var S = 0, cnt = 0;
+      fig.pieces.forEach(function (p) { if (p.sh) { S += p.u; cnt++; } });
+      var ans = F(S, fig.T);
+      var naive = F(cnt, fig.pieces.length);
+      var asPct = chance(0.45);
+      var steps = [];
+      if (fig.kind === "strip") steps.push(step("全圖由 " + fig.T + " 個大小相同嘅三角形組成", "著色部分有 " + S + " 個"));
+      else {
+        steps.push(step("留意：每份大細唔一樣！把每個" + fig.bigName + "看成 2 個" + fig.unitName, "全圖共 " + fig.n + " × 2 = " + fig.T + " 份大小相同嘅部分"));
+        steps.push(step("數一數著色部分", "著色部分有 " + S + " 份" + (fig.hasSplit ? "（一個完整" + fig.bigName + " = 2 份）" : "")));
+      }
+      steps.push(step("寫成分數再約簡", fracH(S, fig.T) + " = <b>" + improperH(ans) + "</b>"));
+      if (asPct) steps.push(step("化成百分數：× 100%", improperH(ans) + " × 100% = <b>" + fmtPct(ans) + "</b>"));
+      var q = {
+        topic: "fig", figure: fig.draw(), _fig: fig, steps: steps, answer: ans,
+        hint: fig.hasSplit ? "🤔 小心：每一份嘅大小一樣嗎？分母應該係幾多？" : "",
+        expr: ""
+      };
+      var naiveWhy = "每份大細唔一樣，唔可以直接數件數！要先分成大小相同嘅部分。";
+      if (asPct) {
+        var correct = opt(ans, fmtPct);
+        var cands = shuffle([
+          opt(naive, fmtPct, naiveWhy),
+          opt(function () { return F(1).sub(ans); }, fmtPct, "你計咗冇著色嘅部分喎！"),
+          opt(function () { return ans.div(F(10)); }, fmtPct, "分數化百分數要 × 100%！")
+        ]);
+        if (fig.hasSplit) cands.unshift(opt(naive, fmtPct, naiveWhy));
+        var fb = deltaFallback(ans, [F(5, 100), F(10, 100), F(1, 8), F(1, 40)], fmtPct);
+        try { q.options = buildOptions(correct, cands, fb); } catch (e) { continue; }
+        q.kind = "mcq"; q.answerH = correct.html;
+        q.prompt = "圖中著色部分佔全圖嘅幾多？（用<b>百分數</b>表示）";
+      } else {
+        q.kind = "key"; q.requireSimplest = true; q.answerH = mixedH(ans);
+        q.prompt = "圖中著色部分佔全圖嘅幾多？（用<b>最簡分數</b>表示）";
+        q.errors = [{ v: naive, why: naiveWhy }, { v: F(1).sub(ans), why: "你計咗冇著色嘅部分喎！" }];
+      }
+      return q;
+    }
+    throw new Error("genFig failed");
+  }
+
+  // ======================================================
+  // 7. mixed calculations
+  // ======================================================
+  function N(v, f) { return { k: "n", v: v, f: f }; }
+  function O(op, a, b, p) { return { k: "o", op: op, a: a, b: b, p: !!p }; }
+  function apply(op, x, y) {
+    if (op === "+") return x.add(y); if (op === "−") return x.sub(y);
+    if (op === "×") return x.mul(y); if (op === "÷") return x.div(y);
+    throw new Error("bad op");
+  }
+  function evalT(t) { return t.k === "n" ? t.v : apply(t.op, evalT(t.a), evalT(t.b)); }
+  function cloneT(t) { return t.k === "n" ? N(t.v, t.f) : O(t.op, cloneT(t.a), cloneT(t.b), t.p); }
+  function leaves(t, arr) { if (t.k === "n") arr.push(t); else { leaves(t.a, arr); leaves(t.b, arr); } return arr; }
+  function tokens(t, keepParen) {
+    if (t.k === "n") return [t.v];
+    var inner = tokens(t.a, keepParen).concat([t.op], tokens(t.b, keepParen));
+    if (t.p && keepParen) return [{ group: inner }];
+    return inner;
+  }
+  function tokVal(x, fn) { return x.group ? fn(x.group) : x; }
+  function ltrEval(tk) { var acc = tokVal(tk[0], ltrEval); for (var i = 1; i < tk.length; i += 2) acc = apply(tk[i], acc, tokVal(tk[i + 1], ltrEval)); return acc; }
+  function precEval(tk) {
+    var vals = [tokVal(tk[0], precEval)], ops = [];
+    for (var i = 1; i < tk.length; i += 2) {
+      var op = tk[i], v = tokVal(tk[i + 1], precEval);
+      if (op === "×" || op === "÷") vals[vals.length - 1] = apply(op, vals[vals.length - 1], v);
+      else { ops.push(op); vals.push(v); }
+    }
+    var acc = vals[0]; for (var j = 0; j < ops.length; j++) acc = apply(ops[j], acc, vals[j + 1]);
+    return acc;
+  }
+  function numH(t) {
+    switch (t.f) {
+      case "dec": return decStr(t.v);
+      case "pct": return pctH(t.v);
+      case "pctf": return pctMixedH(t.v);
+      case "frac": return improperH(t.v);
+      case "mixed": return mixedH(t.v);
+    }
+    throw new Error("bad fmt");
+  }
+  function exprH(t) {
+    if (t.k === "n") return numH(t);
+    var s = exprH(t.a) + ' <span class="op">' + OPH[t.op] + '</span> ' + exprH(t.b);
+    return t.p ? '<span class="par">(</span>' + s + '<span class="par">)</span>' : s;
+  }
+  function exprText(t) { // for testing: JS-evaluable text
+    if (t.k === "n") return "(" + t.v.n + "/" + t.v.d + ")";
+    var m = { "+": "+", "−": "-", "×": "*", "÷": "/" };
+    var s = exprText(t.a) + m[t.op] + exprText(t.b);
+    return t.p ? "(" + s + ")" : s;
+  }
+  function reducibles(t, arr) {
+    if (t.k === "o") { reducibles(t.a, arr); if (t.a.k === "n" && t.b.k === "n") arr.push(t); reducibles(t.b, arr); }
+    return arr;
+  }
+  function chooseTarget(root) {
+    var r = reducibles(root, []);
+    for (var i = 0; i < r.length; i++) if (r[i].op === "×" || r[i].op === "÷") return r[i];
+    return r[0];
+  }
+  function collapse(node, v, f) { node.k = "n"; node.v = v; node.f = f; node.p = false; delete node.a; delete node.b; delete node.op; }
+  function hasAddSub(t) { return t.k === "o" && (t.op === "+" || t.op === "−" || hasAddSub(t.a) || hasAddSub(t.b)); }
+
+  function solveSteps(t0) {
+    var t = cloneT(t0);
+    var dec = leaves(t, []).every(function (x) { return x.v.isTerm(); });
+    if (dec) {
+      var tt = cloneT(t);
+      while (tt.k === "o") { var g0 = chooseTarget(tt); var r0 = apply(g0.op, g0.a.v, g0.b.v); if (!r0.isTerm() || r0.decPlaces() > 6) { dec = false; break; } collapse(g0, r0, "dec"); }
+    }
+    var steps = [step("題目", exprH(t))];
+    var conv = cloneT(t);
+    leaves(conv, []).forEach(function (x) { x.f = dec ? "dec" : "frac"; });
+    var convH = exprH(conv);
+    if (convH !== steps[0].html) steps.push(step(dec ? "先把百分數（同分數）化成小數" : "先把百分數、小數同帶分數化成分數", "= " + convH));
+    t = conv;
+    var f = dec ? "dec" : "frac";
+    while (t.k === "o") {
+      var g = chooseTarget(t), a = g.a.v, b = g.b.v, r = apply(g.op, a, b);
+      if (r.n <= 0) return null;
+      var md = g.op === "×" || g.op === "÷", note, detail = "";
+      if (g.p) note = "先計算括號入面";
+      else if (md && hasAddSub(t)) note = "先乘除，後加減";
+      else note = md ? "計算乘除" : "加減：由左至右計";
+      if (!dec) {
+        if (!md && a.d !== b.d) {
+          var L = lcm(a.d, b.d);
+          note += "（通分，分母變成 " + L + "）";
+          detail = improperH(a) + " " + g.op + " " + improperH(b) + " = " + fracH(a.n * L / a.d, L) + " " + g.op + " " + fracH(b.n * L / b.d, L) + " = " + improperH(r);
+        } else if (g.op === "÷") {
+          note += "（除以一個數 = 乘以佢嘅倒數）";
+          detail = improperH(a) + " ÷ " + improperH(b) + " = " + improperH(a) + " × " + improperH(F(b.d, b.n)) + " = " + improperH(r);
+        } else if (g.op === "×") {
+          detail = improperH(a) + " × " + improperH(b) + " = " + improperH(r) + "（可以先約分）";
+        }
+      }
+      collapse(g, r, f);
+      steps.push(step(note, "= " + exprH(t), detail));
+    }
+    if (!dec && !t.v.isInt() && t.v.n > t.v.d) steps.push(step("化成帶分數", "= " + mixedH(t.v)));
+    return { steps: steps, dec: dec, ans: t.v };
+  }
+
+  function pctF(list) { return F(Math.round(pick(list) * 10), 1000); }
+  function decF(lo, hi, places) {
+    var p = Math.pow(10, places), k;
+    do { k = rnd(Math.ceil(lo * p), Math.floor(hi * p)); } while (places > 0 && k % 10 === 0);
+    return F(k, p);
+  }
+  function mixedF(wlo, whi, dens) { var d = pick(dens); return F(rnd(wlo, whi) * d + coprimeNum(d), d); }
+  var CALC_T = {
+    A: function () { return chance(0.5) ? O("+", N(pctF([5, 10, 25, 30, 50, 75, 120, 150]), "pct"), N(decF(1, 10, 1), "dec")) : O("−", N(decF(2, 10, 1), "dec"), N(pctF([5, 10, 25, 30, 50, 75, 120, 150]), "pct")); },
+    B: function () { return O("×", N(pctF([120, 125, 150, 160, 175, 200, 40, 60, 75, 80, 25]), "pct"), N(properFrac([3, 4, 5, 7, 8, 9, 11]), "frac")); },
+    C: function () { return O("+", O("−", N(properFrac([3, 4, 6, 7, 8, 9]), "frac"), N(pctF([5, 10, 15, 20, 25, 30]), "pct")), N(decF(1, 5, 1), "dec")); },
+    D: function () { return O("−", O("+", N(decF(2, 12, 1), "dec"), N(pctF([5, 6, 11, 12, 15, 25, 35]), "pct")), N(pctF([8, 12, 18, 20, 45]), "pct")); },
+    E: function () { return O("+", O("−", N(decF(0.4, 0.9, 1), "dec"), N(properFrac([3, 6, 7, 9]), "frac")), N(pctF([2, 4, 6, 8, 12, 15]), "pct")); },
+    F: function () { return O("−", N(F(rnd(1, 3)), "dec"), O("×", N(pctF([2, 4, 5, 8, 10, 15, 20, 25]), "pct"), N(properFrac([5, 7, 9, 11, 25, 3]), "frac"))); },
+    G: function () { return O("+", O("−", N(pctF([56, 64, 72, 75, 84, 88, 90, 92, 95]), "pct"), N(properFrac([3, 6, 7, 9, 12]), "frac")), N(decF(0.1, 0.99, 2), "dec")); },
+    H: function () { return O("÷", O("+", N(mixedF(1, 3, [2, 4, 5, 10]), "mixed"), N(pctF([16, 24, 36, 40, 64, 85, 136, 140]), "pct"), true), N(pick([F(2, 100), F(4, 100), F(5, 100), F(8, 100), F(2, 10), F(4, 10), F(5, 10), F(25, 100)]), "dec")); },
+    I: function () {
+      var pc = pick([10, 20, 25, 30, 40, 50, 60, 75, 80]), qv = pick([F(1), F(2), F(3), F(1, 2), F(3, 2), F(1, 4)]);
+      var fr = qv.mul(F(pc, 100));
+      if (fr.isInt() || fr.n >= fr.d || fr.d > 20) return null;
+      return O("−", N(decF(qv.toNumber() + 0.5, 15, 1), "dec"), O("÷", N(fr, "frac"), N(F(pc, 100), "pct")));
+    },
+    J: function () {
+      return chance(0.5)
+        ? O("+", N(decF(0.5, 9, 1), "dec"), O("×", N(properFrac([4, 5, 8, 3, 7]), "frac"), N(pctF([20, 25, 40, 50, 60, 75, 80]), "pct")))
+        : O("−", N(decF(3, 12, 1), "dec"), O("×", N(pctF([20, 25, 40, 50, 75, 120, 150]), "pct"), N(properFrac([3, 4, 5, 6, 8]), "frac")));
+    },
+    K: function () { return O("×", O("−", N(F(rnd(1, 3)), "dec"), N(pctF([15, 25, 35, 45, 60, 75]), "pct"), true), N(properFrac([3, 4, 7, 9, 11]), "frac")); }
+  };
+  var CALC_W = [[1, "A"], [1, "B"], [1, "C"], [1, "D"], [1, "E"], [1.5, "F"], [3, "G"], [2, "H"], [3, "I"], [2, "J"], [1, "K"]];
+  function mapPctAsNum(t) { var c = cloneT(t); leaves(c, []).forEach(function (x) { if (x.f === "pct" || x.f === "pctf") x.v = x.v.mul(HUNDRED); }); return c; }
+  function hasParen(t) { return t.k === "o" && (t.p || hasParen(t.a) || hasParen(t.b)); }
+
+  function calcFromTree(t, tkey) {
+    var ans = evalT(t);
+    if (ans.n <= 0) return null;
+    var sol = solveSteps(t);
+    if (!sol || !sol.ans.eq(ans)) return null;
+    if (sol.dec && ans.decPlaces() > 4) return null;
+    var mcq = sol.dec;
+    if (!mcq && (ans.d > 300 || ans.isInt())) return null;
+    var LTR = WHY_LTR, errs = [];
+    function addErr(fn, why) { try { var v = fn(); if (v && v.n > 0 && !v.eq(ans)) errs.push({ v: v, why: why }); } catch (e) { /* ignore */ } }
+    addErr(function () { return ltrEval(tokens(t, true)); }, LTR);
+    if (hasParen(t)) addErr(function () { return precEval(tokens(t, false)); }, "要先計算括號入面嘅部分！");
+    addErr(function () { return evalT(mapPctAsNum(t)); }, "百分數要先化成分數或小數（÷ 100）先可以計！");
+    var q = { topic: "calc", tkey: tkey, tree: t, prompt: mcq ? "計算：" : "計算（答案用<b>最簡分數</b>或帶分數表示）：", expr: exprH(t), answer: ans, steps: sol.steps, errors: errs };
+    if (mcq) {
+      var correct = opt(ans, fmtDec);
+      var cands = errs.map(function (e) { return opt(e.v, fmtDec, e.why); });
+      cands.push(opt(function () { return ans.mul(F(10)); }, fmtDec, "小數點位置錯咗，檢查吓每一步！"));
+      cands.push(opt(function () { return ans.div(F(10)); }, fmtDec, "小數點位置錯咗，檢查吓每一步！"));
+      var fb = deltaFallback(ans, [F(1, 10), F(1), F(1, 100), F(2, 10)], fmtDec);
+      try { q.options = buildOptions(correct, cands, fb); } catch (e) { return null; }
+      q.kind = "mcq"; q.answerH = correct.html;
+    } else {
+      q.kind = "key"; q.requireSimplest = true; q.answerH = mixedH(ans);
+    }
+    return q;
+  }
+  var WHY_LTR = "你由左至右計咗！記住：<b>先乘除，後加減</b>（有括號先計括號）。";
+  function genCalc(tkey) {
+    for (var tries = 0; tries < 300; tries++) {
+      var key = tkey || wpick(CALC_W);
+      var t = CALC_T[key]();
+      if (!t) continue;
+      var q;
+      try { q = calcFromTree(t, key); } catch (e) { q = null; }
+      if (q) return q;
+    }
+    throw new Error("genCalc failed " + tkey);
+  }
+
+  // ======================================================
+  // generators & checking
+  // ======================================================
+  var GENS = { p2f: genP2F, f2p: genF2P, p2d: genP2D, d2p: genD2P, eq: genEq, fig: genFig, calc: genCalc };
+  function generate(topic, tkey) {
+    var q = topic === "calc" ? genCalc(tkey) : GENS[topic]();
+    var tk = q.tkey;
+    q.regen = function () { return generate(topic, tk); };
+    return q;
+  }
+  var GROUPS = {
+    mix: { name: "全部混合", icon: "🎲", topics: [[2, "p2f"], [2, "f2p"], [1.2, "p2d"], [1, "d2p"], [1, "eq"], [1.8, "fig"], [4, "calc"]] },
+    p2f: { name: TOPICS.p2f.name, icon: TOPICS.p2f.icon, topics: [[1, "p2f"]] },
+    f2p: { name: TOPICS.f2p.name, icon: TOPICS.f2p.icon, topics: [[1, "f2p"]] },
+    pd: { name: "百分數 ↔ 小數", icon: "🔁", topics: [[1, "p2d"], [1, "d2p"], [0.6, "eq"]] },
+    fig: { name: TOPICS.fig.name, icon: TOPICS.fig.icon, topics: [[1, "fig"]] },
+    calc: { name: TOPICS.calc.name, icon: TOPICS.calc.icon, topics: [[1, "calc"]] }
+  };
+  function buildRound(groupKey, count) {
+    var g = GROUPS[groupKey], list = [];
+    if (groupKey === "mix") g.topics.forEach(function (t) { list.push(t[1]); });
+    while (list.length < count) list.push(wpick(g.topics));
+    return shuffle(list).map(function (t) { return generate(t); });
+  }
+
+  // keypad answer check: s = {w, n, d} strings
+  function checkFrac(s, q) {
+    var w = s.w === "" ? 0 : parseInt(s.w, 10);
+    var hasN = s.n !== "", hasD = s.d !== "";
+    if (s.w === "" && !hasN && !hasD) return { status: "invalid", msg: "請先輸入答案 ✏️" };
+    if (hasN !== hasD) return { status: "invalid", msg: "分子同分母都要填呀！" };
+    var val, n = 0, d = 1;
+    if (hasN) {
+      n = parseInt(s.n, 10); d = parseInt(s.d, 10);
+      if (d === 0) return { status: "invalid", msg: "分母唔可以係 0 喎！" };
+      val = F(w).add(F(n, d));
+    } else val = F(w);
+    if (!val.eq(q.answer)) {
+      var why = "";
+      (q.errors || []).forEach(function (e) { if (!why && e.v.eq(val)) why = e.why; });
+      return { status: "wrong", why: why, val: val };
+    }
+    if (q.requireSimplest && hasN) {
+      if (n === 0) return { status: "notSimplest", msg: "分子係 0，可以唔寫分數部分喎！" };
+      if (d === 1) return { status: "notSimplest", msg: "分母係 1，可以直接寫成整數！" };
+      if (gcd(n, d) !== 1) return { status: "notSimplest", msg: "數值啱咗！不過仲可以<b>約簡</b>（分子分母都可以除以 " + gcd(n, d) + "），再試吓！" };
+      if (w > 0 && n >= d) return { status: "notSimplest", msg: "數值啱咗！不過帶分數嘅分子要細過分母，再整理吓！" };
+    }
+    return { status: "correct" };
+  }
+
+  return {
+    F: F, Frac: Frac, gcd: gcd, decStr: decStr, fracH: fracH, mixedH: mixedH, improperH: improperH, pctH: pctH,
+    fmtDec: fmtDec, fmtPct: fmtPct, TOPICS: TOPICS, GROUPS: GROUPS, GENS: GENS, CALC_T: CALC_T,
+    generate: generate, buildRound: buildRound, checkFrac: checkFrac, setRandom: setRandom,
+    N: N, O: O, evalT: evalT, ltrEval: ltrEval, precEval: precEval, tokens: tokens, exprH: exprH, exprText: exprText,
+    solveSteps: solveSteps, calcFromTree: calcFromTree, genCalc: genCalc
+  };
+})();
+if (typeof module !== "undefined" && module.exports) module.exports = MathCore;
+</script>
+<script>
+var WP = (function () {
+  "use strict";
+  var M = (typeof MathCore !== "undefined") ? MathCore : require("../math5/core.js");
+  var F = M.F, N = M.N, O = M.O;
+  var rand = Math.random;
+  function setRandom(fn) { rand = fn; }
+  function rnd(a, b) { return a + Math.floor(rand() * (b - a + 1)); }
+  function pick(arr) { return arr[Math.floor(rand() * arr.length)]; }
+  function shuffle(arr) { var a = arr.slice(); for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(rand() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+  function wpick(items) { var tot = 0, i; for (i = 0; i < items.length; i++) tot += items[i][0]; var r = rand() * tot; for (i = 0; i < items.length; i++) { r -= items[i][0]; if (r < 0) return items[i][1]; } return items[items.length - 1][1]; }
+  function rstep(r) { var k = rnd(Math.ceil(r[0] / r[2]), Math.floor(r[1] / r[2])); return k * r[2]; }
+
+  // ---------- tree helpers ----------
+  function toF(x) { return x instanceof M.Frac ? x : F(x); }
+  function num(x) { return N(toF(x), "dec"); }
+  function pc(a) { return N(F(a, 100), "pct"); }
+  function one() { return N(F(1), "dec"); }
+  function P(t) { t.p = true; return t; }
+  function clone(t) { if (t.k === "n") return N(t.v, t.f); var c = O(t.op, clone(t.a), clone(t.b), t.p); return c; }
+  var R = {
+    single: function (a) { return pc(a); },
+    remain: function (a) { return P(O("−", one(), pc(a))); },
+    plus: function (a) { return P(O("+", one(), pc(a))); },
+    sum: function (a, b) { return P(O("+", pc(a), pc(b))); },
+    diff: function (a, b) { return P(O("−", pc(a), pc(b))); },
+    remain2: function (a, b) { return P(O("−", O("−", one(), pc(a)), pc(b))); },
+    remain2wrong: function (a, b) { return P(O("+", O("−", one(), pc(a)), pc(b))); }
+  };
+  function val(t) { try { var v = M.evalT(t); return v; } catch (e) { return null; } }
+  function H(t) { return M.exprH(t); }
+  function pctTxt(a) { return a + "%"; }
+
+  // ---------- contexts ----------
+  var CAT = [
+    { whole: function (n) { return "學校合唱團有學生 " + n + " 人"; }, wholeU: "學校合唱團有一些學生", total: "合唱團共有學生多少人？", unit: "人", c: ["小四學生", "小五學生", "小六學生"], r: [20, 120, 1], wl: "合唱團" },
+    { whole: function (n) { return "水果店有水果 " + n + " 個"; }, wholeU: "水果店有一批水果", total: "這批水果共有多少個？", unit: "個", c: ["蘋果", "橙", "梨"], r: [100, 1000, 10], wl: "全部水果" },
+    { whole: function (n) { return "一個箱內共有 " + n + " 個球"; }, wholeU: "一個箱內有一些球", total: "箱內共有多少個球？", unit: "個", c: ["紅球", "藍球", "黑球"], r: [50, 400, 10], wl: "全部球" },
+    { whole: function (n) { return "文具店有顏色筆 " + n + " 枝"; }, wholeU: "文具店有一些顏色筆", total: "店內的顏色筆共有多少枝？", unit: "枝", c: ["紅色筆", "黑色筆", "藍色筆"], r: [100, 600, 10], wl: "全部顏色筆" },
+    { whole: function (n) { return "一箱茶包有 " + n + " 盒"; }, wholeU: "一箱茶包", total: "這箱茶包共有多少盒？", unit: "盒", c: ["烏龍茶包", "茉莉花茶包", "蜜桃果茶包"], r: [20, 200, 5], wl: "全箱茶包" },
+    { whole: function (n) { return "圖書角有圖書 " + n + " 本"; }, wholeU: "圖書角有一些圖書", total: "圖書角共有圖書多少本？", unit: "本", c: ["故事書", "英文圖書", "科學書"], r: [50, 400, 10], wl: "全部圖書" },
+    { whole: function (n) { return "巴士上有乘客 " + n + " 人"; }, wholeU: "巴士上有一些乘客", total: "巴士上共有乘客多少人？", unit: "人", c: ["長者", "小童", "成人"], r: [20, 80, 1], wl: "全車乘客" },
+    { whole: function (n) { return "老師有咭紙 " + n + " 張"; }, wholeU: "老師有一些咭紙", total: "老師共有咭紙多少張？", unit: "張", c: ["白色咭紙", "黃色咭紙", "紅色咭紙"], r: [100, 500, 10], wl: "全部咭紙" },
+    { whole: function (n) { return "到科學館參觀的學生有 " + n + " 人"; }, wholeU: "一批學生到科學館參觀", total: "參觀的學生共有多少人？", unit: "人", c: ["高小學生", "初小學生", "中學生"], r: [50, 300, 10], wl: "全部學生" },
+    { whole: function (n) { return "一盒小禮物有 " + n + " 份"; }, wholeU: "一盒小禮物", total: "這盒小禮物共有多少份？", unit: "份", c: ["鉛筆", "原子筆", "擦膠"], r: [20, 100, 1], wl: "全部禮物" }
+  ];
+  var USE = [
+    { whole: function (n) { return "哥哥有 " + n + " 元"; }, wholeU: "哥哥有一筆錢", total: "哥哥原有多少元？", unit: "元", n0: "買文具", n1: "買零食", verb: "用去", r: [100, 6000, 50], wl: "哥哥的錢" },
+    { whole: function (n) { return "一本故事書有 " + n + " 頁"; }, wholeU: "一本故事書", total: "這本故事書共有多少頁？", unit: "頁", n0: "星期一", n1: "星期二", verb: "讀了", r: [40, 400, 10], wl: "全書" },
+    { whole: function (n) { return "米舖有白米 " + n + " 公斤"; }, wholeU: "米舖有一批白米", total: "這批白米原有多少公斤？", unit: "公斤", n0: "上星期", n1: "本星期", verb: "售出", r: [50, 600, 10], wl: "全部白米" },
+    { whole: function (n) { return "一瓶鮮果汁有 " + n + " 毫升"; }, wholeU: "一瓶鮮果汁", total: "這瓶鮮果汁原有多少毫升？", unit: "毫升", n0: "妹妹", n1: "弟弟", verb: "喝了", r: [500, 2500, 50], wl: "全瓶果汁" },
+    { whole: function (n) { return "一盒餅乾有 " + n + " 塊"; }, wholeU: "一盒餅乾", total: "這盒餅乾原有多少塊？", unit: "塊", n0: "哥哥", n1: "小文", verb: "吃了", r: [20, 120, 1], wl: "全盒餅乾" },
+    { whole: function (n) { return "一盒朱古力有 " + n + " 粒"; }, wholeU: "一盒朱古力", total: "這盒朱古力原有多少粒？", unit: "粒", n0: "姐姐", n1: "弟弟", verb: "吃了", r: [20, 100, 1], wl: "全盒朱古力" },
+    { whole: function (n) { return "一箱滑鼠有 " + n + " 個"; }, wholeU: "一箱滑鼠", total: "這箱滑鼠原有多少個？", unit: "個", n0: "星期六", n1: "星期日", verb: "賣出", r: [50, 300, 10], wl: "全箱滑鼠" }
+  ];
+  var CMP = [
+    { A: "今天", B: "昨天", qty: function (x, n) { return "時裝店" + x + "售出上衣 " + n + " 件"; }, more: "多售出", less: "少售出", ask: function (x) { return x + "售出上衣多少件？"; }, unit: "件", r: [40, 300, 1] },
+    { A: "本月", B: "上月", qty: function (x, n) { return x + "的電費是 " + n + " 元"; }, more: "多了", less: "少了", ask: function (x) { return x + "的電費是多少元？"; }, unit: "元", r: [500, 3000, 50] },
+    { A: "子軒", B: "子文", qty: function (x, n) { return x + "的體重是 " + n + " 公斤"; }, more: "重", less: "輕", ask: function (x) { return x + "的體重是多少公斤？"; }, unit: "公斤", r: [30, 60, 1] },
+    { A: "特惠裝", B: "普通裝", qty: function (x, n) { return x + "橙汁每瓶有 " + n + " 毫升"; }, more: "多", less: "少", ask: function (x) { return x + "橙汁每瓶有多少毫升？"; }, unit: "毫升", r: [500, 2000, 50] },
+    { A: "下月", B: "本月", qty: function (x, n) { return "傢俬廠" + x + "生產衣櫃 " + n + " 個"; }, more: "多生產", less: "少生產", ask: function (x) { return "傢俬廠" + x + "生產衣櫃多少個？"; }, unit: "個", r: [500, 3000, 100] },
+    { A: "第一次", B: "第二次", qty: function (x, n) { return "弟弟 Python 模擬測試" + x + "獲 " + n + " 分"; }, more: "高", less: "低", ask: function (x) { return "弟弟" + x + "得多少分？"; }, unit: "分", r: [30, 100, 1], max: 100 },
+    { A: "私家車", B: "電單車", qty: function (x, n) { return "停車場有" + x + " " + n + " 輛"; }, more: "多", less: "少", ask: function (x) { return "停車場有" + x + "多少輛？"; }, unit: "輛", r: [100, 400, 10] },
+    { A: "上衣", B: "短褲", qty: function (x, n) { return x + "售 " + n + " 元"; }, more: "貴", less: "便宜", ask: function (x) { return x + "售多少元？"; }, unit: "元", r: [100, 500, 10] }
+  ];
+  var C3 = [
+    { text: function (W, a, b) { return "哥哥原有 " + W + " 元，用去 " + a + "% 後，餘下的錢是弟弟的 " + b + "%。問弟弟有多少元？"; }, unit: "元", r: [100, 2000, 50], A: "哥哥", B: "弟弟", used: "用去" },
+    { text: function (W, a, b) { return "姐姐有貼紙 " + W + " 張，送出 " + a + "% 後，餘下的貼紙剛好是妹妹的 " + b + "%。問妹妹有貼紙多少張？"; }, unit: "張", r: [40, 400, 10], A: "姐姐", B: "妹妹", used: "送出" },
+    { text: function (W, a, b) { return "甲倉有白米 " + W + " 公斤，運走 " + a + "% 後，餘下的白米是乙倉的 " + b + "%。問乙倉有白米多少公斤？"; }, unit: "公斤", r: [100, 1000, 10], A: "甲倉", B: "乙倉", used: "運走" }
+  ];
+
+  var P1 = [5, 10, 12, 15, 20, 24, 25, 26, 30, 35, 36, 38, 40, 45, 48, 50, 52, 55, 56, 60, 64, 65, 70, 72, 75, 80, 85, 90, 95];
+  var P2 = [5, 10, 12, 14, 15, 19, 20, 24, 25, 26, 30, 35, 38, 40, 45, 48, 50, 60];
+  var PC = [5, 10, 12, 15, 20, 24, 25, 30, 40, 50, 60, 75, 80];
+  var PCH = [10, 20, 22, 25, 30, 40, 50, 60, 75, 80];
+
+  var TOPICS = {
+    part: { name: "求部分量", icon: "🍰", desc: "單位“1” × 百分率" },
+    unit: { name: "求單位“1”", icon: "🎯", desc: "已知量 ÷ 對應百分率" },
+    cmp: { name: "比…多 / 比…少", icon: "⚖️", desc: "(1 + %) 或 (1 − %)" },
+    chal: { name: "挑戰題", icon: "🏔️", desc: "「餘下的」百分率" }
+  };
+  var WHY = {
+    partOp: "已知單位“1”（全部），求部分量要用 <b>×</b>：單位“1” × 百分率 = 所求量。",
+    unitOp: "全部（單位“1”）未知，要用 <b>÷</b>：已知量 ÷ 對應百分率 = 單位“1”。",
+    cmpKnownOp: "「比」字後面嗰個（B）係單位“1”，B 已知，要用 <b>×</b>。",
+    cmpUnkOp: "「比」字後面嗰個（B）係單位“1”，B 未知，要用 <b>÷</b>！",
+    notRemain: "題目問嘅就係嗰 a% 部分，唔使用 (1 − a%)。",
+    needRemain: "問「其餘 / 餘下」，要用 <b>(1 − a%)</b>！",
+    remainNotPlus: "「餘下」係減去用咗嘅部分：(1 − a%)，唔係加！",
+    sumNotDiff: "「共有 / 兩部分合計」要把百分率相加：(a% + b%)。",
+    singleOnly: "百分率要同已知量對應！兩部分合計對應 (a% + b%)。",
+    diffNotSum: "「比…多多少」要把百分率相減：(a% − b%)。",
+    diffSingle: "所求量對應嘅係兩個百分率之差 (a% − b%)。",
+    rem2Sum: "問嘅係「其餘」嗰部分，要用 (1 − a% − b%)。",
+    rem2One: "兩部分都要減走：(1 − a% − b%)。",
+    rem2Plus: "兩部分都要減走：1 − a% <b>−</b> b%。",
+    moreNotLess: "「比…多 / 重 / 高 / 貴」要用 <b>(1 + p%)</b>。",
+    lessNotMore: "「比…少 / 輕 / 低 / 便宜」要用 <b>(1 − p%)</b>。",
+    onlyP: "p% 只係「相差」嗰部分，A 對應嘅係 (1 ± p%)。"
+  };
+  function fillWhy(s, n) { return s.replace(/a%/g, n.a + "%").replace(/b%/g, n.b + "%").replace(/p%/g, n.p + "%"); }
+
+  // rate variant lists per sub-kind: [rateFn(n), whyKey]; first = correct
+  var RATES = {
+    single: [[function (n) { return R.single(n.a); }], [function (n) { return R.remain(n.a); }, "notRemain"]],
+    remain: [[function (n) { return R.remain(n.a); }], [function (n) { return R.single(n.a); }, "needRemain"], [function (n) { return R.plus(n.a); }, "remainNotPlus"]],
+    sum: [[function (n) { return R.sum(n.a, n.b); }], [function (n) { return R.diff(n.a, n.b); }, "sumNotDiff"], [function (n) { return R.single(n.a); }, "singleOnly"], [function (n) { return R.remain2(n.a, n.b); }, "sumNotDiff"]],
+    diff: [[function (n) { return R.diff(n.a, n.b); }], [function (n) { return R.sum(n.a, n.b); }, "diffNotSum"], [function (n) { return R.single(n.a); }, "diffSingle"], [function (n) { return R.single(n.b); }, "diffSingle"]],
+    remain2: [[function (n) { return R.remain2(n.a, n.b); }], [function (n) { return R.sum(n.a, n.b); }, "rem2Sum"], [function (n) { return R.remain(n.a); }, "rem2One"], [function (n) { return R.remain2wrong(n.a, n.b); }, "rem2Plus"]],
+    more: [[function (n) { return R.plus(n.p); }], [function (n) { return R.remain(n.p); }, "moreNotLess"], [function (n) { return R.single(n.p); }, "onlyP"]],
+    less: [[function (n) { return R.remain(n.p); }], [function (n) { return R.plus(n.p); }, "lessNotMore"], [function (n) { return R.single(n.p); }, "onlyP"]]
+  };
+  function comboDistractors(X, op, sub, n, opWhy) {
+    var rates = RATES[sub], other = op === "×" ? "÷" : "×", g1 = [], g2 = [], g3 = [];
+    for (var i = 0; i < rates.length; i++) {
+      if (i > 0) g1.push({ t: O(op, num(X), rates[i][0](n)), why: fillWhy(WHY[rates[i][1]], n) });
+      g2.push({ t: O(other, num(X), rates[i][0](n)), why: opWhy });
+    }
+    return shuffle(g1).concat(shuffle(g2.slice(0, 1)), shuffle(g2.slice(1)), g3);
+  }
+
+  // ---------- number formatting ----------
+  function ansFmt(v, unit) { return (v.isTerm() && v.decPlaces() <= 2) ? M.decStr(v) + " " + unit : null; }
+  var COUNT = ["人", "個", "枝", "盒", "本", "張", "份", "塊", "粒", "件", "輛", "頁"];
+  function isClean(v, places) { return v.n > 0 && v.isTerm() && v.decPlaces() <= (places || 0); }
+
+  // ---------- build question from correct tree + distractors ----------
+  function finalize(q, distractors) {
+    var correctVal = val(q.tree);
+    if (!correctVal || correctVal.n <= 0) return null;
+    q.answer = correctVal;
+    var fopts = [{ t: q.tree, html: H(q.tree), v: correctVal, correct: true, why: "" }];
+    for (var i = 0; i < distractors.length && fopts.length < 4; i++) {
+      var d = distractors[i], v = val(d.t);
+      if (!v || v.n <= 0) continue;
+      var h = H(d.t), dup = false;
+      for (var j = 0; j < fopts.length; j++) if (fopts[j].html === h || fopts[j].v.eq(v)) dup = true;
+      if (dup) continue;
+      fopts.push({ t: d.t, html: h, v: v, why: d.why });
+    }
+    if (fopts.length < 4) return null;
+    q.formulas = shuffle(fopts);
+    // answer options
+    var aopts = [{ v: correctVal, html: ansFmt(correctVal, q.unit), correct: true, why: "" }];
+    if (!aopts[0].html) return null;
+    var cands = [];
+    fopts.forEach(function (f) { if (!f.correct) cands.push({ v: f.v, why: "呢個係用錯列式（" + f.html + "）得出嘅答案。" }); });
+    cands = shuffle(cands);
+    [F(10), F(1, 10)].forEach(function (m) { cands.push({ v: correctVal.mul(m), why: "計算時小數點／位值錯咗，檢查吓每一步。" }); });
+    var fb = [];
+    [1, 2, 5, 10].forEach(function (d) { fb.push({ v: correctVal.add(F(d)), why: "計算出錯，再檢查吓。" }); fb.push({ v: correctVal.sub(F(d)), why: "計算出錯，再檢查吓。" }); });
+    var all = cands.concat(shuffle(fb));
+    for (var k = 0; k < all.length && aopts.length < 4; k++) {
+      var c = all[k];
+      if (!c.v || c.v.n <= 0) continue;
+      var hh = ansFmt(c.v, q.unit);
+      if (!hh) continue;
+      if (COUNT.indexOf(q.unit) >= 0 && !c.v.isInt()) continue;
+      var dupe = false;
+      for (var m = 0; m < aopts.length; m++) if (aopts[m].v.eq(c.v) || aopts[m].html === hh) dupe = true;
+      if (dupe) continue;
+      aopts.push({ v: c.v, html: hh, why: c.why });
+    }
+    if (aopts.length < 4) return null;
+    q.answers = shuffle(aopts);
+    q.steps = calcSteps(q.tree, q.unit);
+    if (!q.steps) return null;
+    q.formulaH = H(q.tree);
+    q.answerH = aopts.filter(function (o) { return o.correct; })[0].html;
+    return q;
+  }
+
+  // ---------- step-by-step calculation ----------
+  function reducibles(t, arr) { if (t.k === "o") { reducibles(t.a, arr); if (t.a.k === "n" && t.b.k === "n") arr.push(t); reducibles(t.b, arr); } return arr; }
+  function chooseT(root) {
+    var r = reducibles(root, []), i;
+    for (i = 0; i < r.length; i++) if (r[i].p) return r[i];
+    for (i = 0; i < r.length; i++) if (r[i].op === "×" || r[i].op === "÷") return r[i];
+    return r[0];
+  }
+  function leafH(x) { return x.f === "pct" ? M.pctH(x.v) : M.decStr(x.v); }
+  function calcSteps(t0, unit) {
+    var t = clone(t0), steps = [{ note: "列式", html: H(t), detail: "" }];
+    var guard = 0;
+    while (t.k === "o" && guard++ < 20) {
+      var g = chooseT(t), a = g.a, b = g.b, r, note, detail, f;
+      if (g.op === "+" || g.op === "−") {
+        r = g.op === "+" ? a.v.add(b.v) : a.v.sub(b.v);
+        if (r.n <= 0) return null;
+        f = "pct";
+        var ah = a.f === "pct" ? M.pctH(a.v) : (a.v.isInt() && a.v.n === 1 ? "100%" : M.pctH(a.v));
+        note = g.p ? "先計算括號入面" : "計算百分率";
+        detail = leafH(a) + " " + g.op + " " + leafH(b) + (a.f !== "pct" ? " = " + ah + " " + g.op + " " + leafH(b) : "") + " = " + M.pctH(r);
+      } else {
+        r = g.op === "×" ? a.v.mul(b.v) : a.v.div(b.v);
+        if (!r.isTerm() || r.decPlaces() > 3 || r.n <= 0) return null;
+        f = "dec";
+        note = g.op === "×" ? "乘以百分率" : "除以百分率（= 乘以佢嘅倒數）";
+        if (b.f === "pct") {
+          var bp = b.v.mul(F(100));
+          var bpn = M.decStr(bp);
+          detail = leafH(a) + " " + g.op + " " + leafH(b) + " = " + leafH(a) + " × " + (g.op === "×" ? M.fracH(bpn, 100) : M.fracH(100, bpn)) + " = " + M.decStr(r);
+        } else detail = leafH(a) + " " + g.op + " " + leafH(b) + " = " + M.decStr(r);
+        if (t !== g) note = "由左至右：" + note;
+      }
+      g.k = "n"; g.v = r; g.f = f; g.p = false; delete g.a; delete g.b; delete g.op;
+      steps.push({ note: note, html: "= " + (t.k === "n" ? "<b>" + M.decStr(t.v) + " " + unit + "</b>" : H(t)), detail: detail });
+    }
+    return steps;
+  }
+
+  // ---------- segment diagrams (SVG) ----------
+  var COLORS = ["#ffcc80", "#a5d6a7", "#90caf9", "#ce93d8"];
+  function esc(s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;"); }
+  function txt(x, y, s, opt) { opt = opt || {}; return '<text x="' + x.toFixed(1) + '" y="' + y.toFixed(1) + '" font-size="' + (opt.fs || 15) + '" text-anchor="' + (opt.anchor || "middle") + '" fill="' + (opt.fill || "#263238") + '"' + (opt.bold ? ' font-weight="bold"' : "") + ">" + esc(s) + "</text>"; }
+  function brace(x0, x1, y, down) { var m = (x0 + x1) / 2, d = down ? 8 : -8; return '<path d="M' + x0 + "," + y + " q0," + d + " 8," + d + " L" + (m - 8) + "," + (y + d) + " q8,0 8," + d + " q0," + (-d) + " 8," + (-d) + " L" + (x1 - 8) + "," + (y + d) + " q8,0 8," + (-d) + '" fill="none" stroke="#e65100" stroke-width="2"/>'; }
+  function svgWrap(w, h, inner) { return '<svg viewBox="0 0 ' + w + " " + h + '" class="seg" xmlns="http://www.w3.org/2000/svg">' + inner + "</svg>"; }
+  // one bar: segs [{w, label, fill, hl}] ; hlLabel below brace over highlighted range
+  function barDiagram(leftTop, leftBot, segs, hlLabel, extraTop) {
+    var X0 = 130, X1 = 620, Y = 66, Hh = 30, W = X1 - X0, s = "", x = X0;
+    s += txt(8, Y + 12, leftTop, { anchor: "start", bold: true });
+    s += txt(8, Y + 30, leftBot, { anchor: "start", fs: 13, fill: "#6a1b9a" });
+    s += brace(X0, X1, Y - 6, false) + txt((X0 + X1) / 2, Y - 20, extraTop || "單位“1”（100%）", { fs: 13, fill: "#e65100", bold: true });
+    var hl0 = null, hl1 = null;
+    segs.forEach(function (sg, i) {
+      var w = sg.w * W;
+      s += '<rect x="' + x.toFixed(1) + '" y="' + Y + '" width="' + w.toFixed(1) + '" height="' + Hh + '" fill="' + (sg.fill || "#eceff1") + '" stroke="#37474f" stroke-width="2"/>';
+      if (sg.label) s += txt(x + w / 2, Y + 20, sg.label, { fs: w < 70 ? 12 : 15 });
+      if (sg.hl) { if (hl0 === null) hl0 = x; hl1 = x + w; }
+      x += w;
+    });
+    if (hl0 !== null) { s += brace(hl0, hl1, Y + Hh + 4, true) + txt((hl0 + hl1) / 2, Y + Hh + 30, hlLabel, { fs: 14, fill: "#c62828", bold: true }); }
+    return svgWrap(640, 140, s);
+  }
+  function cmpDiagram(n, ctx, more, baseKnown, value) {
+    var X0 = 120, maxW = 420, total = more ? 1 + n.p / 100 : 1, unitW = maxW / total, s = "";
+    var y1 = 30, y2 = 92, Hh = 28;
+    var bw = unitW, ow = unitW * (more ? 1 + n.p / 100 : 1 - n.p / 100);
+    s += txt(8, y1 + 19, ctx.B, { anchor: "start", bold: true });
+    s += '<rect x="' + X0 + '" y="' + y1 + '" width="' + bw.toFixed(1) + '" height="' + Hh + '" fill="#90caf9" stroke="#37474f" stroke-width="2"/>' + txt(X0 + bw / 2, y1 + 19, "100%（單位“1”）", { fs: 13 });
+    s += txt(X0 + bw + 8, y1 + 19, baseKnown ? value.B + " " + ctx.unit : "? " + ctx.unit, { anchor: "start", bold: true, fill: baseKnown ? "#1b5e20" : "#c62828" });
+    s += txt(8, y2 + 19, ctx.A, { anchor: "start", bold: true });
+    s += '<rect x="' + X0 + '" y="' + y2 + '" width="' + ow.toFixed(1) + '" height="' + Hh + '" fill="#ffcc80" stroke="#37474f" stroke-width="2"/>';
+    s += txt(X0 + Math.min(bw, ow) / 2, y2 + 19, (more ? "1 + " : "1 − ") + n.p + "%", { fs: 13 });
+    if (more) s += '<rect x="' + (X0 + bw).toFixed(1) + '" y="' + y2 + '" width="' + (ow - bw).toFixed(1) + '" height="' + Hh + '" fill="#ff8a65" stroke="#37474f" stroke-width="2"/>' + txt(X0 + bw + (ow - bw) / 2, y2 - 6, "多 " + n.p + "%", { fs: 12, fill: "#d84315", bold: true });
+    else s += '<rect x="' + (X0 + ow).toFixed(1) + '" y="' + y2 + '" width="' + (bw - ow).toFixed(1) + '" height="' + Hh + '" fill="none" stroke="#d84315" stroke-dasharray="5,4" stroke-width="2"/>' + txt(X0 + ow + (bw - ow) / 2, y2 - 6, "少 " + n.p + "%", { fs: 12, fill: "#d84315", bold: true });
+    s += txt(X0 + Math.max(ow, bw) + 8, y2 + 19, baseKnown ? "? " + ctx.unit : value.A + " " + ctx.unit, { anchor: "start", bold: true, fill: baseKnown ? "#c62828" : "#1b5e20" });
+    s += '<line x1="' + (X0 + bw) + '" y1="' + (y1 + Hh) + '" x2="' + (X0 + bw) + '" y2="' + (y2 + Hh) + '" stroke="#78909c" stroke-dasharray="3,3"/>';
+    return svgWrap(640, 135, s);
+  }
+  function chainDiagram(n, labels) { // labels: {row1, row2, used1, used2, restLabel, wholeLabel}
+    var X0 = 130, W = 480, s = "", y1 = 40, y2 = 110, Hh = 28, a = n.a / 100, b = n.b / 100;
+    s += txt(8, y1 + 19, labels.row1, { anchor: "start", bold: true });
+    s += brace(X0, X0 + W, y1 - 6, false) + txt(X0 + W / 2, y1 - 20, labels.wholeLabel, { fs: 13, fill: "#e65100", bold: true });
+    s += '<rect x="' + X0 + '" y="' + y1 + '" width="' + (W * a).toFixed(1) + '" height="' + Hh + '" fill="#ffcc80" stroke="#37474f" stroke-width="2"/>' + txt(X0 + W * a / 2, y1 + 19, labels.used1 + " " + n.a + "%", { fs: 12 });
+    s += '<rect x="' + (X0 + W * a).toFixed(1) + '" y="' + y1 + '" width="' + (W * (1 - a)).toFixed(1) + '" height="' + Hh + '" fill="#a5d6a7" stroke="#37474f" stroke-width="2"/>' + txt(X0 + W * a + W * (1 - a) / 2, y1 + 19, "餘下 (1 − " + n.a + "%)", { fs: 12 });
+    var rx = X0 + W * a, rw = W * (1 - a);
+    s += '<line x1="' + rx + '" y1="' + (y1 + Hh) + '" x2="' + rx + '" y2="' + y2 + '" stroke="#78909c" stroke-dasharray="3,3"/><line x1="' + (X0 + W) + '" y1="' + (y1 + Hh) + '" x2="' + (X0 + W) + '" y2="' + y2 + '" stroke="#78909c" stroke-dasharray="3,3"/>';
+    s += txt(8, y2 + 19, labels.row2, { anchor: "start", bold: true });
+    s += '<rect x="' + rx.toFixed(1) + '" y="' + y2 + '" width="' + (rw * b).toFixed(1) + '" height="' + Hh + '" fill="#ffe082" stroke="#37474f" stroke-width="2"/>' + txt(rx + rw * b / 2, y2 + 19, labels.used2 + " " + n.b + "%", { fs: 11 });
+    s += '<rect x="' + (rx + rw * b).toFixed(1) + '" y="' + y2 + '" width="' + (rw * (1 - b)).toFixed(1) + '" height="' + Hh + '" fill="#80cbc4" stroke="#37474f" stroke-width="2"/>' + txt(rx + rw * b + rw * (1 - b) / 2, y2 + 19, "(1 − " + n.b + "%)", { fs: 11 });
+    s += brace(rx + rw * b, X0 + W, y2 + Hh + 4, true) + txt(rx + rw * b + rw * (1 - b) / 2, y2 + Hh + 30, labels.restLabel, { fs: 14, fill: "#c62828", bold: true });
+    s += txt(rx + rw / 2, y2 - 8, "餘下的看成新的單位“1”", { fs: 12, fill: "#6a1b9a" });
+    return svgWrap(640, 185, s);
+  }
+  function c3Diagram(n, ctx, W) {
+    var a = n.a / 100, b = n.b / 100, rest = 1 - a, bro = rest / b, maxL = Math.max(1, bro), U = 470 / maxL, X0 = 120, s = "", y1 = 40, y2 = 110, Hh = 28;
+    s += txt(8, y1 + 19, ctx.A, { anchor: "start", bold: true });
+    s += '<rect x="' + X0 + '" y="' + y1 + '" width="' + (U * a).toFixed(1) + '" height="' + Hh + '" fill="#ffcc80" stroke="#37474f" stroke-width="2"/>' + txt(X0 + U * a / 2, y1 + 19, ctx.used + " " + n.a + "%", { fs: 12 });
+    s += '<rect x="' + (X0 + U * a).toFixed(1) + '" y="' + y1 + '" width="' + (U * rest).toFixed(1) + '" height="' + Hh + '" fill="#a5d6a7" stroke="#37474f" stroke-width="2"/>' + txt(X0 + U * a + U * rest / 2, y1 + 19, "餘下", { fs: 12 });
+    s += brace(X0, X0 + U, y1 - 6, false) + txt(X0 + U / 2, y1 - 20, ctx.A + "：" + W + " " + ctx.unit, { fs: 13, fill: "#e65100", bold: true });
+    s += txt(8, y2 + 19, ctx.B, { anchor: "start", bold: true });
+    s += '<rect x="' + X0 + '" y="' + y2 + '" width="' + (U * bro).toFixed(1) + '" height="' + Hh + '" fill="#90caf9" stroke="#37474f" stroke-width="2"/>';
+    s += '<rect x="' + X0 + '" y="' + y2 + '" width="' + (U * rest).toFixed(1) + '" height="' + Hh + '" fill="#a5d6a7" stroke="#37474f" stroke-width="2"/>' + txt(X0 + U * rest / 2, y2 + 19, n.b + "%", { fs: 12 });
+    s += '<line x1="' + (X0 + U * a) + '" y1="' + (y1 + Hh) + '" x2="' + X0 + '" y2="' + y2 + '" stroke="#78909c" stroke-dasharray="3,3"/><line x1="' + (X0 + U) + '" y1="' + (y1 + Hh) + '" x2="' + (X0 + U * rest) + '" y2="' + y2 + '" stroke="#78909c" stroke-dasharray="3,3"/>';
+    s += brace(X0, X0 + U * bro, y2 + Hh + 4, true) + txt(X0 + U * bro / 2, y2 + Hh + 30, ctx.B + "（單位“1”）? " + ctx.unit, { fs: 14, fill: "#c62828", bold: true });
+    return svgWrap(640, 185, s);
+  }
+  function diffDiagram(n, ctx, c0, c1, knownTotal, X, solveUnit) {
+    var X0 = 130, W = 480, s = "", a = n.a / 100, b = n.b / 100, Hh = 26, y0 = 14, y1 = 98, y2 = 140;
+    s += txt(8, y0 + 18, ctx.wl || "全部", { anchor: "start", bold: true, fs: 15 });
+    s += '<rect x="' + X0 + '" y="' + y0 + '" width="' + W + '" height="' + Hh + '" fill="#eceff1" stroke="#37474f" stroke-width="2"/>' + txt(X0 + W / 2, y0 + 18, "單位“1”（100%）：" + (knownTotal ? X : "?") + " " + ctx.unit, { fs: 15, fill: "#e65100", bold: true });
+    s += txt(8, y1 + 18, c0, { anchor: "start", bold: true, fs: 15 });
+    s += '<rect x="' + X0 + '" y="' + y1 + '" width="' + (W * b).toFixed(1) + '" height="' + Hh + '" fill="#ffcc80" stroke="#37474f" stroke-width="2"/>';
+    s += '<rect x="' + (X0 + W * b).toFixed(1) + '" y="' + y1 + '" width="' + (W * (a - b)).toFixed(1) + '" height="' + Hh + '" fill="#ef9a9a" stroke="#37474f" stroke-width="2"/>';
+    s += txt(X0 + W * a + 8, y1 + 18, n.a + "%", { anchor: "start", fs: 15, bold: true });
+    s += txt(8, y2 + 18, c1, { anchor: "start", bold: true, fs: 15 });
+    s += '<rect x="' + X0 + '" y="' + y2 + '" width="' + (W * b).toFixed(1) + '" height="' + Hh + '" fill="#90caf9" stroke="#37474f" stroke-width="2"/>';
+    s += txt(X0 + W * b + 8, y2 + 18, n.b + "%", { anchor: "start", fs: 15, bold: true });
+    s += '<line x1="' + (X0 + W * b) + '" y1="' + (y1) + '" x2="' + (X0 + W * b) + '" y2="' + (y2 + Hh) + '" stroke="#78909c" stroke-dasharray="4,3"/>';
+    s += brace(X0 + W * b, X0 + W * a, y1 - 4, false) + txt(X0 + W * (a + b) / 2, y1 - 16, "相差 " + n.a + "% − " + n.b + "%：" + (solveUnit ? X : "?") + " " + ctx.unit, { fs: 15, fill: "#c62828", bold: true });
+    return svgWrap(640, 176, s);
+  }
+  function partDiagram(sub, n, ctx, fam, knownTotal, X, solveUnit) {
+    var c0 = fam === "cat" ? ctx.c[0] : ctx.n0, c1 = fam === "cat" ? ctx.c[1] : ctx.n1, c2 = fam === "cat" ? ctx.c[2] : "餘下";
+    var a = n.a / 100, b = (n.b || 0) / 100, segs, label;
+    var q = solveUnit ? X + " " + ctx.unit : "? " + ctx.unit;
+    if (sub === "single") { segs = [{ w: a, label: c0 + " " + n.a + "%", fill: COLORS[0], hl: true }, { w: 1 - a, label: "" }]; label = c0 + "：" + q; }
+    else if (sub === "remain") { segs = [{ w: a, label: c0 + " " + n.a + "%", fill: "#eceff1" }, { w: 1 - a, label: (fam === "cat" ? c1 : "餘下") + " (1 − " + n.a + "%)", fill: COLORS[1], hl: true }]; label = (fam === "cat" ? c1 : "餘下") + "：" + q; }
+    else if (sub === "sum") { segs = [{ w: a, label: c0 + " " + n.a + "%", fill: COLORS[0], hl: true }, { w: b, label: c1 + " " + n.b + "%", fill: COLORS[2], hl: true }, { w: 1 - a - b, label: "" }]; label = "合共：" + q; }
+    else if (sub === "diff") return diffDiagram(n, ctx, c0, c1, knownTotal, X, solveUnit);
+    else { segs = [{ w: a, label: c0 + " " + n.a + "%", fill: "#eceff1" }, { w: b, label: c1 + " " + n.b + "%", fill: "#eceff1" }, { w: 1 - a - b, label: c2, fill: COLORS[1], hl: true }]; label = (fam === "cat" ? c2 : "餘下") + "：" + q; }
+    var leftTop = ctx.wl || "全部", leftBot = knownTotal ? X + " " + ctx.unit : "? " + ctx.unit;
+    var d = barDiagram(leftTop, leftBot, segs.filter(function (s) { return s.w > 0; }), label, sub === "diff" ? "單位“1”：" + c0 + " " + n.a + "%＋" + c1 + " " + n.b + "%＋…" : null);
+    return d;
+  }
+
+  // ---------- generators ----------
+  var SUBS = ["single", "remain", "sum", "diff", "remain2"];
+  function pickRates(sub) {
+    var n = {};
+    if (sub === "single" || sub === "remain") n.a = pick(P1);
+    else { do { n.a = pick(P2); n.b = pick(P2); } while (n.a === n.b || n.a + n.b >= 100 || (sub === "diff" && n.a <= n.b)); }
+    return n;
+  }
+  function rateTree(sub, n) { return RATES[sub][0][0](n); }
+  function catText(kind, sub, ctx, n, X) {
+    var c = ctx.c, u = ctx.unit;
+    if (kind === "part") {
+      var w = ctx.whole(X) + "，其中";
+      if (sub === "single") return w + c[0] + "佔 " + n.a + "%。問" + c[0] + "有多少" + u + "？";
+      if (sub === "remain") return w + c[0] + "佔 " + n.a + "%，其餘是" + c[1] + "。問" + c[1] + "有多少" + u + "？";
+      if (sub === "sum") return w + c[0] + "佔 " + n.a + "%，" + c[1] + "佔 " + n.b + "%。問" + c[0] + "和" + c[1] + "共有多少" + u + "？";
+      if (sub === "diff") return w + c[0] + "佔 " + n.a + "%，" + c[1] + "佔 " + n.b + "%。問" + c[0] + "比" + c[1] + "多多少" + u + "？";
+      return w + c[0] + "佔 " + n.a + "%，" + c[1] + "佔 " + n.b + "%，其餘是" + c[2] + "。問" + c[2] + "有多少" + u + "？";
+    }
+    var h = ctx.wholeU + "，其中";
+    if (sub === "single") return h + c[0] + "有 " + X + " " + u + "，佔全部的 " + n.a + "%。問" + ctx.total;
+    if (sub === "remain") return h + c[0] + "佔 " + n.a + "%，其餘的" + c[1] + "有 " + X + " " + u + "。問" + ctx.total;
+    if (sub === "sum") return h + c[0] + "佔 " + n.a + "%，" + c[1] + "佔 " + n.b + "%，" + c[0] + "和" + c[1] + "共有 " + X + " " + u + "。問" + ctx.total;
+    if (sub === "diff") return h + c[0] + "佔 " + n.a + "%，" + c[1] + "佔 " + n.b + "%，" + c[0] + "比" + c[1] + "多 " + X + " " + u + "。問" + ctx.total;
+    return h + c[0] + "佔 " + n.a + "%，" + c[1] + "佔 " + n.b + "%，其餘的" + c[2] + "有 " + X + " " + u + "。問" + ctx.total;
+  }
+  function useText(kind, sub, ctx, n, X) {
+    var u = ctx.unit, v = ctx.verb, a0 = ctx.n0 + v, a1 = ctx.n1 + v;
+    if (kind === "part") {
+      var w = ctx.whole(X) + "，";
+      if (sub === "single") return w + a0 + " " + n.a + "%。問" + a0 + "多少" + u + "？";
+      if (sub === "remain") return w + a0 + " " + n.a + "%。問還餘下多少" + u + "？";
+      if (sub === "sum") return w + a0 + " " + n.a + "%，" + a1 + " " + n.b + "%。問兩次共" + v + "多少" + u + "？";
+      if (sub === "diff") return w + a0 + " " + n.a + "%，" + a1 + " " + n.b + "%。問" + ctx.n0 + "比" + ctx.n1 + "多" + v + "多少" + u + "？";
+      return w + a0 + " " + n.a + "%，" + a1 + " " + n.b + "%。問還餘下多少" + u + "？";
+    }
+    var h = ctx.wholeU + "，";
+    if (sub === "single") return h + a0 + " " + X + " " + u + "，剛好是全部的 " + n.a + "%。問" + ctx.total;
+    if (sub === "remain") return h + a0 + " " + n.a + "% 後，還餘下 " + X + " " + u + "。問" + ctx.total;
+    if (sub === "sum") return h + a0 + " " + n.a + "%，" + a1 + " " + n.b + "%，兩次共" + v + " " + X + " " + u + "。問" + ctx.total;
+    if (sub === "diff") return h + a0 + " " + n.a + "%，" + a1 + " " + n.b + "%，" + ctx.n0 + "比" + ctx.n1 + "多" + v + " " + X + " " + u + "。問" + ctx.total;
+    return h + a0 + " " + n.a + "%，" + a1 + " " + n.b + "%，還餘下 " + X + " " + u + "。問" + ctx.total;
+  }
+
+  function genPartUnit(kind, sub) {
+    for (var tries = 0; tries < 3000; tries++) {
+      sub = sub || pick(SUBS);
+      var fam = (sub === "single" || sub === "remain" || rand() < 0.5) ? (rand() < 0.5 ? "cat" : "use") : (rand() < 0.5 ? "cat" : "use");
+      var ctx = pick(fam === "cat" ? CAT : USE);
+      var n = pickRates(sub);
+      var Wt = rstep(ctx.r);
+      var part = F(Wt).mul(val(rateTree(sub, n)));
+      if (!isClean(part, 0)) continue;
+      var X, tree, opWhy;
+      if (kind === "part") { X = Wt; tree = O("×", num(Wt), rateTree(sub, n)); opWhy = WHY.partOp; }
+      else { X = part.n; tree = O("÷", num(X), rateTree(sub, n)); opWhy = WHY.unitOp; }
+      var text = fam === "cat" ? catText(kind, sub, ctx, n, X) : useText(kind, sub, ctx, n, X);
+      var q = { topic: kind, sub: sub, text: text, tree: tree, unit: ctx.unit, n: n, given: X, expected: kind === "part" ? part : F(Wt) };
+      q.diagram = partDiagram(sub, n, ctx, fam, kind === "part", X, kind === "unit");
+      q.tip = kind === "part" ? "單位“1” × 百分率 = 所求量" : "已知量 ÷ 對應百分率 = 單位“1”";
+      var r = finalize(q, comboDistractors(X, kind === "part" ? "×" : "÷", sub, n, opWhy));
+      if (r) return r;
+    }
+    throw new Error("genPartUnit failed " + kind + " " + sub);
+  }
+  function genCmp(sub) {
+    for (var tries = 0; tries < 3000; tries++) {
+      var s = sub || pick(["knownMore", "knownLess", "unkMore", "unkLess"]);
+      var more = /More/.test(s), known = /known/.test(s);
+      var ctx = pick(CMP), n = { p: pick(PC) };
+      if (!more && n.p >= 100) continue;
+      var B = rstep(ctx.r), A = F(B).mul(val(more ? R.plus(n.p) : R.remain(n.p)));
+      if (!isClean(A, 0)) continue;
+      if (ctx.max && (A.toNumber() > ctx.max || B > ctx.max)) continue;
+      var text, tree, X;
+      var cmpw = ctx.A + "比" + ctx.B + (more ? ctx.more : ctx.less) + " " + n.p + "%";
+      if (known) { X = B; text = ctx.qty(ctx.B, B) + "，" + cmpw + "。問" + ctx.ask(ctx.A); tree = O("×", num(B), (more ? R.plus : R.remain)(n.p)); }
+      else { X = A.n; text = ctx.qty(ctx.A, A.n) + "，比" + ctx.B + (more ? ctx.more : ctx.less) + " " + n.p + "%。問" + ctx.ask(ctx.B); tree = O("÷", num(X), (more ? R.plus : R.remain)(n.p)); }
+      var q = { topic: "cmp", sub: s, text: text, tree: tree, unit: ctx.unit, n: n, given: X, expected: known ? A : F(B) };
+      q.diagram = cmpDiagram(n, ctx, more, known, { A: A.n, B: B });
+      q.tip = "「" + ctx.A + "比" + ctx.B + "…」：" + ctx.B + " 係單位“1”。" + (known ? "已知單位“1”用 ×" : "單位“1”未知用 ÷");
+      var r = finalize(q, comboDistractors(X, known ? "×" : "÷", more ? "more" : "less", n, known ? WHY.cmpKnownOp : WHY.cmpUnkOp));
+      if (r) return r;
+    }
+    throw new Error("genCmp failed");
+  }
+  function genChal(sub) {
+    for (var tries = 0; tries < 5000; tries++) {
+      var s = sub || pick(["c1", "c2", "c3"]);
+      var n = { a: pick(PCH), b: pick(PCH) };
+      var q, tree, d, ctx, X, Wt, ans;
+      if (s === "c1" || s === "c2") {
+        ctx = pick(USE); Wt = rstep(ctx.r);
+        var rest = F(Wt).mul(F(100 - n.a, 100)).mul(F(100 - n.b, 100));
+        if (s === "c1") {
+          var pl = COUNT.indexOf(ctx.unit) >= 0 ? 0 : 1;
+          if (!isClean(rest, pl) || !isClean(F(Wt).mul(F(100 - n.a, 100)), pl)) continue;
+          X = Wt;
+          tree = O("×", O("×", num(Wt), R.remain(n.a)), R.remain(n.b));
+          var text1 = ctx.whole(Wt) + "，" + ctx.n0 + ctx.verb + " " + n.a + "%，" + ctx.n1 + "又" + ctx.verb + "餘下的 " + n.b + "%。問還餘下多少" + ctx.unit + "？";
+          d = [
+            { t: O("×", num(Wt), R.remain2(n.a, n.b)), why: "第二次係「餘下的」" + n.b + "%，單位“1”已經變咗！要分兩步：× (1 − " + n.a + "%) × (1 − " + n.b + "%)。" },
+            { t: O("×", O("×", num(Wt), R.remain(n.a)), pc(n.b)), why: "問「還餘下」，第二步要用 (1 − " + n.b + "%)。" },
+            { t: O("×", O("×", num(Wt), pc(n.a)), pc(n.b)), why: "問「還餘下」，兩步都要用 (1 − %)。" },
+            { t: O("÷", O("÷", num(Wt), R.remain(n.a)), R.remain(n.b)), why: "已知原有（單位“1”），要用 ×，唔係 ÷。" }
+          ];
+          q = { topic: "chal", sub: s, text: text1, tree: tree, unit: ctx.unit, n: n, given: X, expected: rest };
+          q.diagram = chainDiagram(n, { row1: ctx.wl, row2: ctx.n1, used1: ctx.n0, used2: ctx.n1, restLabel: "還餘下 ? " + ctx.unit, wholeLabel: "單位“1”：" + Wt + " " + ctx.unit });
+        } else {
+          if (!isClean(rest, 0) || !isClean(F(Wt).mul(F(100 - n.a, 100)), 0)) continue;
+          X = rest.n;
+          tree = O("÷", O("÷", num(X), R.remain(n.a)), R.remain(n.b));
+          var text2 = ctx.wholeU + "，" + ctx.n0 + ctx.verb + "原有的 " + n.a + "%，" + ctx.n1 + ctx.verb + "餘下的 " + n.b + "%，最後還餘下 " + X + " " + ctx.unit + "。問" + ctx.total;
+          d = [
+            { t: O("÷", num(X), R.remain2(n.a, n.b)), why: "第二次係「餘下的」" + n.b + "%，要分兩步：÷ (1 − " + n.b + "%) ÷ (1 − " + n.a + "%)。" },
+            { t: O("×", O("×", num(X), R.remain(n.a)), R.remain(n.b)), why: "原有（單位“1”）未知，要用 ÷ 倒推返去！" },
+            { t: O("÷", O("÷", num(X), pc(n.a)), pc(n.b)), why: "已知嘅係「餘下」，要對應 (1 − %)。" },
+            { t: O("×", O("÷", num(X), R.remain(n.a)), R.remain(n.b)), why: "兩步都係求單位“1”，都要用 ÷。" }
+          ];
+          q = { topic: "chal", sub: s, text: text2, tree: tree, unit: ctx.unit, n: n, given: X, expected: F(Wt) };
+          q.diagram = chainDiagram(n, { row1: ctx.wl, row2: ctx.n1, used1: ctx.n0, used2: ctx.n1, restLabel: "最後餘下 " + X + " " + ctx.unit, wholeLabel: "單位“1”：? " + ctx.unit });
+        }
+        q.tip = "「餘下的 %」：要把餘下的部分看成新的單位“1”，分步計。";
+      } else {
+        ctx = pick(C3); Wt = rstep(ctx.r);
+        var restA = F(Wt).mul(F(100 - n.a, 100)), bro = restA.div(F(n.b, 100));
+        if (!isClean(restA, 0) || !isClean(bro, 0) || n.a >= 100) continue;
+        X = Wt;
+        tree = O("÷", O("×", num(Wt), R.remain(n.a)), pc(n.b));
+        d = [
+          { t: O("×", O("×", num(Wt), R.remain(n.a)), pc(n.b)), why: "餘下的是" + ctx.B + "的 " + n.b + "%，" + ctx.B + " 係單位“1”（未知），要用 ÷ " + n.b + "%。" },
+          { t: O("÷", O("×", num(Wt), pc(n.a)), pc(n.b)), why: "餘下的係 (1 − " + n.a + "%)，唔係 " + n.a + "%。" },
+          { t: O("÷", O("÷", num(Wt), R.remain(n.a)), pc(n.b)), why: ctx.A + "原有嘅數量已知，求餘下要用 × (1 − " + n.a + "%)。" },
+          { t: O("÷", num(Wt), pc(n.b)), why: "要先計" + ctx.A + "餘下幾多：× (1 − " + n.a + "%)。" }
+        ];
+        q = { topic: "chal", sub: s, text: ctx.text(Wt, n.a, n.b), tree: tree, unit: ctx.unit, n: n, given: X, expected: bro };
+        q.diagram = c3Diagram(n, ctx, Wt);
+        q.tip = "先求" + ctx.A + "餘下的量（× (1 − %)），再用「已知量 ÷ 百分率」求" + ctx.B + "（單位“1”）。";
+      }
+      var r = finalize(q, shuffle(d));
+      if (r) return r;
+    }
+    throw new Error("genChal failed " + sub);
+  }
+
+  var GENS = {
+    part: function (s) { return genPartUnit("part", s); },
+    unit: function (s) { return genPartUnit("unit", s); },
+    cmp: genCmp, chal: genChal
+  };
+  var SUBW = {
+    part: [[1, "single"], [1.2, "remain"], [1, "sum"], [1.5, "diff"], [1.2, "remain2"]],
+    unit: [[1.2, "single"], [1.3, "remain"], [1, "sum"], [1.2, "diff"], [1.2, "remain2"]],
+    cmp: [[1, "knownMore"], [1, "knownLess"], [1.3, "unkMore"], [1.3, "unkLess"]],
+    chal: [[1, "c1"], [1, "c2"], [1, "c3"]]
+  };
+  function generate(topic, sub) {
+    var s = sub || wpick(SUBW[topic]);
+    var q = GENS[topic](s);
+    q.regen = function () { return generate(topic, s); };
+    return q;
+  }
+  var GROUPS = {
+    mix: { name: "全部混合", icon: "🎲", topics: [[3, "part"], [3.5, "unit"], [2.5, "cmp"], [1.5, "chal"]] },
+    part: { name: TOPICS.part.name, icon: TOPICS.part.icon, desc: TOPICS.part.desc, topics: [[1, "part"]] },
+    unit: { name: TOPICS.unit.name, icon: TOPICS.unit.icon, desc: TOPICS.unit.desc, topics: [[1, "unit"]] },
+    cmp: { name: TOPICS.cmp.name, icon: TOPICS.cmp.icon, desc: TOPICS.cmp.desc, topics: [[1, "cmp"]] },
+    chal: { name: TOPICS.chal.name, icon: TOPICS.chal.icon, desc: TOPICS.chal.desc, topics: [[1, "chal"]] }
+  };
+  function buildRound(groupKey, count) {
+    var g = GROUPS[groupKey], list = [];
+    if (groupKey === "mix") g.topics.forEach(function (t) { list.push(t[1]); });
+    while (list.length < count) list.push(wpick(g.topics));
+    return shuffle(list).map(function (t) { return generate(t); });
+  }
+  // build a question from explicit tree (for tests / worksheet checks)
+  function fromTree(tree, unit) { var q = { tree: tree, unit: unit || "" }; q.answer = val(tree); q.steps = calcSteps(tree, q.unit); return q; }
+
+  return { COUNT: COUNT, TOPICS: TOPICS, GROUPS: GROUPS, SUBW: SUBW, generate: generate, buildRound: buildRound, setRandom: setRandom, fromTree: fromTree, R: R, num: num, pc: pc, O: O, val: val, H: H, CAT: CAT, USE: USE, CMP: CMP, C3: C3 };
+})();
+if (typeof module !== "undefined" && module.exports) module.exports = WP;
+</script>
+<script>
+(function () {
+  "use strict";
+  var ROUND = 12, MAX_RETRY = 2;
+  var GOOD1 = ["👍 列式正確！", "🎯 列式啱晒！", "😎 識得分析！"];
+  var GOOD2 = ["🌟 好叻呀！", "🎉 完全正確！", "💯 犀利！", "🚀 勁呀！", "🧠 應用題高手！"];
+  var BAD = ["💪 唔緊要，睇吓點解！", "🙂 差少少！", "🌱 錯咗先學得識！", "🤗 加油！"];
+  function $(id) { return document.getElementById(id); }
+  function pick(a) { return a[Math.floor(Math.random() * a.length)]; }
+  function show(id) { ["home", "quiz", "finish"].forEach(function (s) { $(s).classList.toggle("hidden", s !== id); }); window.scrollTo(0, 0); }
+  var S = null;
+
+  ["mix", "part", "unit", "cmp", "chal"].forEach(function (k) {
+    var g = WP.GROUPS[k], b = document.createElement("button");
+    b.className = "topic" + (k === "mix" ? " mix" : "");
+    b.innerHTML = '<span class="ti">' + g.icon + "</span>" + g.name + (g.desc ? '<div style="font-size:.85rem;font-weight:normal;margin-top:4px">' + g.desc + "</div>" : "");
+    b.addEventListener("click", function () { start(k); });
+    $("topics").appendChild(b);
+  });
+
+  function start(groupKey) {
+    var qs;
+    try { qs = WP.buildRound(groupKey, ROUND); } catch (e) { alert("出題出錯，請再試一次"); return; }
+    S = { group: groupKey, queue: qs, current: null, done: 0, stars: 0, streak: 0, best: 0, stats: {} };
+    show("quiz"); next();
+  }
+  function stat(t) { return S.stats[t] || (S.stats[t] = { total: 0, perfect: 0, wf: 0, wa: 0 }); }
+  function updateBar() {
+    var total = S.done + S.queue.length + (S.current ? 1 : 0);
+    $("progTxt").textContent = "第 " + Math.min(S.done + 1, total) + " / " + total + " 題";
+    $("bar").style.width = Math.round(S.done / total * 100) + "%";
+    $("stars").textContent = S.stars; $("streak").textContent = S.streak;
+  }
+  function setDiagram(open) {
+    var q = S.current;
+    $("diagram").innerHTML = q.diagram + '<div class="rule">📌 ' + q.tip + "</div>";
+    $("diagram").classList.toggle("hidden", !open);
+    $("tipBtn").textContent = open ? "🙈 收起線段圖" : "💡 睇線段圖";
+  }
+
+  function next() {
+    S.current = S.queue.shift() || null;
+    if (!S.current) { finish(); return; }
+    var q = S.current;
+    q.attempt = q.attempt || 0; q.ok1 = null; q.ok2 = null; q.done = false;
+    if (q.attempt === 0) stat(q.topic).total++;
+    $("tag").textContent = WP.TOPICS[q.topic].icon + " " + WP.TOPICS[q.topic].name;
+    $("retryTag").classList.toggle("hidden", q.attempt === 0);
+    $("problem").innerHTML = q.text;
+    setDiagram(false);
+    ["fb1", "fb2"].forEach(function (id) { $(id).textContent = ""; $(id).className = "fb"; });
+    $("why1").innerHTML = ""; $("why2").innerHTML = "";
+    $("part2").classList.add("hidden");
+    $("solution").classList.add("hidden"); $("solution").innerHTML = "";
+    $("showSolBtn").classList.add("hidden"); $("nextBtn").classList.add("hidden");
+    var box = $("formulas"); box.innerHTML = "";
+    var longest = Math.max.apply(null, q.formulas.map(function (f) { return f.html.replace(/<[^>]+>/g, "").length; }));
+    box.style.gridTemplateColumns = longest > 20 ? "1fr" : "";
+    q.formulas.forEach(function (f) {
+      var b = document.createElement("button");
+      b.className = "fopt"; b.innerHTML = f.html; f.btn = b;
+      b.addEventListener("click", function () { chooseFormula(f); });
+      box.appendChild(b);
+    });
+    updateBar();
+  }
+
+  function chooseFormula(f) {
+    var q = S.current;
+    if (q.ok1 !== null) return;
+    q.ok1 = !!f.correct;
+    q.formulas.forEach(function (x) { x.btn.disabled = true; if (x.correct) x.btn.classList.add("right"); });
+    if (f.correct) { $("fb1").className = "fb good"; $("fb1").innerHTML = pick(GOOD1); }
+    else {
+      f.btn.classList.add("wrong");
+      $("fb1").className = "fb bad"; $("fb1").innerHTML = pick(BAD) + " 正確列式係：" + q.formulaH;
+      $("why1").innerHTML = '<div class="why">💡 ' + f.why + "</div>";
+      setDiagram(true);
+      stat(q.topic).wf++;
+    }
+    $("chosen").innerHTML = q.formulaH + " = ？";
+    var box = $("answers"); box.innerHTML = "";
+    q.answers.forEach(function (a) {
+      var b = document.createElement("button");
+      b.className = "opt"; b.innerHTML = a.html; a.btn = b;
+      b.addEventListener("click", function () { chooseAnswer(a); });
+      box.appendChild(b);
+    });
+    $("part2").classList.remove("hidden");
+    setTimeout(function () { if ($("part2").scrollIntoView) $("part2").scrollIntoView({ behavior: "smooth", block: "nearest" }); }, 50);
+  }
+
+  function chooseAnswer(a) {
+    var q = S.current;
+    if (q.ok2 !== null || q.ok1 === null) return;
+    q.ok2 = !!a.correct;
+    q.answers.forEach(function (x) { x.btn.disabled = true; if (x.correct) x.btn.classList.add("right"); });
+    var perfect = q.ok1 && q.ok2;
+    if (a.correct) {
+      $("fb2").className = "fb good";
+      $("fb2").innerHTML = (perfect ? pick(GOOD2) : "✔ 答案啱咗！") + " 答：<b>" + q.answerH + "</b>";
+      $("showSolBtn").classList.remove("hidden");
+    } else {
+      a.btn.classList.add("wrong");
+      $("fb2").className = "fb bad"; $("fb2").innerHTML = pick(BAD) + " 正確答案：<b>" + q.answerH + "</b>";
+      if (a.why) $("why2").innerHTML = '<div class="why">💡 ' + a.why + "</div>";
+      stat(q.topic).wa++;
+      renderSolution();
+    }
+    if (perfect) {
+      if (q.attempt === 0) { stat(q.topic).perfect++; S.stars++; }
+      S.streak++; if (S.streak > S.best) S.best = S.streak;
+      if (S.streak >= 3) $("fb2").innerHTML += " 🔥 連續 " + S.streak + " 題！";
+      confetti(S.streak >= 5 ? 16 : 8);
+    } else {
+      S.streak = 0;
+      if (q.attempt < MAX_RETRY) { try { var nq = q.regen(); nq.attempt = q.attempt + 1; S.queue.push(nq); } catch (e) { /* ignore */ } }
+    }
+    S.done++;
+    $("nextBtn").classList.remove("hidden");
+    $("nextBtn").textContent = S.queue.length ? "下一題 ➡️" : "睇成績 🏆";
+    updateBar();
+  }
+
+  function renderSolution() {
+    var q = S.current, h = "<h3>📖 計算步驟</h3>";
+    q.steps.forEach(function (s) {
+      h += '<div class="step">' + (s.note ? '<div class="snote">▶ ' + s.note + "</div>" : "") + '<div class="shtml">' + s.html + "</div>" + (s.detail ? '<div class="sdetail">' + s.detail + "</div>" : "") + "</div>";
+    });
+    h += '<div class="step"><div class="snote">▶ 作答</div><div class="shtml">答：' + q.answerH + "</div></div>";
+    $("solution").innerHTML = h; $("solution").classList.remove("hidden"); $("showSolBtn").classList.add("hidden");
+  }
+
+  $("tipBtn").addEventListener("click", function () { setDiagram($("diagram").classList.contains("hidden")); });
+  $("showSolBtn").addEventListener("click", renderSolution);
+  $("nextBtn").addEventListener("click", next);
+  $("homeBtn").addEventListener("click", function () { if (confirm("要返回主頁嗎？今輪進度會冇咗。")) show("home"); });
+  $("againBtn").addEventListener("click", function () { start(S.group); });
+  $("backBtn").addEventListener("click", function () { show("home"); });
+  document.addEventListener("keydown", function (e) {
+    if ($("quiz").classList.contains("hidden") || !S || !S.current) return;
+    var q = S.current;
+    if (e.key === "Enter" && q.ok2 !== null) { e.preventDefault(); next(); return; }
+    if (/^[1-4]$/.test(e.key)) { var i = +e.key - 1; if (q.ok1 === null) chooseFormula(q.formulas[i]); else if (q.ok2 === null) chooseAnswer(q.answers[i]); }
+  });
+
+  function finish() {
+    show("finish");
+    var tq = 0, tp = 0, rows = "";
+    Object.keys(WP.TOPICS).forEach(function (t) {
+      var s = S.stats[t]; if (!s) return;
+      tq += s.total; tp += s.perfect;
+      rows += "<tr><td>" + WP.TOPICS[t].icon + " " + WP.TOPICS[t].name + "</td><td>" + s.total + "</td><td>" + s.perfect + "</td><td>" + s.wf + "</td><td>" + s.wa + "</td></tr>";
+    });
+    $("sumTable").innerHTML = "<tr><th>主題</th><th>題數</th><th>一次全對</th><th>列式錯</th><th>答案錯</th></tr>" + rows;
+    var pct = tq ? tp / tq : 0;
+    $("finEmoji").textContent = pct === 1 ? "🏆" : pct >= 0.8 ? "🥇" : pct >= 0.6 ? "🥈" : "💪";
+    $("finTitle").textContent = pct === 1 ? "全部一次答啱！超級犀利！" : pct >= 0.8 ? "好叻呀！差少少就滿分！" : pct >= 0.6 ? "唔錯呀！繼續努力！" : "完成咗！多練幾次一定會進步！";
+    $("finSummary").innerHTML = "⭐ " + S.stars + " / " + tq + " 題兩步都一次答啱　🔥 最高連續 " + S.best + " 題";
+    confetti(pct >= 0.8 ? 40 : 15);
+  }
+  function confetti(n) {
+    var icons = ["🎉", "⭐", "🌟", "🎊", "💯", "🧩", "🌈"];
+    for (var i = 0; i < n; i++) {
+      var s = document.createElement("span"); s.className = "confetti";
+      s.textContent = icons[Math.floor(Math.random() * icons.length)];
+      s.style.left = Math.random() * 100 + "vw"; s.style.animationDuration = (1.4 + Math.random() * 2) + "s";
+      document.body.appendChild(s);
+      (function (el) { setTimeout(function () { if (el.parentNode) el.parentNode.removeChild(el); }, 4000); })(s);
+    }
+  }
+  window.__app = { start: start, state: function () { return S; }, chooseFormula: chooseFormula, chooseAnswer: chooseAnswer };
+})();
+</script>
+</body>
+</html>
