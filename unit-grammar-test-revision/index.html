@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>P6 Grammar · Test Revision (Future & Mixed Tenses)</title>
+<style>
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body {
+    margin: 0; min-height: 100vh; padding: 14px;
+    font-family: "Arial Rounded MT Bold", "Comic Sans MS", "PingFang TC", "Microsoft JhengHei", "Noto Sans TC", sans-serif;
+    background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 50%, #f9f586 100%);
+    background-attachment: fixed; color: #263238;
+  }
+  h1 { text-align: center; font-size: clamp(1.2rem, 4.8vw, 1.9rem); color: #4527a0; text-shadow: 2px 2px 0 #fff; margin: 6px 0 2px; }
+  .sub { text-align: center; color: #5e35b1; margin: 0 0 14px; font-size: 1.05rem; }
+  .card { background: #fff; border-radius: 26px; max-width: 720px; margin: 0 auto; padding: 20px 18px 24px; box-shadow: 0 10px 28px rgba(60,20,120,.22); border: 5px solid #b39ddb; }
+  .hidden { display: none !important; }
+  button { font-family: inherit; cursor: pointer; border: none; }
+  .intro { font-size: 1.08rem; line-height: 1.7; background: #ede7f6; border-radius: 16px; padding: 12px 14px; margin-bottom: 12px; }
+  .topics { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .topic { background: #f3e5f5; border-radius: 18px; padding: 16px 10px; font-size: 1.15rem; font-weight: bold; color: #4527a0; box-shadow: 0 5px 0 #ce93d8; }
+  .topic .ti { font-size: 2rem; display: block; margin-bottom: 4px; }
+  .topic:active { transform: translateY(3px); box-shadow: 0 2px 0 #ce93d8; }
+  .topic.mix { grid-column: 1 / -1; background: #fff3e0; color: #e65100; box-shadow: 0 5px 0 #ffb74d; font-size: 1.35rem; }
+  .topic .desc { font-size: .85rem; font-weight: normal; margin-top: 4px; color: #666; }
+  .topbar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
+  .pill { background: #ede7f6; border-radius: 999px; padding: 6px 12px; font-weight: bold; color: #4527a0; font-size: 1rem; }
+  .pill.star { background: #fff8e1; color: #f57f17; }
+  .pill.fire { background: #fbe9e7; color: #d84315; }
+  .homebtn { background: #eceff1; border-radius: 999px; padding: 6px 12px; font-size: 1rem; }
+  .bar { flex: 1 1 100%; height: 14px; background: #e0e0e0; border-radius: 999px; overflow: hidden; }
+  .bar > div { height: 100%; width: 0; background: linear-gradient(90deg, #7e57c2, #42a5f5); transition: width .4s; }
+  .tag { display: inline-block; background: #7e57c2; color: #fff; border-radius: 12px; padding: 4px 12px; font-size: .95rem; }
+  .retry { display: inline-block; background: #ffca28; color: #6d4c00; border-radius: 12px; padding: 3px 10px; font-size: .9rem; margin-left: 6px; }
+  .prompt { font-size: 1.05rem; color: #6a1b9a; margin: 10px 0 4px; font-weight: bold; }
+  .sentence {
+    font-size: clamp(1.2rem, 4.6vw, 1.6rem); line-height: 1.75; background: #fffde7;
+    border-radius: 18px; padding: 14px; margin: 8px 0 10px; border: 3px dashed #ffd54f; color: #1a237e; font-weight: 600;
+  }
+  .blank { display: inline-block; min-width: 3.5em; padding: 1px 8px; margin: 0 1px; border-bottom: 3px solid #7e57c2; background: #ede7f6; border-radius: 6px 6px 0 0; color: #4527a0; text-align: center; }
+  .blank.right { background: #c8e6c9; border-bottom-color: #2e7d32; color: #1b5e20; }
+  .blank.wrong { background: #ffcdd2; border-bottom-color: #c62828; color: #b71c1c; }
+  .verb { color: #888; font-size: .95em; font-weight: normal; }
+  .hintbox { background: #e3f2fd; border-radius: 12px; padding: 8px 12px; font-size: 1rem; color: #1565c0; margin-bottom: 8px; }
+  .choices { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .choice {
+    background: #ede7f6; color: #311b92; font-size: clamp(1.05rem, 4vw, 1.35rem); font-weight: bold;
+    border-radius: 16px; padding: 14px 8px; min-height: 64px; box-shadow: 0 5px 0 #b39ddb;
+  }
+  .choice:active { transform: translateY(3px); box-shadow: 0 2px 0 #b39ddb; }
+  .choice.right { background: #c8e6c9; box-shadow: 0 5px 0 #66bb6a; color: #1b5e20; }
+  .choice.wrong { background: #ffcdd2; box-shadow: 0 5px 0 #e57373; color: #b71c1c; }
+  .choice:disabled { cursor: default; }
+  .speak { display: block; margin: 8px auto; background: #0288d1; color: #fff; font-size: 1.1rem; font-weight: bold; border-radius: 999px; padding: 10px 18px; box-shadow: 0 4px 0 #01579b; }
+  .speak:active { transform: translateY(3px); box-shadow: 0 1px 0 #01579b; }
+  .fb { text-align: center; font-size: 1.25rem; font-weight: bold; margin-top: 12px; min-height: 1.4em; }
+  .fb.good { color: #2e7d32; } .fb.bad { color: #c62828; }
+  .why { background: #fff3e0; border-left: 6px solid #ff9800; border-radius: 10px; padding: 10px 12px; margin: 10px 0; font-size: 1.08rem; line-height: 1.65; text-align: left; }
+  .why b { color: #e65100; }
+  .rule { background: #f3e5f5; border-radius: 10px; padding: 6px 10px; margin-top: 6px; font-size: .98rem; color: #6a1b9a; }
+  .next { display: block; margin: 14px auto 0; font-size: 1.35rem; font-weight: bold; color: #fff; background: #fb8c00; border-radius: 20px; padding: 14px 28px; box-shadow: 0 6px 0 #e65100; min-width: 200px; }
+  .next:active { transform: translateY(4px); box-shadow: 0 2px 0 #e65100; }
+  .start { font-size: 1.4rem; font-weight: bold; color: #fff; background: #7e57c2; border-radius: 20px; padding: 14px 28px; box-shadow: 0 6px 0 #4527a0; }
+  .bigemoji { font-size: 4rem; text-align: center; animation: bounce 1s infinite; }
+  .row { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+  .row .next, .row .start { margin: 10px 0 0; }
+  table.sum { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 1.05rem; }
+  table.sum th, table.sum td { padding: 8px 6px; text-align: center; border-bottom: 2px solid #e0e0e0; }
+  table.sum th { background: #ede7f6; color: #4527a0; }
+  .missed { background: #fff8e1; border-radius: 12px; padding: 6px 10px; margin: 4px 0; font-size: .98rem; text-align: left; }
+  @keyframes bounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+  .confetti { position: fixed; top: -30px; font-size: 1.7rem; pointer-events: none; animation: fall linear forwards; z-index: 99; }
+  @keyframes fall { to { transform: translateY(110vh) rotate(720deg); opacity: .6; } }
+</style>
+</head>
+<body>
+<h1>📚 P6 Grammar · Test Revision ✍️</h1>
+<div class="sub">Future forms & Mixed tenses · Remedial Practice</div>
+
+<div class="card" id="home">
+  <div class="intro">
+    🧠 睇句子同括號入面嘅動詞，揀<b>正確時態</b>！<br>
+    📌 Future：<b>will</b> / <b>be going to</b> / <b>present continuous</b>（安排）/ <b>simple present</b>（時間表）<br>
+    📌 Mixed：現在完成、一般現在／過去、過去進行、現在進行…<br>
+    ❌ 答錯會睇到中文規則提示，之後再出類似題。<br>
+    ⭐ 每輪約 15 題。
+  </div>
+  <div class="topics" id="topics"></div>
+</div>
+
+<div class="card hidden" id="quiz">
+  <div class="topbar">
+    <button class="homebtn" id="homeBtn">🏠 返回</button>
+    <span class="pill" id="progTxt">1 / 15</span>
+    <span class="pill star">⭐ <span id="stars">0</span></span>
+    <span class="pill fire">🔥 <span id="streak">0</span></span>
+    <div class="bar"><div id="bar"></div></div>
+  </div>
+  <div><span class="tag" id="tag"></span><span class="retry hidden" id="retryTag">🔁 再試類似題</span></div>
+  <div class="prompt" id="prompt"></div>
+  <div class="hintbox hidden" id="hintbox"></div>
+  <div class="sentence" id="sentence"></div>
+  <button class="speak" id="speakBtn">🔊 聽句子</button>
+  <div class="choices" id="choices"></div>
+  <div class="fb" id="fb"></div>
+  <div id="why"></div>
+  <button class="next hidden" id="nextBtn">下一題 ➡️</button>
+</div>
+
+<div class="card hidden" id="finish">
+  <div class="bigemoji" id="finEmoji">🏆</div>
+  <h2 style="text-align:center;color:#4527a0;margin:6px 0" id="finTitle">完成！</h2>
+  <p style="text-align:center;font-size:1.2rem" id="finSummary"></p>
+  <table class="sum" id="sumTable"></table>
+  <div id="missedBox"></div>
+  <div class="row">
+    <button class="start" id="againBtn">🔄 再玩一次</button>
+    <button class="next" id="backBtn">🏠 揀其他主題</button>
+  </div>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  // ---- Grammar tips (TC) ----
+  var TIPS = {
+    will_promise: { title: "will — 承諾／保證", tip: "promise / I promise / we promise → 用 <b>will</b>。<br>例：I promise I <b>will help</b> you." },
+    will_think: { title: "will — 意見／預測", tip: "I think / I hope / I believe / probably → 用 <b>will</b> 預測將來。<br>例：I think it <b>will rain</b>." },
+    will_offer: { title: "will — 即時決定／提議", tip: "傾談中臨時決定幫忙 → <b>will</b>。<br>例：Don't worry! I <b>will share</b> mine." },
+    going_to_plan: { title: "be going to — 已決定嘅計劃", tip: "已決定／有意圖（decided / plan / when I'm older）→ <b>be going to</b>。<br>例：He <b>is going to keep</b> his phone." },
+    pc_future: { title: "Present continuous — 已安排", tip: "已安排好嘅約會／活動（有時間／地點／已買飛）→ <b>am/is/are + -ing</b>。<br>例：I <b>am meeting</b> him tomorrow. I bought a ticket." },
+    sp_timetable: { title: "Simple present — 時間表", tip: "巴士／飛機／課堂時間表 → 用 <b>simple present</b>。<br>例：The plane <b>arrives</b> at 3 PM. What time <b>does</b> it <b>leave</b>?" },
+    pp_yet: { title: "Present perfect — yet / already", tip: "yet / already / ever / never → <b>have/has + 過去分詞</b>。<br>例：They <b>haven't fed</b> the animals <b>yet</b>." },
+    sp_habit: { title: "Simple present — 習慣／事實", tip: "every time / always / usually / 事實 → <b>simple present</b>。<br>例：She <b>is</b> happy every time she wins." },
+    ps_past: { title: "Past simple — 過去某時", tip: "yesterday / last week / last year / ago → <b>past simple</b>。<br>例：They <b>built</b> a bridge last year." },
+    pc_past: { title: "Past continuous — 過去進行中", tip: "at 8 PM last night / while / when（背景動作）→ <b>was/were + -ing</b>。<br>例：What <b>were</b> you <b>doing</b> at 8 PM?" },
+    pc_now: { title: "Present continuous — 而家進行", tip: "right now / Look! / Quiet! → <b>am/is/are + -ing</b>。<br>例：The teacher <b>is speaking</b> right now." },
+    mix_when: { title: "過去進行 + 過去式", tip: "when：較長動作用 <b>past continuous</b>，突然發生用 <b>past simple</b>。<br>例：Dad <b>was driving</b> when it <b>started</b> to rain." },
+    while_pc: { title: "while — 兩個同時進行", tip: "while 連接兩個同時進行嘅過去動作 → 兩邊都用 <b>past continuous</b>。<br>例：The leaves <b>were shaking</b> while the wind <b>was blowing</b>." }
+  };
+
+  function B(s) { return "______"; } // placeholder in templates
+
+  // Item shape:
+  // { id, topic:'future'|'mixed'|'prompt', rule, before, after?, mid?, blanks:1|2,
+  //   verb: '(study)', answer: 'will study' | ['were shaking','was blowing'],
+  //   choices: [...], tipKey, prompt?, speak? }
+
+  var ITEMS = [
+    // ===== Section A worksheet =====
+    { id:"a1", topic:"future", rule:"will_promise",
+      before:"The students promise they ", after:" harder for the next quiz.", verb:"(study)",
+      answer:"will study",
+      choices:["will study","are going to study","are studying","study"],
+      tip:"「promise」＝承諾 → 用 <b>will</b>。" },
+    { id:"a2", topic:"future", rule:"will_think",
+      before:"I think they ", after:" the English test.", verb:"(pass)",
+      answer:"will pass",
+      choices:["will pass","are going to pass","are passing","pass"],
+      tip:"「I think」預測 → 用 <b>will</b>。" },
+    { id:"a3", topic:"future", rule:"pc_future",
+      before:"The school basketball team ", after:" a match at the Sports Centre at 4:00 PM this Saturday.", verb:"(have)",
+      answer:"is having",
+      choices:["is having","will have","is going to have","has"],
+      tip:"已排定時間同地點嘅比賽 → <b>present continuous</b>（is having）。" },
+    { id:"a4", topic:"future", rule:"will_think",
+      before:"Harry hopes Mary ", after:" with him.", verb:"(dance)",
+      answer:"will dance",
+      choices:["will dance","is going to dance","is dancing","dances"],
+      tip:"「hopes」希望將來發生 → 用 <b>will</b>。" },
+    { id:"a5", topic:"future", rule:"will_offer",
+      before:'A: "I forgot to bring my colour pencils."<br>B: "Don\'t worry! I ', after:' mine with you."', verb:"(share)",
+      answer:"will share",
+      choices:["will share","am going to share","am sharing","share"],
+      tip:"傾談中即時提議幫忙 → <b>will</b>。" },
+    { id:"a6", topic:"future", rule:"going_to_plan",
+      before:"Tom ", after:" his old iPhone. He decided to keep it.", verb:"(not / sell)",
+      answer:"is not going to sell",
+      choices:["is not going to sell","will not sell","is not selling","does not sell"],
+      tip:"「He decided」＝已決定 → <b>be going to</b>（否定：is not going to sell）。" },
+    { id:"a7", topic:"future", rule:"going_to_plan",
+      before:"", mid:" your sister ", after:" to London next week?", verb:"(travel)",
+      blanks:2, answer:["Is","going to travel"],
+      answerH:"Is … going to travel",
+      choices:["Is … going to travel","Will … travel","Is … travelling","Does … travel"],
+      tip:"個人計劃（next week）→ <b>Is … going to travel</b>。若已敲定行程，亦可用 present continuous。" },
+    { id:"a8", topic:"future", rule:"pc_future",
+      before:"I ", after:" Jackson Wang tomorrow. I have already bought a ticket to his concert.", verb:"(meet)",
+      answer:"am meeting",
+      choices:["am meeting","will meet","am going to meet","meet"],
+      tip:"已買飛＝已安排 → <b>am meeting</b>（present continuous）。" },
+    { id:"a9", topic:"future", rule:"going_to_plan",
+      before:"Jack ", after:" a Youtuber when he's older.", verb:"(be)",
+      answer:"is going to be",
+      choices:["is going to be","will be","is being","is"],
+      tip:"長大後嘅目標／意圖 → <b>is going to be</b>。" },
+    { id:"a10", topic:"future", rule:"sp_timetable",
+      before:"What time ", mid:" the plane ", after:" in Shanghai tomorrow?", verb:"(arrive)",
+      blanks:2, answer:["does","arrive"],
+      answerH:"does … arrive",
+      choices:["does … arrive","will … arrive","is … arriving","is … going to arrive"],
+      tip:"飛機時間表 → <b>simple present</b>：What time <b>does</b> the plane <b>arrive</b>?" },
+
+    // ===== Section B as "choose best future form" =====
+    { id:"b1", topic:"future", rule:"will_promise", kind:"prompt",
+      prompt:"✍️ 寫一個承諾（promise）。動詞：get",
+      hint:"提示：I promise I ______ a higher mark next time.",
+      before:"I promise I ", after:" a higher mark next time.", verb:"(get)",
+      answer:"will get",
+      choices:["will get","am going to get","am getting","get"],
+      tip:"承諾用 <b>will</b>：I promise I <b>will get</b>…" },
+    { id:"b2", topic:"future", rule:"going_to_plan", kind:"prompt",
+      prompt:"🎯 訂一個目標（goal）。動詞：study",
+      hint:"提示：I ______ harder this term so I can improve.",
+      before:"I ", after:" harder this term so I can improve.", verb:"(study)",
+      answer:"am going to study",
+      choices:["am going to study","will study","am studying","study"],
+      tip:"自己訂嘅目標／計劃 → <b>am going to study</b>。" },
+    { id:"b3", topic:"future", rule:"pc_future", kind:"prompt",
+      prompt:"📅 已計劃好嘅決定（planned decision）。動詞：go",
+      hint:"提示：We ______ to the Science Museum this Sunday. Mum has already bought the tickets.",
+      before:"We ", after:" to the Science Museum this Sunday. Mum has already bought the tickets.", verb:"(go)",
+      answer:"are going",
+      choices:["are going","will go","are going to go","go"],
+      tip:"已買飛＝已安排 → <b>are going</b>（present continuous）。" },
+
+    // ===== Section C worksheet =====
+    { id:"c1", topic:"mixed", rule:"pp_yet",
+      before:"They ", after:" the farm animals yet.", verb:"(not feed)",
+      answer:"haven't fed",
+      choices:["haven't fed","didn't feed","aren't feeding","don't feed"],
+      tip:"「yet」→ <b>present perfect</b>：haven't fed。" },
+    { id:"c2", topic:"mixed", rule:"sp_habit",
+      before:"She ", after:" happy every time she gets a good grade on her test.", verb:"(be)",
+      answer:"is",
+      choices:["is","was","has been","is being"],
+      tip:"「every time」＝習慣 → <b>simple present</b>：is。" },
+    { id:"c3", topic:"mixed", rule:"ps_past",
+      before:"They ", after:" a new bridge in our city last year.", verb:"(build)",
+      answer:"built",
+      choices:["built","have built","were building","build"],
+      tip:"「last year」→ <b>past simple</b>：built。" },
+    { id:"c4", topic:"mixed", rule:"ps_past",
+      before:"What score ", mid:" you ", after:" on your test last week?", verb:"(get)",
+      blanks:2, answer:["did","get"],
+      answerH:"did … get",
+      choices:["did … get","have … got","were … getting","do … get"],
+      tip:"「last week」→ <b>past simple</b> 疑問句：Did you get…?" },
+    { id:"c5", topic:"mixed", rule:"while_pc",
+      before:"The leaves ", mid:" while the strong wind ", after:".", verb:"(shake) / (blow)",
+      blanks:2, answer:["were shaking","was blowing"],
+      answerH:"were shaking … was blowing",
+      choices:["were shaking … was blowing","shook … blew","have shaken … has blown","are shaking … is blowing"],
+      tip:"「while」同時進行 → 兩邊 <b>past continuous</b>。" },
+    { id:"c6", topic:"mixed", rule:"ps_past",
+      before:"", mid:" the dog ", after:" a hole in the garden yesterday?", verb:"(dig)",
+      blanks:2, answer:["Did","dig"],
+      answerH:"Did … dig",
+      choices:["Did … dig","Has … dug","Was … digging","Does … dig"],
+      tip:"「yesterday」→ <b>Did … dig</b>？" },
+    { id:"c7", topic:"mixed", rule:"pc_now",
+      before:"Why ", mid:" you ", after:" in the rain right now?", verb:"(stand)",
+      blanks:2, answer:["are","standing"],
+      answerH:"are … standing",
+      choices:["are … standing","do … stand","did … stand","have … stood"],
+      tip:"「right now」→ <b>are … standing</b>。" },
+    { id:"c8", topic:"mixed", rule:"ps_past",
+      before:"She ", after:" her bike to school yesterday.", verb:"(ride)",
+      answer:"rode",
+      choices:["rode","has ridden","was riding","rides"],
+      tip:"「yesterday」→ <b>rode</b>（past simple）。" },
+    { id:"c9", topic:"mixed", rule:"pc_now",
+      before:"Quiet please! The teacher ", after:" to the students right now.", verb:"(speak)",
+      answer:"is speaking",
+      choices:["is speaking","speaks","has spoken","spoke"],
+      tip:"「Quiet! / right now」→ <b>is speaking</b>。" },
+    { id:"c10", topic:"mixed", rule:"pc_past",
+      before:"What ", mid:" you ", after:" at 8 PM last night?", verb:"(do)",
+      blanks:2, answer:["were","doing"],
+      answerH:"were … doing",
+      choices:["were … doing","did … do","have … done","are … doing"],
+      tip:"過去某時刻正在做 → <b>were … doing</b>。" },
+    { id:"c11", topic:"mixed", rule:"pp_yet",
+      before:"I ", mid:" already ", after:" three pages of my project.", verb:"(write)",
+      blanks:2, answer:["have","written"],
+      answerH:"have … written",
+      choices:["have … written","did … write","am … writing","was … writing"],
+      tip:"「already」→ <b>have already written</b>。" },
+    { id:"c12", topic:"mixed", rule:"mix_when",
+      before:"Dad ", mid:" to work when it ", after:" to rain.", verb:"(drive) / (start)",
+      blanks:2, answer:["was driving","started"],
+      answerH:"was driving … started",
+      choices:["was driving … started","drove … was starting","has driven … started","is driving … starts"],
+      tip:"較長動作 <b>was driving</b>；突然發生 <b>started</b>。" },
+    // Q13 cut off on worksheet — similar item
+    { id:"c13", topic:"mixed", rule:"sp_habit",
+      before:"Water ", after:" at 0°C.", verb:"(freeze)",
+      answer:"freezes",
+      choices:["freezes","froze","is freezing","has frozen"],
+      tip:"科學事實 → <b>simple present</b>：freezes。" },
+
+    // ===== Extra future variants =====
+    { id:"f1", topic:"future", rule:"will_promise",
+      before:"I promise I ", after:" your secret.", verb:"(keep)",
+      answer:"will keep", choices:["will keep","am going to keep","am keeping","keep"],
+      tip:"promise → <b>will</b>。" },
+    { id:"f2", topic:"future", rule:"will_think",
+      before:"I believe she ", after:" the competition.", verb:"(win)",
+      answer:"will win", choices:["will win","is going to win","is winning","wins"],
+      tip:"I believe → <b>will</b>。" },
+    { id:"f3", topic:"future", rule:"will_offer",
+      before:'A: "This bag is so heavy!" B: "I ', after:' it for you."', verb:"(carry)",
+      answer:"will carry", choices:["will carry","am going to carry","am carrying","carry"],
+      tip:"即時提議 → <b>will</b>。" },
+    { id:"f4", topic:"future", rule:"going_to_plan",
+      before:"Look at those dark clouds! It ", after:".", verb:"(rain)",
+      answer:"is going to rain", choices:["is going to rain","will rain","is raining","rains"],
+      tip:"有眼前證據（烏雲）→ <b>be going to</b>。" },
+    { id:"f5", topic:"future", rule:"going_to_plan",
+      before:"We ", after:" a party for Mum. We decided this morning.", verb:"(have)",
+      answer:"are going to have", choices:["are going to have","will have","have","had"],
+      tip:"「We decided」＝已決定 → <b>are going to have</b>。" },
+    { id:"f5b", topic:"future", rule:"pc_future",
+      before:"We ", after:" a party next Friday. We have already invited 20 friends.", verb:"(have)",
+      answer:"are having", choices:["are having","will have","have","had"],
+      tip:"已邀請朋友＝已安排 → <b>are having</b>。" },
+    { id:"f6", topic:"future", rule:"pc_future",
+      before:"She ", after:" the dentist at 3 PM tomorrow.", verb:"(see)",
+      answer:"is seeing", choices:["is seeing","will see","is going to see","sees"],
+      tip:"有約時間 → <b>is seeing</b>。" },
+    { id:"f7", topic:"future", rule:"sp_timetable",
+      before:"The train ", after:" at 9:15 every morning.", verb:"(leave)",
+      answer:"leaves", choices:["leaves","will leave","is leaving","is going to leave"],
+      tip:"時間表 → <b>leaves</b>。" },
+    { id:"f8", topic:"future", rule:"sp_timetable",
+      before:"What time ", mid:" the film ", after:" tonight?", verb:"(start)",
+      blanks:2, answer:["does","start"], answerH:"does … start",
+      choices:["does … start","will … start","is … starting","is … going to start"],
+      tip:"電影開場時間＝時間表 → <b>does … start</b>？" },
+    { id:"f9", topic:"future", rule:"going_to_plan",
+      before:"Mum ", after:" a new car. She looked at several models yesterday.", verb:"(buy)",
+      answer:"is going to buy", choices:["is going to buy","will buy","is buying","buys"],
+      tip:"已睇過車＝有意圖 → <b>is going to buy</b>。" },
+    { id:"f10", topic:"future", rule:"will_think",
+      before:"Don't touch that! You ", after:" yourself.", verb:"(hurt)",
+      answer:"will hurt", choices:["will hurt","are going to hurt","are hurting","hurt"],
+      tip:"警告／預測後果 → 常用 <b>will</b>。" },
+    { id:"f11", topic:"future", rule:"will_promise",
+      before:"We promise we ", after:" late again.", verb:"(not / be)",
+      answer:"will not be", choices:["will not be","are not going to be","are not being","are not"],
+      tip:"promise + 否定 → <b>will not be</b> / won't be。" },
+    { id:"f12", topic:"future", rule:"pc_future",
+      before:"", mid:" you ", after:" to the library after school today?", verb:"(go)",
+      blanks:2, answer:["Are","going"], answerH:"Are … going",
+      choices:["Are … going","Will … go","Are … going to go","Do … go"],
+      tip:"今日放學後嘅安排 → <b>Are you going</b>…？" },
+
+    // more prompts
+    { id:"b4", topic:"future", rule:"will_offer", kind:"prompt",
+      prompt:"🤝 即時提議幫忙（offer）。動詞：help",
+      hint:"提示：A: \"I can't open this jar.\" B: \"I ______ you.\"",
+      before:'B: "I ', after:' you."', verb:"(help)",
+      answer:"will help", choices:["will help","am going to help","am helping","help"],
+      tip:"即時提議 → <b>will help</b>。" },
+    { id:"b5", topic:"future", rule:"going_to_plan", kind:"prompt",
+      prompt:"🔭 將來志願。動詞：be",
+      hint:"提示：I ______ a doctor when I grow up.",
+      before:"I ", after:" a doctor when I grow up.", verb:"(be)",
+      answer:"am going to be", choices:["am going to be","will be","am being","am"],
+      tip:"長大後志願 → <b>am going to be</b>。" },
+
+    // ===== Extra mixed =====
+    { id:"m1", topic:"mixed", rule:"pp_yet",
+      before:"She ", after:" her homework yet.", verb:"(not finish)",
+      answer:"hasn't finished", choices:["hasn't finished","didn't finish","isn't finishing","doesn't finish"],
+      tip:"yet → <b>hasn't finished</b>。" },
+    { id:"m2", topic:"mixed", rule:"pp_yet",
+      before:"", mid:" you ever ", after:" sushi?", verb:"(eat)",
+      blanks:2, answer:["Have","eaten"], answerH:"Have … eaten",
+      choices:["Have … eaten","Did … eat","Are … eating","Do … eat"],
+      tip:"ever → <b>Have you ever eaten</b>…？" },
+    { id:"m3", topic:"mixed", rule:"ps_past",
+      before:"We ", after:" to Macau last summer.", verb:"(go)",
+      answer:"went", choices:["went","have gone","were going","go"],
+      tip:"last summer → <b>went</b>。" },
+    { id:"m4", topic:"mixed", rule:"pc_past",
+      before:"They ", after:" TV when Mum came home.", verb:"(watch)",
+      answer:"were watching", choices:["were watching","watched","have watched","are watching"],
+      tip:"when 打斷 → 背景用 <b>were watching</b>。" },
+    { id:"m5", topic:"mixed", rule:"mix_when",
+      before:"I ", mid:" a shower when the phone ", after:".", verb:"(take) / (ring)",
+      blanks:2, answer:["was taking","rang"], answerH:"was taking … rang",
+      choices:["was taking … rang","took … was ringing","have taken … rang","am taking … rings"],
+      tip:"was taking（進行中）+ rang（突然）。" },
+    { id:"m6", topic:"mixed", rule:"pc_now",
+      before:"Look! The baby ", after:".", verb:"(cry)",
+      answer:"is crying", choices:["is crying","cries","cried","has cried"],
+      tip:"Look! → <b>is crying</b>。" },
+    { id:"m7", topic:"mixed", rule:"sp_habit",
+      before:"The sun ", after:" in the east.", verb:"(rise)",
+      answer:"rises", choices:["rises","rose","is rising","has risen"],
+      tip:"事實 → <b>rises</b>。" },
+    { id:"m8", topic:"mixed", rule:"while_pc",
+      before:"I ", mid:" dinner while Dad ", after:" the news.", verb:"(cook) / (watch)",
+      blanks:2, answer:["was cooking","was watching"], answerH:"was cooking … was watching",
+      choices:["was cooking … was watching","cooked … watched","have cooked … has watched","am cooking … is watching"],
+      tip:"while → 兩邊 past continuous。" },
+    { id:"m9", topic:"mixed", rule:"ps_past",
+      before:"", mid:" you ", after:" your friend yesterday?", verb:"(call)",
+      blanks:2, answer:["Did","call"], answerH:"Did … call",
+      choices:["Did … call","Have … called","Were … calling","Do … call"],
+      tip:"yesterday → <b>Did you call</b>…？" },
+    { id:"m10", topic:"mixed", rule:"pp_yet",
+      before:"He ", mid:" just ", after:" from Japan.", verb:"(return)",
+      blanks:2, answer:["has","returned"], answerH:"has … returned",
+      choices:["has … returned","did … return","is … returning","was … returning"],
+      tip:"just → <b>has just returned</b>。" },
+    { id:"m11", topic:"mixed", rule:"pc_now",
+      before:"", mid:" it ", after:" outside at the moment?", verb:"(rain)",
+      blanks:2, answer:["Is","raining"], answerH:"Is … raining",
+      choices:["Is … raining","Does … rain","Did … rain","Has … rained"],
+      tip:"at the moment → <b>Is it raining</b>？" },
+    { id:"m12", topic:"mixed", rule:"sp_habit",
+      before:"My brother usually ", after:" football on Sundays.", verb:"(play)",
+      answer:"plays", choices:["plays","played","is playing","has played"],
+      tip:"usually → <b>plays</b>。" }
+  ];
+
+  var TOPICS = {
+    future: { name: "Future forms", icon: "🔮", desc: "will / going to / 進行式安排 / 時間表" },
+    mixed: { name: "Mixed tenses", icon: "🧩", desc: "完成式、過去、進行…" },
+    all: { name: "全部混合", icon: "🎲", desc: "Future + Mixed 一齊練" }
+  };
+
+  var ROUND = 15, MAX_RETRY = 2;
+  var GOOD = ["🌟 好叻呀！", "🎉 完全正確！", "💯 犀利！", "🚀 勁呀！", "👏 Excellent!", "😎 Well done!"];
+  var BAD = ["💪 唔緊要，睇吓規則！", "🙂 差少少！記住呢個時態啦！", "🌱 錯咗先學得識！", "🤗 加油！"];
+
+  function $(id) { return document.getElementById(id); }
+  function pick(a) { return a[Math.floor(Math.random() * a.length)]; }
+  function shuffle(a) { a = a.slice(); for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+  function show(id) { ["home","quiz","finish"].forEach(function(s){ $(s).classList.toggle("hidden", s !== id); }); window.scrollTo(0,0); }
+  function ansKey(it) { return it.answerH || (Array.isArray(it.answer) ? it.answer.join(" … ") : it.answer); }
+  function norm(s) { return String(s).toLowerCase().replace(/…/g,"...").replace(/\s+/g," ").trim(); }
+
+  function renderSentence(it, fill, cls) {
+    var c = "blank" + (cls ? " " + cls : "") + (fill ? " filled" : "");
+    var v = ' <span class="verb">' + it.verb + "</span>";
+    var html;
+    if (it.blanks === 2) {
+      var a = fill ? (Array.isArray(it.answer) ? it.answer[0] : fill) : "______";
+      var b = fill ? (Array.isArray(it.answer) ? it.answer[1] : "") : "______";
+      html = (it.before || "") + '<span class="' + c + '">' + a + "</span>" + (it.mid || " ") + '<span class="' + c + '">' + b + "</span>" + (it.after || "");
+    } else {
+      html = (it.before || "") + '<span class="' + c + '">' + (fill || "______") + "</span>" + (it.after || "");
+    }
+    $("sentence").innerHTML = html + v;
+  }
+
+  // Speech
+  var synth = ("speechSynthesis" in window) ? window.speechSynthesis : null;
+  var voice = null;
+  function pickVoice() {
+    if (!synth) return;
+    var vs = synth.getVoices() || [];
+    var prefs = [
+      function(v){ return /en-GB/i.test(v.lang); },
+      function(v){ return /en-US/i.test(v.lang); },
+      function(v){ return /^en/i.test(v.lang); }
+    ];
+    for (var i=0;i<prefs.length;i++) for (var j=0;j<vs.length;j++) if (prefs[i](vs[j])) { voice=vs[j]; return; }
+  }
+  if (synth) {
+    pickVoice();
+    if (synth.addEventListener) synth.addEventListener("voiceschanged", pickVoice);
+    else synth.onvoiceschanged = pickVoice;
+  }
+  function fullText(it) {
+    var t = (it.before || "").replace(/<br>/g," ");
+    if (it.blanks === 2) t += (Array.isArray(it.answer)?it.answer[0]:"") + (it.mid||" ") + (Array.isArray(it.answer)?it.answer[1]:"");
+    else t += (Array.isArray(it.answer)?it.answer.join(" "):it.answer);
+    t += (it.after || "");
+    return t.replace(/"/g,"");
+  }
+  function speak(it) {
+    if (!synth) return;
+    if (!voice) pickVoice();
+    synth.cancel();
+    var u = new SpeechSynthesisUtterance(fullText(it));
+    if (voice) { u.voice=voice; u.lang=voice.lang; } else u.lang="en-GB";
+    u.rate = 0.85;
+    setTimeout(function(){ synth.speak(u); }, 40);
+  }
+
+  var S = null;
+
+  ["all","future","mixed"].forEach(function(k){
+    var g = TOPICS[k], b = document.createElement("button");
+    b.className = "topic" + (k==="all"?" mix":"");
+    b.innerHTML = '<span class="ti">'+g.icon+"</span>"+g.name+'<div class="desc">'+g.desc+"</div>";
+    b.addEventListener("click", function(){ start(k); });
+    $("topics").appendChild(b);
+  });
+
+  function poolFor(group) {
+    if (group === "all") return ITEMS.slice();
+    return ITEMS.filter(function(it){ return it.topic === group; });
+  }
+
+  function start(group) {
+    var pool = shuffle(poolFor(group));
+    var n = Math.min(ROUND, pool.length);
+    var qs = pool.slice(0, n).map(function(it){
+      return { item: it, attempt: 0, choices: shuffle(it.choices.slice()) };
+    });
+    S = { group: group, queue: qs, current: null, done: 0, stars: 0, streak: 0, best: 0,
+          stats: { future:{total:0,ok:0}, mixed:{total:0,ok:0} }, missed: {}, totalFirst: n };
+    show("quiz"); next();
+  }
+
+  function updateBar() {
+    var total = S.done + S.queue.length + (S.current ? 1 : 0);
+    $("progTxt").textContent = "第 " + Math.min(S.done+1, total) + " / " + total + " 題";
+    $("bar").style.width = Math.round(S.done / total * 100) + "%";
+    $("stars").textContent = S.stars; $("streak").textContent = S.streak;
+  }
+
+  function next() {
+    S.current = S.queue.shift() || null;
+    if (!S.current) { finish(); return; }
+    var q = S.current, it = q.item;
+    S.answered = false;
+    if (q.attempt === 0) S.stats[it.topic].total++;
+    $("tag").textContent = (it.topic === "future" ? "🔮 Future" : "🧩 Mixed") + " · " + (TIPS[it.rule]?TIPS[it.rule].title.split("—")[0].trim():"");
+    $("retryTag").classList.toggle("hidden", q.attempt === 0);
+    $("prompt").textContent = it.prompt || "揀正確嘅動詞形式：";
+    if (it.hint) { $("hintbox").textContent = it.hint; $("hintbox").classList.remove("hidden"); }
+    else $("hintbox").classList.add("hidden");
+    renderSentence(it, null, "");
+    $("fb").textContent=""; $("fb").className="fb"; $("why").innerHTML="";
+    $("nextBtn").classList.add("hidden");
+    var box = $("choices"); box.innerHTML="";
+    q.choices.forEach(function(w){
+      var b = document.createElement("button");
+      b.className="choice"; b.textContent=w; b.setAttribute("data-ans", w);
+      b.addEventListener("click", function(){ choose(w,b); });
+      box.appendChild(b);
+    });
+    updateBar();
+  }
+
+  function choose(word, btn) {
+    if (S.answered) return;
+    S.answered = true;
+    var q = S.current, it = q.item;
+    var correct = norm(word) === norm(ansKey(it));
+    Array.prototype.forEach.call($("choices").children, function(c){
+      c.disabled = true;
+      if (norm(c.getAttribute("data-ans")) === norm(ansKey(it))) c.classList.add("right");
+    });
+    if (correct) {
+      btn.classList.add("right");
+      renderSentence(it, true, "right");
+      if (q.attempt === 0) { S.stars++; S.stats[it.topic].ok++; }
+      S.streak++; if (S.streak > S.best) S.best = S.streak;
+      $("fb").className="fb good";
+      $("fb").innerHTML = pick(GOOD) + (S.streak>=3 ? " 🔥 連續 "+S.streak+" 題！" : "");
+      confetti(S.streak>=5?12:6);
+      speak(it);
+    } else {
+      btn.classList.add("wrong");
+      renderSentence(it, true, "wrong");
+      // still show correct fill in green sense via tip
+      S.streak = 0;
+      S.missed[ansKey(it)] = (S.missed[ansKey(it)]||0) + 1;
+      $("fb").className="fb bad";
+      $("fb").innerHTML = pick(BAD) + '<div style="margin-top:6px;color:#2e7d32">正確答案：<b>' + ansKey(it) + "</b></div>";
+      var tip = it.tip || "";
+      var rule = TIPS[it.rule];
+      $("why").innerHTML = '<div class="why">💡 ' + tip +
+        (rule ? '<div class="rule">📖 ' + rule.title + "<br>" + rule.tip + "</div>" : "") + "</div>";
+      // fix display to show correct answer in blanks after a beat
+      setTimeout(function(){ if (S.current === q) renderSentence(it, true, "right"); }, 600);
+      if (q.attempt < MAX_RETRY) {
+        var sim = findSimilar(it);
+        if (sim) S.queue.push({ item: sim, attempt: q.attempt+1, choices: shuffle(sim.choices.slice()) });
+      }
+    }
+    S.done++;
+    $("nextBtn").classList.remove("hidden");
+    $("nextBtn").textContent = S.queue.length ? "下一題 ➡️" : "睇成績 🏆";
+    updateBar();
+  }
+
+  function findSimilar(it) {
+    var used = {};
+    if (S.current) used[S.current.item.id]=true;
+    S.queue.forEach(function(q){ used[q.item.id]=true; });
+    var same = ITEMS.filter(function(x){ return x.rule===it.rule && !used[x.id]; });
+    if (same.length) return pick(same);
+    var sameTopic = ITEMS.filter(function(x){ return x.topic===it.topic && !used[x.id]; });
+    return sameTopic.length ? pick(sameTopic) : null;
+  }
+
+  function finish() {
+    show("finish");
+    var pct = S.totalFirst ? S.stars/S.totalFirst : 0;
+    $("finEmoji").textContent = pct===1?"🏆":pct>=0.8?"🥇":pct>=0.6?"🥈":"💪";
+    $("finTitle").textContent = pct===1?"全部一次答啱！超級犀利！":pct>=0.8?"好叻呀！差少少就滿分！":pct>=0.6?"唔錯呀！繼續努力！":"完成咗！多練時態一定進步！";
+    $("finSummary").innerHTML = "⭐ "+S.stars+" / "+S.totalFirst+" 題一次答啱　🔥 最高連續 "+S.best+" 題";
+    var rows = "";
+    ["future","mixed"].forEach(function(t){
+      var s = S.stats[t]; if (!s.total) return;
+      rows += "<tr><td>"+(t==="future"?"🔮 Future":"🧩 Mixed")+"</td><td>"+s.total+"</td><td>"+s.ok+"</td></tr>";
+    });
+    $("sumTable").innerHTML = "<tr><th>主題</th><th>題數</th><th>一次答啱</th></tr>"+rows;
+    var box = $("missedBox"); box.innerHTML="";
+    var keys = Object.keys(S.missed);
+    if (!keys.length) box.innerHTML = '<p style="text-align:center;color:#2e7d32;font-weight:bold">🥇 Perfect！</p>';
+    else {
+      box.innerHTML = '<p style="font-weight:bold;color:#e65100">📝 要多練習：</p>';
+      keys.forEach(function(w){
+        var d=document.createElement("div"); d.className="missed";
+        d.innerHTML = "<b>"+w+"</b> <small>（錯 "+S.missed[w]+" 次）</small>";
+        box.appendChild(d);
+      });
+    }
+    confetti(pct>=0.8?30:10);
+  }
+
+  function confetti(n) {
+    var icons=["🎉","⭐","🌟","🎊","📚","✍️","🌈"];
+    for (var i=0;i<n;i++){
+      var s=document.createElement("span"); s.className="confetti";
+      s.textContent=icons[Math.floor(Math.random()*icons.length)];
+      s.style.left=Math.random()*100+"vw"; s.style.animationDuration=(1.4+Math.random()*2)+"s";
+      document.body.appendChild(s);
+      (function(el){ setTimeout(function(){ if(el.parentNode) el.parentNode.removeChild(el); },4000); })(s);
+    }
+  }
+
+  $("againBtn").addEventListener("click", function(){ start(S.group); });
+  $("backBtn").addEventListener("click", function(){ show("home"); });
+  $("homeBtn").addEventListener("click", function(){ if(confirm("要返回主頁嗎？今輪進度會冇咗。")) show("home"); });
+  $("nextBtn").addEventListener("click", next);
+  $("speakBtn").addEventListener("click", function(){ if(S&&S.current) speak(S.current.item); });
+  document.addEventListener("keydown", function(e){
+    if ($("quiz").classList.contains("hidden")||!S||!S.current) return;
+    if (e.key==="Enter" && S.answered) { e.preventDefault(); next(); return; }
+    if (!S.answered && /^[1-4]$/.test(e.key)) {
+      var b=$("choices").children[+e.key-1]; if (b) b.click();
+    }
+  });
+
+  window.__GR = { ITEMS: ITEMS, TIPS: TIPS, start: start, state: function(){ return S; }, ansKey: ansKey, poolFor: poolFor };
+})();
+</script>
+</body>
+</html>
