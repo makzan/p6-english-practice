@@ -8,6 +8,7 @@ Small, self-contained interactive English practice pages for primary 6 (pure HTM
 - `math-percent-word-problems/` – Percentage word problems (supplementary unit 1): choose the correct formula, then compute the answer; dynamic segment diagrams, worked steps
 - `unit2-sentence-fill/` – Unit 2 vocabulary sentence fill-in-the-blank (6 choices, near-miss distractors, Chinese tips)
 - `unit-grammar-test-revision/` – P6 Grammar Test Revision: future forms & mixed tenses (MCQ with Chinese rule tips)
+- `unit-vocab-test-revision/` – P6 Vocabulary Test Revision: Unit 1+2 productive vocab sentence fill + study-habit phrases
 
 To add a new practice: create a new folder with an `index.html`, then copy a card block in the root `index.html` and point it to the new folder.
 
