@@ -445,16 +445,19 @@
   function ansKey(it) { return it.answerH || (Array.isArray(it.answer) ? it.answer.join(" … ") : it.answer); }
   function norm(s) { return String(s).toLowerCase().replace(/…/g,"...").replace(/\s+/g," ").trim(); }
 
-  function renderSentence(it, fill, cls) {
-    var c = "blank" + (cls ? " " + cls : "") + (fill ? " filled" : "");
+  function renderSentence(it, revealed, cls) {
+    // revealed: boolean — when true, show the correct answer text (never coerce a boolean into the blank)
+    var show = !!revealed;
+    var c = "blank" + (cls ? " " + cls : "") + (show ? " filled" : "");
     var v = ' <span class="verb">' + it.verb + "</span>";
     var html;
     if (it.blanks === 2) {
-      var a = fill ? (Array.isArray(it.answer) ? it.answer[0] : fill) : "______";
-      var b = fill ? (Array.isArray(it.answer) ? it.answer[1] : "") : "______";
+      var a = show ? (Array.isArray(it.answer) ? it.answer[0] : String(it.answer)) : "______";
+      var b = show ? (Array.isArray(it.answer) ? it.answer[1] : "") : "______";
       html = (it.before || "") + '<span class="' + c + '">' + a + "</span>" + (it.mid || " ") + '<span class="' + c + '">' + b + "</span>" + (it.after || "");
     } else {
-      html = (it.before || "") + '<span class="' + c + '">' + (fill || "______") + "</span>" + (it.after || "");
+      var text = show ? (Array.isArray(it.answer) ? it.answer.join(" ") : String(it.answer)) : "______";
+      html = (it.before || "") + '<span class="' + c + '">' + text + "</span>" + (it.after || "");
     }
     $("sentence").innerHTML = html + v;
   }
