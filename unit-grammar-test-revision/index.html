@@ -480,21 +480,27 @@
     if (synth.addEventListener) synth.addEventListener("voiceschanged", pickVoice);
     else synth.onvoiceschanged = pickVoice;
   }
-  function fullText(it) {
-    var t = (it.before || "").replace(/<br>/g," ");
-    if (it.blanks === 2) t += (Array.isArray(it.answer)?it.answer[0]:"") + (it.mid||" ") + (Array.isArray(it.answer)?it.answer[1]:"");
-    else t += (Array.isArray(it.answer)?it.answer.join(" "):it.answer);
+  function fullText(it, revealed) {
+    // Before answer: say "blank" for the gap so we never spoil the answer.
+    // After answer: speak the filled sentence.
+    var t = (it.before || "").replace(/<br>/g, " ");
+    if (it.blanks === 2) {
+      if (revealed) t += (Array.isArray(it.answer) ? it.answer[0] : "") + (it.mid || " ") + (Array.isArray(it.answer) ? it.answer[1] : "");
+      else t += "blank" + (it.mid || " ") + "blank";
+    } else {
+      t += revealed ? (Array.isArray(it.answer) ? it.answer.join(" ") : it.answer) : "blank";
+    }
     t += (it.after || "");
-    return t.replace(/"/g,"");
+    return t.replace(/"/g, "");
   }
-  function speak(it) {
+  function speak(it, revealed) {
     if (!synth) return;
     if (!voice) pickVoice();
     synth.cancel();
-    var u = new SpeechSynthesisUtterance(fullText(it));
-    if (voice) { u.voice=voice; u.lang=voice.lang; } else u.lang="en-GB";
+    var u = new SpeechSynthesisUtterance(fullText(it, !!revealed));
+    if (voice) { u.voice = voice; u.lang = voice.lang; } else u.lang = "en-GB";
     u.rate = 0.85;
-    setTimeout(function(){ synth.speak(u); }, 40);
+    setTimeout(function () { synth.speak(u); }, 40);
   }
 
   var S = null;
@@ -571,7 +577,7 @@
       $("fb").className="fb good";
       $("fb").innerHTML = pick(GOOD) + (S.streak>=3 ? " 🔥 連續 "+S.streak+" 題！" : "");
       confetti(S.streak>=5?12:6);
-      speak(it);
+      speak(it, true);
     } else {
       btn.classList.add("wrong");
       renderSentence(it, true, "wrong");
@@ -648,7 +654,7 @@
   $("backBtn").addEventListener("click", function(){ show("home"); });
   $("homeBtn").addEventListener("click", function(){ if(confirm("要返回主頁嗎？今輪進度會冇咗。")) show("home"); });
   $("nextBtn").addEventListener("click", next);
-  $("speakBtn").addEventListener("click", function(){ if(S&&S.current) speak(S.current.item); });
+  $("speakBtn").addEventListener("click", function () { if (S && S.current) speak(S.current.item, S.answered); });
   document.addEventListener("keydown", function(e){
     if ($("quiz").classList.contains("hidden")||!S||!S.current) return;
     if (e.key==="Enter" && S.answered) { e.preventDefault(); next(); return; }
