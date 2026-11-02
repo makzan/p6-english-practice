@@ -9,6 +9,7 @@ Small, self-contained interactive English practice pages for primary 6 (pure HTM
 - `unit2-sentence-fill/` – Unit 2 vocabulary sentence fill-in-the-blank (6 choices, near-miss distractors, Chinese tips)
 - `unit-grammar-test-revision/` – P6 Grammar Test Revision: future forms & mixed tenses (MCQ with Chinese rule tips)
 - `unit-vocab-test-revision/` – P6 Vocabulary Test Revision: Unit 1+2 productive vocab sentence fill + study-habit phrases
+- `exam-vocab2-passages/` – Exam Revision Vocabulary 2: Passage 1 (Endangered Tiger) & Passage 2 (Protecting Our Environment) fill-in blanks; passage mode or one-at-a-time; 6-choice MCQ with Chinese tips
 
 To add a new practice: create a new folder with an `index.html`, then copy a card block in the root `index.html` and point it to the new folder.
 

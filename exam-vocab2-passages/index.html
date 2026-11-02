@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>Exam Revision Vocabulary 2 · Passage Fill</title>
+<style>
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body {
+    margin: 0; min-height: 100vh; padding: 14px;
+    font-family: "Arial Rounded MT Bold", "Comic Sans MS", "PingFang TC", "Microsoft JhengHei", "Noto Sans TC", sans-serif;
+    background: linear-gradient(135deg, #d4fc79 0%, #96e6a1 40%, #84fab0 70%, #8fd3f4 100%);
+    background-attachment: fixed; color: #263238;
+  }
+  h1 { text-align: center; font-size: clamp(1.15rem, 4.5vw, 1.85rem); color: #1b5e20; text-shadow: 2px 2px 0 #fff; margin: 6px 0 2px; }
+  .sub { text-align: center; color: #2e7d32; margin: 0 0 14px; font-size: 1.02rem; }
+  .card { background: #fff; border-radius: 26px; max-width: 780px; margin: 0 auto; padding: 20px 16px 24px; box-shadow: 0 10px 28px rgba(0,80,40,.2); border: 5px solid #81c784; }
+  .hidden { display: none !important; }
+  button { font-family: inherit; cursor: pointer; border: none; }
+  .intro { font-size: 1.05rem; line-height: 1.7; background: #e8f5e9; border-radius: 16px; padding: 12px 14px; margin-bottom: 12px; }
+  .topics { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .topic { background: #e8f5e9; border-radius: 18px; padding: 14px 10px; font-size: 1.08rem; font-weight: bold; color: #1b5e20; box-shadow: 0 5px 0 #a5d6a7; text-align: left; }
+  .topic .ti { font-size: 1.8rem; display: block; margin-bottom: 2px; }
+  .topic:active { transform: translateY(3px); box-shadow: 0 2px 0 #a5d6a7; }
+  .topic.mix { grid-column: 1 / -1; background: #fff3e0; color: #e65100; box-shadow: 0 5px 0 #ffb74d; }
+  .topic .desc { font-size: .82rem; font-weight: normal; margin-top: 4px; color: #555; }
+  .modes { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+  .modebtn { background: #c8e6c9; color: #1b5e20; border-radius: 999px; padding: 8px 14px; font-weight: bold; font-size: .95rem; box-shadow: 0 3px 0 #81c784; }
+  .modebtn.on { background: #43a047; color: #fff; }
+  .topbar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
+  .pill { background: #e8f5e9; border-radius: 999px; padding: 6px 12px; font-weight: bold; color: #1b5e20; font-size: .95rem; }
+  .pill.star { background: #fff8e1; color: #f57f17; }
+  .pill.fire { background: #fbe9e7; color: #d84315; }
+  .homebtn { background: #eceff1; border-radius: 999px; padding: 6px 12px; font-size: 1rem; }
+  .bar { flex: 1 1 100%; height: 14px; background: #e0e0e0; border-radius: 999px; overflow: hidden; }
+  .bar > div { height: 100%; width: 0; background: linear-gradient(90deg, #66bb6a, #26c6da); transition: width .35s; }
+  .ptitle { font-size: 1.25rem; font-weight: bold; color: #1b5e20; margin: 4px 0 10px; text-align: center; }
+  .passage {
+    font-size: clamp(1.05rem, 3.8vw, 1.28rem); line-height: 1.85; color: #1a237e;
+    background: #fffde7; border: 3px dashed #ffd54f; border-radius: 16px; padding: 14px 12px; margin-bottom: 12px;
+  }
+  .passage p { margin: 0 0 12px; }
+  .blank {
+    display: inline-block; min-width: 4.2em; padding: 1px 8px; margin: 0 2px;
+    border-bottom: 3px solid #2e7d32; background: #c8e6c9; border-radius: 8px 8px 0 0;
+    color: #1b5e20; font-weight: bold; text-align: center; cursor: pointer;
+  }
+  .blank.num { font-size: .75em; color: #888; font-weight: normal; margin-right: 2px; }
+  .blank.open { background: #fff59d; border-bottom-color: #f9a825; box-shadow: 0 0 0 3px rgba(249,168,37,.35); }
+  .blank.right { background: #a5d6a7; border-bottom-color: #1b5e20; color: #1b5e20; cursor: default; }
+  .blank.wrong { background: #ffcdd2; border-bottom-color: #c62828; color: #b71c1c; }
+  .blank.done { cursor: default; }
+  .prompt { font-size: 1.05rem; color: #2e7d32; font-weight: bold; margin: 6px 0; }
+  .sentence {
+    font-size: clamp(1.15rem, 4.2vw, 1.5rem); line-height: 1.75; background: #e3f2fd;
+    border-radius: 16px; padding: 14px; margin: 8px 0 10px; border: 3px dashed #64b5f6; color: #0d47a1; font-weight: 600;
+  }
+  .choices { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  @media (min-width: 560px) { .choices { grid-template-columns: 1fr 1fr 1fr; } }
+  .choice {
+    background: #e8f5e9; color: #1b5e20; font-size: clamp(1rem, 3.6vw, 1.22rem); font-weight: bold;
+    border-radius: 16px; padding: 14px 8px; min-height: 56px; box-shadow: 0 5px 0 #a5d6a7;
+  }
+  .choice:active { transform: translateY(3px); box-shadow: 0 2px 0 #a5d6a7; }
+  .choice.right { background: #c8e6c9; box-shadow: 0 5px 0 #66bb6a; }
+  .choice.wrong { background: #ffcdd2; box-shadow: 0 5px 0 #e57373; color: #b71c1c; }
+  .choice:disabled { cursor: default; }
+  .speak { display: inline-block; margin: 6px 4px; background: #0288d1; color: #fff; font-size: 1.05rem; font-weight: bold; border-radius: 999px; padding: 10px 16px; box-shadow: 0 4px 0 #01579b; }
+  .speak:active { transform: translateY(3px); box-shadow: 0 1px 0 #01579b; }
+  .fb { text-align: center; font-size: 1.2rem; font-weight: bold; margin-top: 10px; min-height: 1.3em; }
+  .fb.good { color: #2e7d32; } .fb.bad { color: #c62828; }
+  .why { background: #fff3e0; border-left: 6px solid #ff9800; border-radius: 10px; padding: 10px 12px; margin: 10px 0; font-size: 1.05rem; line-height: 1.6; text-align: left; }
+  .why b { color: #e65100; }
+  .mean { color: #546e7a; font-size: .95rem; }
+  .next { display: block; margin: 14px auto 0; font-size: 1.3rem; font-weight: bold; color: #fff; background: #fb8c00; border-radius: 20px; padding: 14px 28px; box-shadow: 0 6px 0 #e65100; min-width: 200px; }
+  .next:active { transform: translateY(4px); box-shadow: 0 2px 0 #e65100; }
+  .start { font-size: 1.3rem; font-weight: bold; color: #fff; background: #43a047; border-radius: 20px; padding: 14px 28px; box-shadow: 0 6px 0 #2e7d32; }
+  .picker { background: #e3f2fd; border-radius: 16px; padding: 12px; margin-top: 8px; border: 3px solid #64b5f6; }
+  .picker h3 { margin: 0 0 8px; color: #1565c0; font-size: 1.1rem; }
+  .bigemoji { font-size: 4rem; text-align: center; animation: bounce 1s infinite; }
+  .row { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+  .row .next, .row .start { margin: 10px 0 0; }
+  table.sum { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 1.05rem; }
+  table.sum th, table.sum td { padding: 8px 6px; text-align: center; border-bottom: 2px solid #e0e0e0; }
+  table.sum th { background: #e8f5e9; color: #1b5e20; }
+  .missed { background: #fff8e1; border-radius: 12px; padding: 6px 10px; margin: 4px 0; font-size: .98rem; text-align: left; }
+  .wordbank { font-size: .9rem; color: #555; background: #f1f8e9; border-radius: 12px; padding: 8px 10px; margin-bottom: 10px; line-height: 1.5; }
+  @keyframes bounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+  .confetti { position: fixed; top: -30px; font-size: 1.7rem; pointer-events: none; animation: fall linear forwards; z-index: 99; }
+  @keyframes fall { to { transform: translateY(110vh) rotate(720deg); opacity: .6; } }
+</style>
+</head>
+<body>
+<h1>🐯 Exam Revision · Vocabulary 2 🌍</h1>
+<div class="sub">Unit 2 Productive Vocabulary · Passage Fill</div>
+
+<div class="card" id="home">
+  <div class="intro">
+    📖 用 Unit 2 生字填入短文空格。<br>
+    🟢 <b>短文模式</b>：睇成段文章，撳空格再揀答案。<br>
+    🔵 <b>逐題模式</b>：一次一格，集中練習。<br>
+    ❌ 答錯有中文提示，之後會再出現。<br>
+    🔊 聽句子唔會講出答案（答完先會）。
+  </div>
+  <div class="topics" id="topics"></div>
+</div>
+
+<div class="card hidden" id="quiz">
+  <div class="topbar">
+    <button class="homebtn" id="homeBtn">🏠 返回</button>
+    <span class="pill" id="progTxt">0 / 0</span>
+    <span class="pill star">⭐ <span id="stars">0</span></span>
+    <span class="pill fire">🔥 <span id="streak">0</span></span>
+    <div class="bar"><div id="bar"></div></div>
+  </div>
+  <div class="ptitle" id="ptitle"></div>
+  <div class="wordbank" id="wordbank"></div>
+
+  <!-- Passage mode -->
+  <div id="passageMode">
+    <div class="passage" id="passage"></div>
+    <button class="speak" id="speakPassBtn">🔊 聽呢段（未答嘅空格讀 blank）</button>
+    <div class="picker hidden" id="picker">
+      <h3 id="pickerTitle">揀答案</h3>
+      <div class="choices" id="passChoices"></div>
+      <div class="fb" id="passFb"></div>
+      <div id="passWhy"></div>
+    </div>
+    <button class="next hidden" id="finishPassBtn">睇成績 🏆</button>
+  </div>
+
+  <!-- One-at-a-time mode -->
+  <div id="oneMode" class="hidden">
+    <div class="prompt" id="onePrompt">揀正確生字：</div>
+    <div class="sentence" id="oneSentence"></div>
+    <button class="speak" id="speakOneBtn">🔊 聽句子</button>
+    <div class="choices" id="oneChoices"></div>
+    <div class="fb" id="oneFb"></div>
+    <div id="oneWhy"></div>
+    <button class="next hidden" id="oneNextBtn">下一題 ➡️</button>
+  </div>
+</div>
+
+<div class="card hidden" id="finish">
+  <div class="bigemoji" id="finEmoji">🏆</div>
+  <h2 style="text-align:center;color:#1b5e20;margin:6px 0" id="finTitle">完成！</h2>
+  <p style="text-align:center;font-size:1.2rem" id="finSummary"></p>
+  <table class="sum" id="sumTable"></table>
+  <div id="missedBox"></div>
+  <div class="row">
+    <button class="start" id="againBtn">🔄 再玩一次</button>
+    <button class="next" id="backBtn">🏠 返回主頁</button>
+  </div>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  var VOCAB = {
+    mammal: { zh: "哺乳動物", tip: "溫血、用母乳餵幼獸 → <b>mammal</b>。" },
+    species: { zh: "物種", tip: "某一「種」動物 → <b>species</b>。" },
+    habitat: { zh: "棲息地", tip: "天然生活／獵食嘅地方 → <b>habitat</b>。" },
+    shelter: { zh: "庇護所", tip: "夜間安全睡覺嘅地方 → <b>shelter</b>。" },
+    exist: { zh: "存在", tip: "冇森林就「唔存在」→ <b>exist</b>。唔好同 survive 撈亂。" },
+    survive: { zh: "生存", tip: "要有獵物先可以「生存」→ <b>survive</b>。" },
+    disappear: { zh: "消失", tip: "從好多森林「消失」→ <b>disappear</b>。" },
+    trapped: { zh: "被困住的", tip: "被困喺籠／網 → <b>trapped</b>。" },
+    illegal: { zh: "非法的", tip: "法律禁止 → <b>illegal</b>。" },
+    poach: { zh: "盜獵", tip: "非法獵殺賣皮骨 → <b>poach</b>。" },
+    "cut down": { zh: "砍倒", tip: "砍樹賣木材 → <b>cut down</b>。" },
+    "burn down": { zh: "燒毀", tip: "大火燒毀樹林 → <b>burn down</b>。" },
+    endangered: { zh: "瀕臨絕種的", tip: "數量好少、列入瀕危 → <b>endangered</b>。" },
+    threatened: { zh: "受到威脅的", tip: "受人類活動威脅 → <b>threatened</b>。" },
+    vulnerable: { zh: "脆弱的", tip: "容易生病／被獵 → <b>vulnerable</b>。" },
+    extinct: { zh: "已絕種的", tip: "永遠消失好似恐龍 → <b>extinct</b>（go extinct）。" },
+    preserve: { zh: "保存／保護", tip: "保護林地 → <b>preserve</b>。" },
+    environment: { zh: "環境", tip: "綠色環境要保護 → <b>environment</b>。" },
+    pollute: { zh: "污染", tip: "工廠黑煙污染空氣 → <b>pollute</b>。" },
+    chemicals: { zh: "化學物質", tip: "有毒化學物質 → <b>chemicals</b>。" },
+    "dump into": { zh: "倒入", tip: "把垃圾「倒入」海 → <b>dump into</b>。" },
+    damage: { zh: "損害", tip: "損害生態系統 → <b>damage</b>。" },
+    refuse: { zh: "拒絕", tip: "拒絕買即棄膠樽 → <b>refuse</b>。" },
+    "take action": { zh: "採取行動", tip: "而家就採取行動 → <b>take action</b>。" },
+    "speak up": { zh: "大聲說出", tip: "為自然發聲 → <b>speak up</b>。" },
+    persuade: { zh: "說服", tip: "說服朋友踩單車 → <b>persuade</b>。" },
+    inspire: { zh: "啟發", tip: "英雄故事啟發小朋友 → <b>inspire</b>。" },
+    raise: { zh: "籌集／提高", tip: "籌錢 → <b>raise</b> money。" },
+    donate: { zh: "捐贈", tip: "捐零用錢 → <b>donate</b>。" },
+    charity: { zh: "慈善（機構）", tip: "環保慈善機構 → <b>charity</b>。" },
+    volunteer: { zh: "義工", tip: "唔收錢做義工 → <b>volunteer</b>。" },
+    support: { zh: "支持", tip: "支持綠色學會 → <b>support</b>。" },
+    policy: { zh: "政策", tip: "政府新政策 → <b>policy</b>。" },
+    capture: { zh: "捕捉", tip: "捕捉動物 → <b>capture</b>。" },
+    threatened_adj: { zh: "受到威脅的", tip: "" }
+  };
+
+  var WORD_LIST = ["mammal","species","endangered","threatened","vulnerable","extinct","habitat","survive","exist","shelter","trapped","disappear","poach","pollute","capture","illegal","chemicals","damage","environment","preserve","cut down","burn down","dump into","speak up","take action","charity","donate","refuse","volunteer","raise","inspire","persuade","policy","support"];
+
+  // Passage blanks: { n, answer, before, after, tip?, pool? }
+  // segments for passage rendering: array of strings and blank objects
+  var PASSAGES = {
+    p1: {
+      id: "p1",
+      title: "Passage 1 · The Endangered Tiger 🐯",
+      paragraphs: [
+        [
+          "The tiger is a large, warm-blooded ",
+          { n: 1, answer: "mammal", tip: "溫血、用母乳餵幼獸 → <b>mammal</b>（哺乳動物）。", pool: ["species","habitat","shelter","volunteer","mammal"] },
+          " that feeds its babies with milk. Scientists worry because this beautiful wild ",
+          { n: 2, answer: "species", tip: "呢一種野生動物 → <b>species</b>（物種）。", pool: ["mammal","habitat","shelter","charity","species"] },
+          " is losing its numbers every year. A tiger needs a large forest ",
+          { n: 3, answer: "habitat", tip: "可以生活、獵食嘅森林地方 → <b>habitat</b>（棲息地）。", pool: ["shelter","environment","species","charity","habitat"] },
+          " where it can live, hunt for food and find clean water. It also searches for a dry cave to use as a safe ",
+          { n: 4, answer: "shelter", tip: "夜晚安全瞓覺嘅地方 → <b>shelter</b>（庇護所）。", pool: ["habitat","environment","species","policy","shelter"] },
+          " to stay and sleep during the night. Tigers cannot ",
+          { n: 5, answer: "exist", tip: "冇森林就無法「存在」→ <b>exist</b>。唔好同 survive 撈亂。", pool: ["survive","disappear","refuse","capture","exist"] },
+          " without green forests because they have nowhere else to live on Earth. To ",
+          { n: 6, answer: "survive", tip: "要有獵物先「生存」落去 → <b>survive</b>。", pool: ["exist","disappear","preserve","support","survive"] },
+          " in the wild, these big cats need enough prey animals to eat."
+        ],
+        [
+          "Sadly, wild tigers are beginning to ",
+          { n: 7, answer: "disappear", tip: "從好多亞洲森林「消失」→ <b>disappear</b>。", pool: ["exist","survive","refuse","inspire","disappear"] },
+          " from many Asian forests. Sometimes, a hungry tiger gets ",
+          { n: 8, answer: "trapped", tip: "被困喺獵人鐵籠 → <b>trapped</b>。", pool: ["endangered","vulnerable","illegal","threatened","trapped"] },
+          " inside a hunter's heavy wire cage. It is ",
+          { n: 9, answer: "illegal", tip: "法律禁止 → <b>illegal</b>（非法的）。", pool: ["endangered","extinct","vulnerable","threatened","illegal"] },
+          " to hunt these wild cats because the law strictly forbids it. Hunters who ",
+          { n: 10, answer: "poach", tip: "非法獵殺賣皮同骨 → <b>poach</b>（盜獵）。", pool: ["capture","preserve","pollute","damage","poach"] },
+          " wild tigers want to sell their fur and bones for money."
+        ],
+        [
+          "Humans also destroy nature when they ",
+          { n: 11, answer: "cut down", tip: "砍樹賣木材 → <b>cut down</b>。", pool: ["burn down","dump into","speak up","take action","cut down"] },
+          " tall trees to sell the wood. Sparks from forest fires can ",
+          { n: 12, answer: "burn down", tip: "燒毀大片樹林 → <b>burn down</b>。", pool: ["cut down","dump into","speak up","take action","burn down"] },
+          " large areas of trees, leaving animals with no home. Because there are very few of them left, tigers are listed as an ",
+          { n: 13, answer: "endangered", tip: "數量好少、列入瀕危 → <b>endangered</b>。", pool: ["threatened","vulnerable","extinct","trapped","endangered"] },
+          " animal group. If their numbers keep dropping, they will become ",
+          { n: 14, answer: "threatened", tip: "受人類活動威脅 → <b>threatened</b>。", pool: ["endangered","vulnerable","extinct","illegal","threatened"] },
+          " by human activity. Their small population makes them ",
+          { n: 15, answer: "vulnerable", tip: "容易受疾病同獵人傷害 → <b>vulnerable</b>。", pool: ["endangered","threatened","extinct","trapped","vulnerable"] },
+          " to diseases and hunters. Without our protection, wild tigers might go ",
+          { n: 16, answer: "extinct", tip: "go extinct = 絕種 → <b>extinct</b>。", pool: ["endangered","threatened","vulnerable","illegal","extinct"] },
+          " and be gone forever like dinosaurs. National parks work hard to ",
+          { n: 17, answer: "preserve", tip: "保護林地 → <b>preserve</b>。", pool: ["pollute","damage","poach","capture","preserve"] },
+          " forest land so wild animals stay safe."
+        ]
+      ]
+    },
+    p2: {
+      id: "p2",
+      title: "Passage 2 · Protecting Our Environment 🌍",
+      paragraphs: [
+        [
+          "We must work together to protect our green ",
+          { n: 1, answer: "environment", tip: "保護綠色「環境」→ <b>environment</b>。", pool: ["habitat","shelter","species","charity","environment"] },
+          " so nature stays clean and healthy. Factories can ",
+          { n: 2, answer: "pollute", tip: "黑煙「污染」空氣 → <b>pollute</b>。", pool: ["damage","preserve","poach","capture","pollute"] },
+          " the air when they release thick black smoke. Dangerous toxic ",
+          { n: 3, answer: "chemicals", tip: "有毒化學物質 → <b>chemicals</b>。", pool: ["species","policy","charity","volunteer","chemicals"] },
+          " from factories make lake water unsafe for fish. Ships should not ",
+          { n: 4, answer: "dump into", tip: "把油污垃圾「倒入」海 → 片語 <b>dump into</b>（dump … into）。", pool: ["cut down","burn down","speak up","take action","dump into"],
+            mid: " their oily waste and plastic garbage ", parts: ["dump", "into"] },
+          " the ocean. These harmful human habits can ",
+          { n: 5, answer: "damage", tip: "損害自然生態 → <b>damage</b>。", pool: ["pollute","preserve","inspire","support","damage"] },
+          " natural ecosystems and hurt wild creatures."
+        ],
+        [
+          "To help the Earth, students can ",
+          { n: 6, answer: "refuse", tip: "拒絕買即棄膠樽 → <b>refuse</b>。", pool: ["donate","support","inspire","persuade","refuse"] },
+          " to buy drinks in single-use plastic bottles. Instead of waiting, we need to ",
+          { n: 7, answer: "take action", tip: "而家就「採取行動」→ <b>take action</b>。", pool: ["speak up","cut down","dump into","burn down","take action"] },
+          " today by recycling our trash every afternoon. Do not stay quiet, you should ",
+          { n: 8, answer: "speak up", tip: "為自然「大聲說出」→ <b>speak up</b>。", pool: ["take action","cut down","dump into","refuse","speak up"] },
+          " for nature when you see people littering. Try to ",
+          { n: 9, answer: "persuade", tip: "說服朋友踩單車 → <b>persuade</b>。", pool: ["inspire","support","refuse","donate","persuade"] },
+          " your friends to ride bicycles to school instead of taking cars. Stories about young environmental heroes can ",
+          { n: 10, answer: "inspire", tip: "啟發小朋友幫助地球 → <b>inspire</b>。", pool: ["persuade","raise","support","refuse","inspire"] },
+          " children to help our planet."
+        ],
+        [
+          "Our school hosted a bake sale to ",
+          { n: 11, answer: "raise", tip: "籌錢 → <b>raise</b> money。", pool: ["donate","support","inspire","refuse","raise"] },
+          " money for saving rainforests. Students decided to ",
+          { n: 12, answer: "donate", tip: "捐出零用錢 → <b>donate</b>。", pool: ["raise","support","refuse","inspire","donate"] },
+          " their extra pocket money to help animal shelters. All the collected funds went to an environmental ",
+          { n: 13, answer: "charity", tip: "環保慈善機構 → <b>charity</b>。", pool: ["volunteer","policy","shelter","habitat","charity"] },
+          " that plants new trees. Every Saturday, my sister works as a ",
+          { n: 14, answer: "volunteer", tip: "唔收錢做義工 → <b>volunteer</b>。", pool: ["charity","policy","mammal","species","volunteer"] },
+          " to pick up trash on the beach without getting paid. Parents are happy to ",
+          { n: 15, answer: "support", tip: "支持綠色學會 → <b>support</b>。", pool: ["donate","refuse","inspire","persuade","support"] },
+          " our green club by buying eco-friendly bags. Finally, the city government passed a new ",
+          { n: 16, answer: "policy", tip: "政府新「政策」→ <b>policy</b>。", pool: ["charity","volunteer","shelter","habitat","policy"] },
+          " that bans plastic straws in all restaurants."
+        ]
+      ]
+    }
+  };
+
+  // Fix p2 numbering in display: blanks were 1-16 for p2 (dump into as one). Passage 2 worksheet had dump/into as two blanks counting as 4&5, then damage=6... Through policy=17.
+  // Remap display numbers for p2 to match worksheet: 1 env, 2 pollute, 3 chemicals, 4-5 dump into (show as 4), then shift.
+  // Actually user wants answer keys - I'll keep logical answers and show blank numbers sequentially per passage.
+  // For dump into display as one blank numbered 4, and renumber subsequent - OR show "4–5".
+  // Looking at my structure I combined dump into as n:4 and then n:5 is damage - but worksheet had dump=4, into=5, damage=6.
+  // I'll set dump into as display "4–5" and renumber rest to match worksheet 6-17.
+
+  // Display numbers for p2: dump into counts as worksheet blanks 4–5
+  (function renumberP2() {
+    var nums = [1, 2, 3, "4–5", 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17];
+    var i = 0;
+    PASSAGES.p2.paragraphs.forEach(function (para) {
+      para.forEach(function (seg) {
+        if (typeof seg === "object") { seg.n = nums[i++]; }
+      });
+    });
+  })();
+
+  function collectBlanks(pass) {
+    var list = [];
+    pass.paragraphs.forEach(function (para) {
+      para.forEach(function (seg) {
+        if (typeof seg === "object") list.push(seg);
+      });
+    });
+    return list;
+  }
+  PASSAGES.p1.blanks = collectBlanks(PASSAGES.p1);
+  PASSAGES.p2.blanks = collectBlanks(PASSAGES.p2);
+
+  var TOPICS = {
+    all: { name: "全部兩篇", icon: "🎲", desc: "Tiger + Environment" },
+    p1: { name: "Passage 1 老虎", icon: "🐯", desc: "The Endangered Tiger（17 格）" },
+    p2: { name: "Passage 2 環境", icon: "🌍", desc: "Protecting Our Environment（16 題／工作紙 17 格）" }
+  };
+
+  var GOOD = ["🌟 好叻呀！", "🎉 完全正確！", "💯 犀利！", "🚀 勁呀！", "👏 Excellent!", "😎 Well done!"];
+  var BAD = ["💪 唔緊要，睇吓提示！", "🙂 差少少！", "🌱 錯咗先學得識！", "🤗 加油！"];
+
+  function $(id) { return document.getElementById(id); }
+  function pick(a) { return a[Math.floor(Math.random() * a.length)]; }
+  function shuffle(a) { a = a.slice(); for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+  function show(id) { ["home","quiz","finish"].forEach(function (s) { $(s).classList.toggle("hidden", s !== id); }); window.scrollTo(0, 0); }
+  function norm(s) { return String(s).toLowerCase().replace(/\s+/g, " ").trim(); }
+  function zhOf(w) { return (VOCAB[w] && VOCAB[w].zh) || ""; }
+
+  function buildChoices(blank) {
+    var opts = [blank.answer];
+    var pool = shuffle((blank.pool || WORD_LIST).slice());
+    for (var i = 0; i < pool.length && opts.length < 6; i++) {
+      if (norm(pool[i]) !== norm(blank.answer) && opts.indexOf(pool[i]) < 0) opts.push(pool[i]);
+    }
+    for (var j = 0; j < WORD_LIST.length && opts.length < 6; j++) {
+      var w = WORD_LIST[j];
+      if (norm(w) !== norm(blank.answer) && opts.indexOf(w) < 0) opts.push(w);
+    }
+    return shuffle(opts);
+  }
+
+  // Speech — never spoil before answer
+  var synth = ("speechSynthesis" in window) ? window.speechSynthesis : null;
+  var voice = null;
+  function pickVoice() {
+    if (!synth) return;
+    var vs = synth.getVoices() || [];
+    for (var i = 0; i < vs.length; i++) if (/^en/i.test(vs[i].lang)) { voice = vs[i]; if (/en-GB/i.test(vs[i].lang)) break; }
+  }
+  if (synth) {
+    pickVoice();
+    if (synth.addEventListener) synth.addEventListener("voiceschanged", pickVoice);
+    else synth.onvoiceschanged = pickVoice;
+  }
+  function utter(text) {
+    if (!synth) return;
+    if (!voice) pickVoice();
+    synth.cancel();
+    var u = new SpeechSynthesisUtterance(text);
+    if (voice) { u.voice = voice; u.lang = voice.lang; } else u.lang = "en-GB";
+    u.rate = 0.85;
+    setTimeout(function () { synth.speak(u); }, 40);
+  }
+  function speakBlankCtx(blank, revealed) {
+    var gap;
+    if (blank.parts) gap = revealed ? (blank.parts[0] + (blank.mid || " ") + blank.parts[1]) : ("blank" + (blank.mid || " ") + "blank");
+    else gap = revealed ? String(blank.answer) : "blank";
+    utter((blank._before || "") + gap + (blank._after || ""));
+  }
+
+  // Attach before/after context for one-mode & tips from surrounding text
+  function enrichContexts(pass) {
+    pass.paragraphs.forEach(function (para) {
+      for (var i = 0; i < para.length; i++) {
+        if (typeof para[i] === "object") {
+          para[i]._before = typeof para[i - 1] === "string" ? para[i - 1] : "";
+          para[i]._after = typeof para[i + 1] === "string" ? para[i + 1] : "";
+          // trim to a readable clause (~80 chars each side max for speak)
+          if (para[i]._before.length > 90) para[i]._before = "…" + para[i]._before.slice(-90);
+          if (para[i]._after.length > 90) para[i]._after = para[i]._after.slice(0, 90) + "…";
+        }
+      }
+    });
+  }
+  enrichContexts(PASSAGES.p1);
+  enrichContexts(PASSAGES.p2);
+
+  var S = null; // state
+  var pendingMode = "passage"; // or "one"
+
+  // Home topics
+  ["all", "p1", "p2"].forEach(function (k) {
+    var g = TOPICS[k];
+    var wrap = document.createElement("div");
+    wrap.style.gridColumn = k === "all" ? "1 / -1" : "";
+    var b = document.createElement("button");
+    b.className = "topic" + (k === "all" ? " mix" : "");
+    b.innerHTML = '<span class="ti">' + g.icon + "</span>" + g.name + '<div class="desc">' + g.desc + "</div>";
+    var modes = document.createElement("div");
+    modes.className = "modes";
+    var m1 = document.createElement("button");
+    m1.className = "modebtn"; m1.textContent = "🟢 短文模式";
+    m1.addEventListener("click", function (e) { e.stopPropagation(); start(k, "passage"); });
+    var m2 = document.createElement("button");
+    m2.className = "modebtn"; m2.textContent = "🔵 逐題模式";
+    m2.addEventListener("click", function (e) { e.stopPropagation(); start(k, "one"); });
+    modes.appendChild(m1); modes.appendChild(m2);
+    b.addEventListener("click", function () { start(k, pendingMode); });
+    wrap.appendChild(b); wrap.appendChild(modes);
+    $("topics").appendChild(wrap);
+  });
+
+  function selectedPassages(key) {
+    if (key === "all") return [PASSAGES.p1, PASSAGES.p2];
+    return [PASSAGES[key]];
+  }
+
+  function start(key, mode) {
+    pendingMode = mode || "passage";
+    var passes = selectedPassages(key);
+    var blanks = [];
+    passes.forEach(function (p) {
+      p.blanks.forEach(function (b) {
+        blanks.push({ blank: b, passId: p.id, passTitle: p.title });
+      });
+    });
+    S = {
+      key: key, mode: pendingMode, passes: passes,
+      blanks: blanks,
+      // per-blank state keyed by passId + n
+      status: {}, // "right" | undefined
+      attempts: {},
+      active: null, // current blank key in passage mode
+      oneQueue: [],
+      oneCurrent: null,
+      done: 0, stars: 0, streak: 0, best: 0,
+      missed: {}, total: blanks.length,
+      answeredOne: false
+    };
+    blanks.forEach(function (x) {
+      var k = x.passId + ":" + x.blank.n;
+      S.status[k] = null;
+      S.attempts[k] = 0;
+    });
+    $("wordbank").innerHTML = "<b>Word bank：</b> " + WORD_LIST.join(", ");
+    show("quiz");
+    if (pendingMode === "passage") startPassage();
+    else startOne();
+  }
+
+  function keyOf(passId, n) { return passId + ":" + n; }
+  function countDone() {
+    var n = 0;
+    Object.keys(S.status).forEach(function (k) { if (S.status[k] === "right") n++; });
+    return n;
+  }
+  function updateBar() {
+    var done = countDone();
+    $("progTxt").textContent = done + " / " + S.total + " 格";
+    $("bar").style.width = Math.round(done / S.total * 100) + "%";
+    $("stars").textContent = S.stars;
+    $("streak").textContent = S.streak;
+  }
+
+  // ---------- Passage mode ----------
+  function startPassage() {
+    $("passageMode").classList.remove("hidden");
+    $("oneMode").classList.add("hidden");
+    $("ptitle").textContent = S.passes.map(function (p) { return p.title; }).join("  +  ");
+    renderPassage();
+    $("picker").classList.add("hidden");
+    $("finishPassBtn").classList.add("hidden");
+    updateBar();
+  }
+
+  function renderPassage() {
+    var html = "";
+    S.passes.forEach(function (pass) {
+      if (S.passes.length > 1) html += '<div style="font-weight:bold;color:#2e7d32;margin:8px 0 4px">' + pass.title + "</div>";
+      pass.paragraphs.forEach(function (para) {
+        html += "<p>";
+        para.forEach(function (seg) {
+          if (typeof seg === "string") html += seg;
+          else {
+            var k = keyOf(pass.id, seg.n);
+            var st = S.status[k];
+            var cls = "blank";
+            if (st === "right") cls += " right done";
+            else if (S.active === k) cls += " open";
+            if (seg.parts) {
+              var a = st === "right" ? seg.parts[0] : "______";
+              var b = st === "right" ? seg.parts[1] : "______";
+              html += '<span class="' + cls + '" data-k="' + k + '"><span class="blank num">(' + seg.n + ')</span>' + a + "</span>" +
+                (seg.mid || " ") + '<span class="' + cls + '" data-k="' + k + '">' + b + "</span>";
+            } else {
+              var label = st === "right" ? seg.answer : "______";
+              html += '<span class="' + cls + '" data-k="' + k + '"><span class="blank num">(' + seg.n + ')</span>' + label + "</span>";
+            }
+          }
+        });
+        html += "</p>";
+      });
+    });
+    $("passage").innerHTML = html;
+    Array.prototype.forEach.call($("passage").querySelectorAll(".blank:not(.done)"), function (el) {
+      el.addEventListener("click", function () { openBlank(el.getAttribute("data-k")); });
+    });
+  }
+
+  function findBlank(k) {
+    for (var i = 0; i < S.blanks.length; i++) {
+      var x = S.blanks[i];
+      if (keyOf(x.passId, x.blank.n) === k) return x;
+    }
+    return null;
+  }
+
+  function openBlank(k) {
+    if (S.status[k] === "right") return;
+    S.active = k;
+    renderPassage();
+    var x = findBlank(k);
+    var blank = x.blank;
+    $("picker").classList.remove("hidden");
+    $("pickerTitle").textContent = "空格 (" + blank.n + ") — 揀正確生字";
+    $("passFb").textContent = ""; $("passFb").className = "fb";
+    $("passWhy").innerHTML = "";
+    var box = $("passChoices"); box.innerHTML = "";
+    var choices = buildChoices(blank);
+    choices.forEach(function (w) {
+      var b = document.createElement("button");
+      b.className = "choice";
+      b.textContent = w;
+      b.setAttribute("data-ans", w);
+      b.addEventListener("click", function () { answerPassage(k, w, b, choices); });
+      box.appendChild(b);
+    });
+    var _p=$("picker"); if(_p && _p.scrollIntoView) _p.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  }
+
+  function answerPassage(k, word, btn, choices) {
+    if (S.status[k] === "right") return;
+    var x = findBlank(k);
+    var blank = x.blank;
+    var correct = norm(word) === norm(blank.answer);
+    Array.prototype.forEach.call($("passChoices").children, function (c) {
+      c.disabled = true;
+      if (norm(c.getAttribute("data-ans")) === norm(blank.answer)) c.classList.add("right");
+    });
+    if (correct) {
+      btn.classList.add("right");
+      var first = S.attempts[k] === 0;
+      S.status[k] = "right";
+      if (first) S.stars++;
+      S.streak++; if (S.streak > S.best) S.best = S.streak;
+      $("passFb").className = "fb good";
+      $("passFb").innerHTML = pick(GOOD) + (S.streak >= 3 ? " 🔥×" + S.streak : "");
+      confetti(6);
+      utter(blank._before + blank.answer + blank._after);
+      setTimeout(function () {
+        $("picker").classList.add("hidden");
+        S.active = null;
+        renderPassage();
+        updateBar();
+        if (countDone() >= S.total) $("finishPassBtn").classList.remove("hidden");
+      }, 700);
+    } else {
+      btn.classList.add("wrong");
+      S.attempts[k]++;
+      S.streak = 0;
+      S.missed[blank.answer] = (S.missed[blank.answer] || 0) + 1;
+      $("passFb").className = "fb bad";
+      $("passFb").innerHTML = pick(BAD) + '<div style="margin-top:4px;color:#2e7d32">正確：<b>' + blank.answer + "</b></div>";
+      var tip = blank.tip || (VOCAB[blank.answer] && VOCAB[blank.answer].tip) || "";
+      $("passWhy").innerHTML = '<div class="why">💡 ' + tip +
+        '<div class="mean"><b>' + blank.answer + "</b> = " + zhOf(blank.answer) +
+        (zhOf(word) ? "　｜　你揀咗 <b>" + word + "</b> = " + zhOf(word) : "") + "</div></div>";
+      // re-enable after short delay so they can try again, or auto-mark and move on — requeue concept: leave blank open
+      setTimeout(function () {
+        Array.prototype.forEach.call($("passChoices").children, function (c) { c.disabled = false; c.classList.remove("wrong"); });
+        // keep correct highlighted? clear all for retry
+        Array.prototype.forEach.call($("passChoices").children, function (c) { c.classList.remove("right"); });
+        $("passFb").textContent = "再試一次啦！"; $("passFb").className = "fb";
+      }, 1200);
+    }
+    updateBar();
+  }
+
+  $("finishPassBtn").addEventListener("click", finish);
+  $("speakPassBtn").addEventListener("click", function () {
+    // Speak first unfinished blank context, or whole first paragraph blanked
+    var text = "";
+    S.passes.forEach(function (pass) {
+      pass.paragraphs.forEach(function (para) {
+        para.forEach(function (seg) {
+          if (typeof seg === "string") text += seg;
+          else {
+            var k = keyOf(pass.id, seg.n);
+            if (seg.parts) text += (S.status[k] === "right" ? (seg.parts[0] + (seg.mid || " ") + seg.parts[1]) : ("blank" + (seg.mid || " ") + "blank"));
+            else text += (S.status[k] === "right" ? seg.answer : "blank");
+          }
+        });
+        text += " ";
+      });
+    });
+    utter(text);
+  });
+
+  // ---------- One-at-a-time mode ----------
+  function startOne() {
+    $("passageMode").classList.add("hidden");
+    $("oneMode").classList.remove("hidden");
+    $("ptitle").textContent = S.passes.map(function (p) { return p.title; }).join("  +  ") + "（逐題）";
+    S.oneQueue = shuffle(S.blanks.slice());
+    S.oneCurrent = null;
+    S.answeredOne = false;
+    nextOne();
+  }
+
+  function renderOneSentence(blank, revealed, wrongWord) {
+    var show = revealed === true;
+    var cls = "blank" + (show ? " right filled" : "") + (wrongWord ? " wrong filled" : "");
+    var body;
+    if (blank.parts) {
+      var a = wrongWord ? String(wrongWord) : (show ? blank.parts[0] : "______");
+      var b = wrongWord ? "______" : (show ? blank.parts[1] : "______");
+      if (wrongWord && norm(wrongWord) === norm(blank.answer)) { a = blank.parts[0]; b = blank.parts[1]; }
+      body = '<span class="' + cls + '">' + a + "</span>" + (blank.mid || " ") + '<span class="' + cls + '">' + b + "</span>";
+    } else {
+      var text = wrongWord ? String(wrongWord) : (show ? String(blank.answer) : "______");
+      body = '<span class="' + cls + '">' + text + "</span>";
+    }
+    $("oneSentence").innerHTML =
+      '<span style="color:#888;font-size:.9rem">(' + blank.n + ") </span>" +
+      (blank._before || "") + body + (blank._after || "");
+  }
+
+  function nextOne() {
+    if (!S.oneQueue.length) { finish(); return; }
+    S.oneCurrent = S.oneQueue.shift();
+    S.answeredOne = false;
+    var blank = S.oneCurrent.blank;
+    $("onePrompt").textContent = S.oneCurrent.passTitle + " · 空格 (" + blank.n + ")";
+    renderOneSentence(blank, false);
+    $("oneFb").textContent = ""; $("oneFb").className = "fb";
+    $("oneWhy").innerHTML = "";
+    $("oneNextBtn").classList.add("hidden");
+    var box = $("oneChoices"); box.innerHTML = "";
+    buildChoices(blank).forEach(function (w) {
+      var b = document.createElement("button");
+      b.className = "choice"; b.textContent = w; b.setAttribute("data-ans", w);
+      b.addEventListener("click", function () { answerOne(w, b); });
+      box.appendChild(b);
+    });
+    updateBar();
+  }
+
+  function answerOne(word, btn) {
+    if (S.answeredOne) return;
+    S.answeredOne = true;
+    var blank = S.oneCurrent.blank;
+    var k = keyOf(S.oneCurrent.passId, blank.n);
+    var correct = norm(word) === norm(blank.answer);
+    Array.prototype.forEach.call($("oneChoices").children, function (c) {
+      c.disabled = true;
+      if (norm(c.getAttribute("data-ans")) === norm(blank.answer)) c.classList.add("right");
+    });
+    if (correct) {
+      btn.classList.add("right");
+      renderOneSentence(blank, true);
+      if (S.attempts[k] === 0) S.stars++;
+      S.status[k] = "right";
+      S.streak++; if (S.streak > S.best) S.best = S.streak;
+      $("oneFb").className = "fb good";
+      $("oneFb").innerHTML = pick(GOOD) + (S.streak >= 3 ? " 🔥×" + S.streak : "");
+      confetti(6);
+      utter(blank._before + blank.answer + blank._after);
+    } else {
+      btn.classList.add("wrong");
+      renderOneSentence(blank, false, word);
+      S.attempts[k]++;
+      S.streak = 0;
+      S.missed[blank.answer] = (S.missed[blank.answer] || 0) + 1;
+      $("oneFb").className = "fb bad";
+      $("oneFb").innerHTML = pick(BAD) + '<div style="margin-top:4px;color:#2e7d32">正確：<b>' + blank.answer + "</b></div>";
+      var tip = blank.tip || "";
+      $("oneWhy").innerHTML = '<div class="why">💡 ' + tip +
+        '<div class="mean"><b>' + blank.answer + "</b> = " + zhOf(blank.answer) + "</div></div>";
+      setTimeout(function () { if (S.answeredOne) renderOneSentence(blank, true); }, 600);
+      if (S.attempts[k] < 3) {
+        // requeue a fresh copy later
+        S.oneQueue.push(S.oneCurrent);
+      } else {
+        S.status[k] = "right"; // give up after 3, count as done for progress
+      }
+    }
+    $("oneNextBtn").classList.remove("hidden");
+    $("oneNextBtn").textContent = S.oneQueue.length ? "下一題 ➡️" : "睇成績 🏆";
+    updateBar();
+  }
+
+  $("oneNextBtn").addEventListener("click", nextOne);
+  $("speakOneBtn").addEventListener("click", function () {
+    if (!S || !S.oneCurrent) return;
+    var k = keyOf(S.oneCurrent.passId, S.oneCurrent.blank.n);
+    speakBlankCtx(S.oneCurrent.blank, S.status[k] === "right");
+  });
+
+  function finish() {
+    show("finish");
+    var done = countDone();
+    var pct = S.total ? S.stars / S.total : 0;
+    $("finEmoji").textContent = pct === 1 ? "🏆" : pct >= 0.8 ? "🥇" : pct >= 0.6 ? "🥈" : "💪";
+    $("finTitle").textContent = pct === 1 ? "全部一次答啱！超級犀利！" : pct >= 0.8 ? "好叻呀！" : pct >= 0.6 ? "唔錯呀！繼續努力！" : "完成咗！多讀短文一定進步！";
+    $("finSummary").innerHTML = "⭐ " + S.stars + " / " + S.total + " 格一次答啱　🔥 最高連續 " + S.best;
+    var rows = "";
+    S.passes.forEach(function (p) {
+      var tot = p.blanks.length, ok = 0;
+      p.blanks.forEach(function (b) {
+        var k = keyOf(p.id, b.n);
+        if (S.attempts[k] === 0 && S.status[k] === "right") ok++;
+      });
+      rows += "<tr><td>" + p.title + "</td><td>" + tot + "</td><td>" + ok + "</td></tr>";
+    });
+    $("sumTable").innerHTML = "<tr><th>短文</th><th>空格</th><th>一次答啱</th></tr>" + rows;
+    var box = $("missedBox"); box.innerHTML = "";
+    var keys = Object.keys(S.missed);
+    if (!keys.length) box.innerHTML = '<p style="text-align:center;color:#2e7d32;font-weight:bold">🥇 Perfect！</p>';
+    else {
+      box.innerHTML = '<p style="font-weight:bold;color:#e65100">📝 要多練習：</p>';
+      keys.forEach(function (w) {
+        var d = document.createElement("div"); d.className = "missed";
+        d.innerHTML = "<b>" + w + "</b> " + zhOf(w) + " <small>（錯 " + S.missed[w] + " 次）</small>";
+        box.appendChild(d);
+      });
+    }
+    confetti(pct >= 0.8 ? 28 : 10);
+  }
+
+  function confetti(n) {
+    var icons = ["🎉","⭐","🌟","🐯","🌍","🌈","💚"];
+    for (var i = 0; i < n; i++) {
+      var s = document.createElement("span"); s.className = "confetti";
+      s.textContent = icons[Math.floor(Math.random() * icons.length)];
+      s.style.left = Math.random() * 100 + "vw";
+      s.style.animationDuration = (1.4 + Math.random() * 2) + "s";
+      document.body.appendChild(s);
+      (function (el) { setTimeout(function () { if (el.parentNode) el.parentNode.removeChild(el); }, 4000); })(s);
+    }
+  }
+
+  $("againBtn").addEventListener("click", function () { start(S.key, S.mode); });
+  $("backBtn").addEventListener("click", function () { show("home"); });
+  $("homeBtn").addEventListener("click", function () { if (confirm("要返回主頁嗎？今輪進度會冇咗。")) show("home"); });
+
+  window.__EV2 = {
+    PASSAGES: PASSAGES, WORD_LIST: WORD_LIST, buildChoices: buildChoices,
+    start: start, state: function () { return S; },
+    answers: function () {
+      var out = {};
+      ["p1","p2"].forEach(function (pid) {
+        out[pid] = PASSAGES[pid].blanks.map(function (b) { return { n: b.n, answer: b.answer }; });
+      });
+      return out;
+    }
+  };
+})();
+</script>
+</body>
+</html>
