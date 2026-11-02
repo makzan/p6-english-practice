@@ -75,66 +75,60 @@
   .next { display: block; margin: 14px auto 0; font-size: 1.3rem; font-weight: bold; color: #fff; background: #fb8c00; border-radius: 20px; padding: 14px 28px; box-shadow: 0 6px 0 #e65100; min-width: 200px; }
   .next:active { transform: translateY(4px); box-shadow: 0 2px 0 #e65100; }
   .start { font-size: 1.3rem; font-weight: bold; color: #fff; background: #43a047; border-radius: 20px; padding: 14px 28px; box-shadow: 0 6px 0 #2e7d32; }
-  .picker {
-    background: #e3f2fd; border-radius: 16px; padding: 12px; margin-top: 8px; border: 3px solid #64b5f6;
+  /* Viewport-fixed answer overlay (NOT in document flow) */
+  :root { --dock-h: 280px; }
+  #picker, #oneDock {
+    position: fixed !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    transform: none !important; /* avoid fixed containing-block bugs */
+    z-index: 1000;
+    max-height: min(46vh, 360px);
+    overflow-x: hidden;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 10px 12px calc(10px + env(safe-area-inset-bottom, 0px));
+    border-radius: 22px 22px 0 0;
+    border-bottom: none;
+    box-shadow: 0 -12px 32px rgba(0,40,80,.3);
   }
-  .picker h3 { margin: 0 0 8px; color: #1565c0; font-size: 1.1rem; }
-  /* Sticky answer dock — stays on screen while passage scrolls */
-  #picker.dock {
-    position: fixed; left: 0; right: 0; bottom: 0; z-index: 80;
-    margin: 0; border-radius: 22px 22px 0 0; border: 4px solid #42a5f5; border-bottom: none;
-    box-shadow: 0 -10px 28px rgba(13,71,161,.28);
-    max-height: min(52vh, 420px); overflow-y: auto;
-    padding: 12px 14px calc(12px + env(safe-area-inset-bottom, 0px));
+  #picker {
     background: linear-gradient(180deg, #e3f2fd 0%, #bbdefb 100%);
-    -webkit-overflow-scrolling: touch;
+    border: 4px solid #42a5f5;
+    border-bottom: none;
   }
-  #picker.dock .choices { gap: 8px; }
-  #picker.dock .choice { min-height: 52px; padding: 12px 6px; }
-  #picker.dock::before {
-    content: ""; display: block; width: 48px; height: 5px; border-radius: 999px;
-    background: #90caf9; margin: 0 auto 8px;
+  #picker h3 { margin: 0 0 8px; color: #1565c0; font-size: 1.05rem; text-align: center; }
+  #picker::before, #oneDock::before {
+    content: ""; display: block; width: 44px; height: 5px; border-radius: 999px;
+    background: rgba(0,0,0,.18); margin: 0 auto 8px;
   }
-  @media (min-width: 820px) {
-    #picker.dock {
-      left: 50%; right: auto; width: min(780px, 100%);
-      transform: translateX(-50%);
-    }
-  }
-  /* Keep last blanks above the dock */
-  body.picking-pass #quiz.card {
-    padding-bottom: calc(min(52vh, 420px) + 28px);
-  }
-  body.picking-pass .passage {
-    margin-bottom: 8px;
-    scroll-margin-bottom: calc(min(52vh, 420px) + 24px);
-  }
-  body.picking-pass .blank.open {
-    scroll-margin-bottom: calc(min(52vh, 420px) + 40px);
-    scroll-margin-top: 80px;
-  }
-  /* One-mode: choices dock too (same tablet UX) */
-  #oneMode .choices-dock {
-    position: fixed; left: 0; right: 0; bottom: 0; z-index: 80;
+  #picker .choices, #oneDock .choices { gap: 8px; }
+  #picker .choice, #oneDock .choice { min-height: 50px; padding: 11px 6px; }
+  #oneDock {
     background: linear-gradient(180deg, #e8f5e9 0%, #c8e6c9 100%);
-    border-radius: 22px 22px 0 0; border: 4px solid #66bb6a; border-bottom: none;
-    box-shadow: 0 -10px 28px rgba(27,94,32,.25);
-    padding: 12px 14px calc(12px + env(safe-area-inset-bottom, 0px));
-    max-height: min(52vh, 420px); overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
+    border: 4px solid #66bb6a;
+    border-bottom: none;
   }
-  #oneMode .choices-dock::before {
-    content: ""; display: block; width: 48px; height: 5px; border-radius: 999px;
-    background: #a5d6a7; margin: 0 auto 8px;
+  /* Inner max-width for large screens — keeps fixed full-bleed */
+  #picker .dock-inner, #oneDock .dock-inner {
+    max-width: 780px; margin: 0 auto;
   }
-  @media (min-width: 820px) {
-    #oneMode .choices-dock {
-      left: 50%; right: auto; width: min(780px, 100%);
-      transform: translateX(-50%);
-    }
+  /* Passage stays readable; reserve space under last blanks */
+  body.mode-pass #quiz.card,
+  body.picking-pass #quiz.card {
+    padding-bottom: calc(var(--dock-h) + 36px);
   }
+  body.mode-one #quiz.card,
   body.picking-one #quiz.card {
-    padding-bottom: calc(min(52vh, 420px) + 28px);
+    padding-bottom: calc(var(--dock-h) + 36px);
+  }
+  .blank, .blank.open {
+    scroll-margin-bottom: calc(var(--dock-h) + 24px);
+    scroll-margin-top: 72px;
   }
   .bigemoji { font-size: 4rem; text-align: center; animation: bounce 1s infinite; }
   .row { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
@@ -179,12 +173,6 @@
   <div id="passageMode">
     <div class="passage" id="passage"></div>
     <button class="speak" id="speakPassBtn">🔊 聽呢段（未答嘅空格讀 blank）</button>
-    <div class="picker dock hidden" id="picker">
-      <h3 id="pickerTitle">揀答案</h3>
-      <div class="choices" id="passChoices"></div>
-      <div class="fb" id="passFb"></div>
-      <div id="passWhy"></div>
-    </div>
     <button class="next hidden" id="finishPassBtn">睇成績 🏆</button>
   </div>
 
@@ -193,12 +181,24 @@
     <div class="prompt" id="onePrompt">揀正確生字：</div>
     <div class="sentence" id="oneSentence"></div>
     <button class="speak" id="speakOneBtn">🔊 聽句子</button>
-    <div class="choices-dock" id="oneDock">
-      <div class="choices" id="oneChoices"></div>
-      <div class="fb" id="oneFb"></div>
-      <div id="oneWhy"></div>
-      <button class="next hidden" id="oneNextBtn">下一題 ➡️</button>
-    </div>
+  </div>
+</div>
+
+<!-- Viewport-fixed overlays (siblings of cards — never in passage flow) -->
+<div id="picker" class="hidden" aria-live="polite">
+  <div class="dock-inner">
+    <h3 id="pickerTitle">揀答案</h3>
+    <div class="choices" id="passChoices"></div>
+    <div class="fb" id="passFb"></div>
+    <div id="passWhy"></div>
+  </div>
+</div>
+<div id="oneDock" class="hidden" aria-live="polite">
+  <div class="dock-inner">
+    <div class="choices" id="oneChoices"></div>
+    <div class="fb" id="oneFb"></div>
+    <div id="oneWhy"></div>
+    <button class="next hidden" id="oneNextBtn">下一題 ➡️</button>
   </div>
 </div>
 
@@ -402,14 +402,47 @@
   function $(id) { return document.getElementById(id); }
   function pick(a) { return a[Math.floor(Math.random() * a.length)]; }
   function shuffle(a) { a = a.slice(); for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+  function measureDock(el) {
+    if (!el || el.classList.contains("hidden")) return;
+    var h = Math.ceil(el.getBoundingClientRect().height);
+    if (h > 40) document.documentElement.style.setProperty("--dock-h", h + "px");
+  }
   function setPickMode(mode) {
     document.body.classList.toggle("picking-pass", mode === "pass");
     document.body.classList.toggle("picking-one", mode === "one");
   }
+  function setQuizMode(mode) {
+    document.body.classList.toggle("mode-pass", mode === "pass");
+    document.body.classList.toggle("mode-one", mode === "one");
+    if (mode !== "pass") { $("picker").classList.add("hidden"); document.body.classList.remove("picking-pass"); }
+    if (mode !== "one") { $("oneDock").classList.add("hidden"); document.body.classList.remove("picking-one"); }
+  }
   function show(id) {
     ["home","quiz","finish"].forEach(function (s) { $(s).classList.toggle("hidden", s !== id); });
-    if (id !== "quiz") setPickMode(null);
+    if (id !== "quiz") {
+      document.body.classList.remove("picking-pass", "picking-one", "mode-pass", "mode-one");
+      $("picker").classList.add("hidden");
+      $("oneDock").classList.add("hidden");
+    }
     window.scrollTo(0, 0);
+  }
+  function scrollBlankAboveDock(k) {
+    var el = document.querySelector('.blank.open[data-k="' + k + '"]') || document.querySelector('.blank[data-k="' + k + '"]');
+    if (!el || !el.getBoundingClientRect) return;
+    measureDock($("picker"));
+    var dockH = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--dock-h")) || 280;
+    var rect = el.getBoundingClientRect();
+    var topLimit = 56;
+    var bottomLimit = window.innerHeight - dockH - 16;
+    var delta = 0;
+    if (rect.bottom > bottomLimit) delta = rect.bottom - bottomLimit + 8;
+    else if (rect.top < topLimit) delta = rect.top - topLimit;
+    // Cap: never jump more than ~40% of viewport for a single tap
+    if (!delta) return;
+    var cap = Math.round(window.innerHeight * 0.4);
+    if (delta > cap) delta = cap;
+    if (delta < -cap) delta = -cap;
+    window.scrollBy({ top: delta, left: 0, behavior: "smooth" });
   }
   function norm(s) { return String(s).toLowerCase().replace(/\s+/g, " ").trim(); }
   function zhOf(w) { return (VOCAB[w] && VOCAB[w].zh) || ""; }
@@ -590,9 +623,24 @@
         html += "</p>";
       });
     });
+    var y = window.scrollY;
     $("passage").innerHTML = html;
     Array.prototype.forEach.call($("passage").querySelectorAll(".blank:not(.done)"), function (el) {
       el.addEventListener("click", function () { openBlank(el.getAttribute("data-k")); });
+    });
+    window.scrollTo(0, y);
+  }
+
+  /** Highlight active blank without destroying passage DOM (avoids scroll jump). */
+  function paintActiveBlank(k) {
+    Array.prototype.forEach.call($("passage").querySelectorAll(".blank[data-k]"), function (el) {
+      var kk = el.getAttribute("data-k");
+      if (S.status[kk] === "right") {
+        el.classList.add("right", "done");
+        el.classList.remove("open");
+      } else {
+        el.classList.toggle("open", kk === k);
+      }
     });
   }
 
@@ -607,7 +655,7 @@
   function openBlank(k) {
     if (S.status[k] === "right") return;
     S.active = k;
-    renderPassage();
+    paintActiveBlank(k); // do NOT rebuild passage HTML — that jumps scroll
     var x = findBlank(k);
     var blank = x.blank;
     $("picker").classList.remove("hidden");
@@ -625,11 +673,11 @@
       box.appendChild(b);
     });
     setPickMode("pass");
-    // Scroll the blank into view above the sticky dock (not the dock itself)
-    setTimeout(function () {
-      var el = document.querySelector('.blank[data-k="' + k + '"]');
-      if (el && el.scrollIntoView) el.scrollIntoView({ behavior: "smooth", block: "center" });
-    }, 30);
+    // Never scrollIntoView the dock. Only nudge if blank is under the overlay.
+    requestAnimationFrame(function () {
+      measureDock($("picker"));
+      scrollBlankAboveDock(k);
+    });
   }
 
   function answerPassage(k, word, btn, choices) {
@@ -671,11 +719,12 @@
         '<div class="mean"><b>' + blank.answer + "</b> = " + zhOf(blank.answer) +
         (zhOf(word) ? "　｜　你揀咗 <b>" + word + "</b> = " + zhOf(word) : "") + "</div></div>";
       // re-enable after short delay so they can try again, or auto-mark and move on — requeue concept: leave blank open
+      requestAnimationFrame(function () { measureDock($("picker")); });
       setTimeout(function () {
         Array.prototype.forEach.call($("passChoices").children, function (c) { c.disabled = false; c.classList.remove("wrong"); });
-        // keep correct highlighted? clear all for retry
         Array.prototype.forEach.call($("passChoices").children, function (c) { c.classList.remove("right"); });
         $("passFb").textContent = "再試一次啦！"; $("passFb").className = "fb";
+        measureDock($("picker"));
       }, 1200);
     }
     updateBar();
@@ -705,6 +754,8 @@
   function startOne() {
     $("passageMode").classList.add("hidden");
     $("oneMode").classList.remove("hidden");
+    setQuizMode("one");
+    $("oneDock").classList.remove("hidden");
     setPickMode("one");
     $("ptitle").textContent = S.passes.map(function (p) { return p.title; }).join("  +  ") + "（逐題）";
     S.oneQueue = shuffle(S.blanks.slice());
@@ -749,6 +800,7 @@
       box.appendChild(b);
     });
     updateBar();
+    requestAnimationFrame(function () { measureDock($("oneDock")); });
   }
 
   function answerOne(word, btn) {
