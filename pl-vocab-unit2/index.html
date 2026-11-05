@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>🌍 PowerLesson · Unit 2 Vocabulary</title>
+<style>
+  :root {
+    --bg: linear-gradient(135deg,#d4fc79 0%,#96e6a1 50%,#84fab0 100%);
+    --h: #1b5e20;
+    --sub: #2e7d32;
+    --bd: #81c784;
+    --soft: #e8f5e9;
+    --shadow: #a5d6a7;
+    --accent: #43a047;
+  }
+  
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body {
+    margin: 0; min-height: 100vh; padding: 14px;
+    font-family: "Arial Rounded MT Bold", "Comic Sans MS", "PingFang TC", "Microsoft JhengHei", "Noto Sans TC", sans-serif;
+    background: var(--bg); background-attachment: fixed; color: #263238;
+  }
+  h1 { text-align: center; font-size: clamp(1.15rem, 4.6vw, 1.85rem); color: var(--h); text-shadow: 2px 2px 0 #fff; margin: 6px 0 2px; }
+  .sub { text-align: center; color: var(--sub); margin: 0 0 14px; font-size: 1.02rem; }
+  .card { background: #fff; border-radius: 26px; max-width: 720px; margin: 0 auto; padding: 20px 16px 24px; box-shadow: 0 10px 28px rgba(0,0,0,.18); border: 5px solid var(--bd); }
+  .hidden { display: none !important; }
+  button { font-family: inherit; cursor: pointer; border: none; }
+  .intro { font-size: 1.05rem; line-height: 1.7; background: var(--soft); border-radius: 16px; padding: 12px 14px; margin-bottom: 12px; }
+  .topics { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .topic { background: var(--soft); border-radius: 18px; padding: 14px 10px; font-size: 1.08rem; font-weight: bold; color: var(--h); box-shadow: 0 5px 0 var(--shadow); text-align: left; }
+  .topic .ti { font-size: 1.8rem; display: block; margin-bottom: 2px; }
+  .topic:active { transform: translateY(3px); box-shadow: 0 2px 0 var(--shadow); }
+  .topic.mix { grid-column: 1 / -1; background: #fff3e0; color: #e65100; box-shadow: 0 5px 0 #ffb74d; }
+  .topic .desc { font-size: .82rem; font-weight: normal; margin-top: 4px; color: #555; }
+  .topbar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
+  .pill { background: var(--soft); border-radius: 999px; padding: 6px 12px; font-weight: bold; color: var(--h); font-size: .95rem; }
+  .pill.star { background: #fff8e1; color: #f57f17; }
+  .pill.fire { background: #fbe9e7; color: #d84315; }
+  .homebtn { background: #eceff1; border-radius: 999px; padding: 6px 12px; font-size: 1rem; }
+  .bar { flex: 1 1 100%; height: 14px; background: #e0e0e0; border-radius: 999px; overflow: hidden; }
+  .bar > div { height: 100%; width: 0; background: linear-gradient(90deg, var(--accent), #42a5f5); transition: width .35s; }
+  .tag { display: inline-block; background: var(--accent); color: #fff; border-radius: 12px; padding: 4px 12px; font-size: .95rem; }
+  .retry { display: inline-block; background: #ffca28; color: #6d4c00; border-radius: 12px; padding: 3px 10px; font-size: .9rem; margin-left: 6px; }
+  .prompt { font-size: 1.05rem; color: var(--h); margin: 10px 0 4px; font-weight: bold; }
+  .sentence {
+    font-size: clamp(1.12rem, 4.2vw, 1.5rem); line-height: 1.75; background: #fffde7;
+    border-radius: 18px; padding: 14px; margin: 8px 0 10px; border: 3px dashed #ffd54f; color: #1a237e; font-weight: 600;
+  }
+  .blank { display: inline-block; min-width: 3.2em; padding: 1px 8px; margin: 0 1px; border-bottom: 3px solid var(--accent); background: var(--soft); border-radius: 6px 6px 0 0; color: var(--h); text-align: center; }
+  .blank.right { background: #c8e6c9; border-bottom-color: #2e7d32; color: #1b5e20; }
+  .blank.wrong { background: #ffcdd2; border-bottom-color: #c62828; color: #b71c1c; }
+  .blank.open { background: #fff59d; border-bottom-color: #f9a825; box-shadow: 0 0 0 3px rgba(249,168,37,.35); cursor: pointer; }
+  .verb { color: #888; font-size: .92em; font-weight: normal; }
+  .ipa { font-size: 1.6rem; color: #6a1b9a; font-weight: bold; letter-spacing: .02em; }
+  .choices { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .choice {
+    background: var(--soft); color: var(--h); font-size: clamp(1rem, 3.8vw, 1.28rem); font-weight: bold;
+    border-radius: 16px; padding: 14px 8px; min-height: 60px; box-shadow: 0 5px 0 var(--shadow);
+  }
+  .choice:active { transform: translateY(3px); box-shadow: 0 2px 0 var(--shadow); }
+  .choice.right { background: #c8e6c9; box-shadow: 0 5px 0 #66bb6a; color: #1b5e20; }
+  .choice.wrong { background: #ffcdd2; box-shadow: 0 5px 0 #e57373; color: #b71c1c; }
+  .choice:disabled { cursor: default; }
+  .speak { display: inline-block; margin: 6px 4px; background: #0288d1; color: #fff; font-size: 1.05rem; font-weight: bold; border-radius: 999px; padding: 10px 16px; box-shadow: 0 4px 0 #01579b; }
+  .speak:active { transform: translateY(3px); box-shadow: 0 1px 0 #01579b; }
+  .fb { text-align: center; font-size: 1.2rem; font-weight: bold; margin-top: 10px; min-height: 1.3em; }
+  .fb.good { color: #2e7d32; } .fb.bad { color: #c62828; }
+  .why { background: #fff3e0; border-left: 6px solid #ff9800; border-radius: 10px; padding: 10px 12px; margin: 10px 0; font-size: 1.05rem; line-height: 1.6; text-align: left; }
+  .why b { color: #e65100; }
+  .next { display: block; margin: 14px auto 0; font-size: 1.3rem; font-weight: bold; color: #fff; background: #fb8c00; border-radius: 20px; padding: 14px 28px; box-shadow: 0 6px 0 #e65100; min-width: 200px; }
+  .next:active { transform: translateY(4px); box-shadow: 0 2px 0 #e65100; }
+  .start { font-size: 1.3rem; font-weight: bold; color: #fff; background: var(--accent); border-radius: 20px; padding: 14px 28px; box-shadow: 0 6px 0 var(--h); }
+  .bigemoji { font-size: 4rem; text-align: center; animation: bounce 1s infinite; }
+  .row { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+  .row .next, .row .start { margin: 10px 0 0; }
+  table.sum { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 1.05rem; }
+  table.sum th, table.sum td { padding: 8px 6px; text-align: center; border-bottom: 2px solid #e0e0e0; }
+  table.sum th { background: var(--soft); color: var(--h); }
+  .missed { background: #fff8e1; border-radius: 12px; padding: 6px 10px; margin: 4px 0; font-size: .98rem; text-align: left; }
+  .wordbank { font-size: .9rem; color: #555; background: var(--soft); border-radius: 12px; padding: 8px 10px; margin-bottom: 10px; line-height: 1.5; }
+  .passage { font-size: clamp(1.05rem, 3.8vw, 1.28rem); line-height: 1.85; color: #1a237e; background: #fffde7; border: 3px dashed #ffd54f; border-radius: 16px; padding: 14px 12px; margin-bottom: 12px; }
+  .passage p { margin: 0 0 12px; }
+  :root { --dock-h: 280px; }
+  #picker {
+    position: fixed !important; left: 0 !important; right: 0 !important; bottom: 0 !important;
+    width: 100% !important; z-index: 1000; max-height: min(46vh, 360px);
+    overflow-x: hidden; overflow-y: auto; -webkit-overflow-scrolling: touch;
+    padding: 10px 12px calc(10px + env(safe-area-inset-bottom, 0px));
+    border-radius: 22px 22px 0 0; border: 4px solid #42a5f5; border-bottom: none;
+    background: linear-gradient(180deg, #e3f2fd 0%, #bbdefb 100%);
+    box-shadow: 0 -12px 32px rgba(0,40,80,.3);
+  }
+  #picker::before { content: ""; display: block; width: 44px; height: 5px; border-radius: 999px; background: rgba(0,0,0,.18); margin: 0 auto 8px; }
+  #picker h3 { margin: 0 0 8px; color: #1565c0; font-size: 1.05rem; text-align: center; }
+  #picker .dock-inner { max-width: 720px; margin: 0 auto; }
+  body.picking #quiz.card { padding-bottom: calc(var(--dock-h) + 36px); }
+  .blank { scroll-margin-bottom: calc(var(--dock-h) + 24px); scroll-margin-top: 72px; }
+  @keyframes bounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+  .confetti { position: fixed; top: -30px; font-size: 1.7rem; pointer-events: none; animation: fall linear forwards; z-index: 99; }
+  @keyframes fall { to { transform: translateY(110vh) rotate(720deg); opacity: .6; } }
+  a.backhome { display: inline-block; margin: 8px auto 0; color: var(--h); font-weight: bold; text-decoration: none; }
+
+</style>
+</head>
+<body>
+<h1>🌍 PowerLesson · Unit 2 Vocabulary</h1>
+<div class="sub">Environment · Receptive + Productive</div>
+<p style="text-align:center;margin:0 0 10px"><a class="backhome" href="../">🏠 返回練習主頁</a></p>
+
+<div class="card" id="home">
+  <div class="intro">🟢 Receptive：population / ecosystem / biodiversity…<br>🔵 Productive：pollute、dump into、shelter、refuses…（有啲題要變詞形）<br>❌ 答錯有中文提示。</div>
+  <div class="topics" id="topics"></div>
+</div>
+
+<div class="card hidden" id="quiz">
+  <div class="topbar">
+    <button class="homebtn" id="homeBtn">🏠 返回</button>
+    <span class="pill" id="progTxt">1 / 1</span>
+    <span class="pill star">⭐ <span id="stars">0</span></span>
+    <span class="pill fire">🔥 <span id="streak">0</span></span>
+    <div class="bar"><div id="bar"></div></div>
+  </div>
+  <div><span class="tag" id="tag"></span><span class="retry hidden" id="retryTag">🔁 再試呢題</span></div>
+  <div class="prompt" id="prompt"></div>
+  <div class="sentence" id="sentence"></div>
+  <button class="speak" id="speakBtn">🔊 聽句子</button>
+  <div class="choices" id="choices"></div>
+  <div class="fb" id="fb"></div>
+  <div id="why"></div>
+  <button class="next hidden" id="nextBtn">下一題 ➡️</button>
+</div>
+
+
+
+<div class="card hidden" id="finish">
+  <div class="bigemoji" id="finEmoji">🏆</div>
+  <h2 style="text-align:center;color:var(--h);margin:6px 0" id="finTitle">完成！</h2>
+  <p style="text-align:center;font-size:1.2rem" id="finSummary"></p>
+  <table class="sum" id="sumTable"></table>
+  <div id="missedBox"></div>
+  <div class="row">
+    <button class="start" id="againBtn">🔄 再玩一次</button>
+    <button class="next" id="backBtn">🏠 揀其他主題</button>
+  </div>
+</div>
+
+<script>
+(function () {
+  "use strict";
+  var TOPICS = {"receptive": {"name": "Unit 2 Receptive", "icon": "🌍", "desc": "環境主題生字 MC"}, "productive": {"name": "Unit 2 Productive", "icon": "🐯", "desc": "填空（注意詞形）"}, "all": {"name": "全部混合", "icon": "🎲", "desc": "Receptive + Productive"}};
+  var ITEMS = [{"id": "u2r1", "topic": "receptive", "prompt": "揀正確生字：", "sentence": "The ______ of frogs in this pond has dropped because the water is polluted.", "answer": "population", "answerH": "population", "choices": ["biodiversity", "ecosystem", "population"], "tip": "數量下降用 population。"}, {"id": "u2r2", "topic": "receptive", "prompt": "揀正確生字：", "sentence": "The ______ of the rainforest includes trees, insects, birds, and soil.", "answer": "ecosystem", "answerH": "ecosystem", "choices": ["ecosystem", "population", "conservation"], "tip": "樹木、昆蟲、鳥、泥土組成 <b>ecosystem</b>。"}, {"id": "u2r3", "topic": "receptive", "prompt": "揀正確生字：", "sentence": "Scientists studied the reef and found 300 different kinds of fish. This shows the reef has high ______.", "answer": "biodiversity", "answerH": "biodiversity", "choices": ["population", "biodiversity", "deforestation"], "tip": "好多不同物種 → 高 <b>biodiversity</b>。"}, {"id": "u2r4", "topic": "receptive", "prompt": "揀正確生字：", "sentence": "A lizard is a ______; it has dry scales.", "answer": "reptile", "answerH": "reptile", "choices": ["amphibian", "reptile", "mammal"], "tip": "蜥蜴有乾鱗 → <b>reptile</b>（唔係 amphibian）。"}, {"id": "u2r5", "topic": "receptive", "prompt": "揀正確生字：", "sentence": "Cutting down trees increases ______ because trees normally absorb CO₂.", "answer": "carbon emissions", "answerH": "carbon emissions", "choices": ["carbon emissions", "carbon footprints", "conservation"], "tip": "樹吸收 CO₂；砍樹令 <b>carbon emissions</b> 上升。"}, {"id": "u2r6", "topic": "receptive", "prompt": "揀正確生字：", "sentence": "An earthquake is a ______, but a war is not.", "answer": "natural disaster", "answerH": "natural disaster", "choices": ["ecosystem", "natural disaster", "deforestation"], "tip": "地震係 <b>natural disaster</b>；戰爭唔係。"}, {"id": "u2r7", "topic": "receptive", "prompt": "揀正確生字：", "sentence": "______ is one cause of climate change because trees that are cut down can no longer absorb CO₂ from the air.", "answer": "Deforestation", "answerH": "Deforestation", "choices": ["Carbon emissions", "Conservation", "Deforestation"], "tip": "砍伐森林 → <b>Deforestation</b>。"}, {"id": "u2r8", "topic": "receptive", "prompt": "揀正確生字：", "sentence": "Without ______, many species would disappear forever.", "answer": "conservation", "answerH": "conservation", "choices": ["population", "natural disaster", "conservation"], "tip": "冇保育 → 物種消失；要 <b>conservation</b>。"}, {"id": "u2p1a", "topic": "productive", "prompt": "Unit 2 生字填空：", "sentence": "Factories often ______ rivers with dangerous chemicals from their production processes.", "answer": "pollute", "choices": ["pollute", "dump into", "capture", "refuse"], "tip": "污染河水 → <b>pollute</b>。"}, {"id": "u2p1b", "topic": "productive", "prompt": "Unit 2 生字填空：", "sentence": "Some companies ______ waste directly ______ local rivers instead of treating it.", "answer": "dump … into", "answerH": "dump … into", "choices": ["dump … into", "cut … down", "burn … down", "speak … up"], "tip": "把廢物倒入河 → 片語 <b>dump into</b>。", "alts": ["dump into"]}, {"id": "u2p1c", "topic": "productive", "prompt": "Unit 2 生字填空：", "sentence": "This can ______ the water and harm fish and plants.", "answer": "pollute", "choices": ["pollute", "capture", "persuade", "donate"], "tip": "污染水質 → <b>pollute</b>。"}, {"id": "u2p1d", "topic": "productive", "prompt": "Unit 2 生字填空：", "sentence": "We must protect the ______ for future generations.", "answer": "environment", "choices": ["environment", "habitat", "shelter", "policy"], "tip": "保護環境 → <b>environment</b>。"}, {"id": "u2p2a", "topic": "productive", "prompt": "Unit 2 生字填空：", "sentence": "You can ______ money to a wildlife charity that rescues injured animals.", "answer": "donate", "choices": ["donate", "refuse", "persuade", "capture"], "tip": "捐錢 → <b>donate</b>。"}, {"id": "u2p2b", "topic": "productive", "prompt": "Unit 2 生字填空：", "sentence": "You can be a ______ at a local animal shelter, feeding the animals for free.", "answer": "volunteer", "choices": ["volunteer", "policy", "habitat", "species"], "tip": "義工 → <b>volunteer</b>。"}, {"id": "u2p2c", "topic": "productive", "prompt": "Unit 2 生字填空：", "sentence": "Most importantly, you can ______ when you see cruelty.", "answer": "take action", "choices": ["take action", "speak up", "burn down", "dump into"], "tip": "採取行動 → <b>take action</b>。"}, {"id": "u2p2d", "topic": "productive", "prompt": "Unit 2 生字填空：", "sentence": "You can ______ to protect endangered species.", "answer": "speak up", "choices": ["speak up", "take action", "dump into", "burn down"], "tip": "為瀕危物種發聲 → <b>speak up</b>。"}, {"id": "u2p3", "topic": "productive", "prompt": "Unit 2 生字填空：", "sentence": "Polar bears are ______ by climate change because the ice they hunt on is melting.", "answer": "threatened", "choices": ["threatened", "extinct", "illegal", "captured"], "tip": "受威脅 → <b>threatened</b>。"}, {"id": "u2p4", "topic": "productive", "prompt": "Unit 2 生字填空：", "sentence": "During the storm, the animals found ______ in a cave and stayed dry and safe.", "answer": "shelter", "choices": ["shelter", "habitat", "environment", "policy"], "tip": "暴風雨中搵到庇護 → <b>shelter</b>（唔係 habitat 棲息地）。"}, {"id": "u2p5", "topic": "productive", "prompt": "Unit 2 生字填空：", "sentence": "The zookeepers used a net to ______ the injured bird so they could treat it.", "answer": "capture", "choices": ["capture", "pollute", "persuade", "refuse"], "tip": "用網捉住 → <b>capture</b>。"}, {"id": "u2p6", "topic": "productive", "prompt": "Unit 2 生字填空：", "sentence": "Farmers spray ______ on their crops to kill insects, but these can harm other animals too.", "answer": "chemicals", "choices": ["chemicals", "policy", "habitat", "volunteer"], "tip": "化學物質 → <b>chemicals</b>。"}, {"id": "u2p7", "topic": "productive", "prompt": "Unit 2 生字填空（注意詞形）：", "sentence": "He ______ to buy products made from ivory because he wants to protect elephants.", "answer": "refuses", "choices": ["refuses", "refuse", "refused", "refusing"], "tip": "He → 現在習慣用 <b>refuses</b>。"}, {"id": "u2p8", "topic": "productive", "prompt": "Unit 2 生字填空：", "sentence": "The government introduced a new ______ that makes it illegal to hunt sea turtles.", "answer": "policy", "choices": ["policy", "volunteer", "shelter", "species"], "tip": "政府政策 → <b>policy</b>。"}, {"id": "u2p9", "topic": "productive", "prompt": "Unit 2 生字填空（注意詞形）：", "sentence": "My brother didn't want to volunteer at first, but I ______ him by showing him how much the shelter dogs needed help.", "answer": "persuaded", "choices": ["persuaded", "persuade", "persuades", "persuading"], "tip": "過去發生 → <b>persuaded</b>。"}, {"id": "u2p10", "topic": "productive", "prompt": "Unit 2 生字填空：", "sentence": "Some farmers ______ forests — they set them on fire to clear the land quickly.", "answer": "burn down", "choices": ["burn down", "cut down", "dump into", "take action"], "tip": "放火燒毀樹林 → <b>burn down</b>。"}];
+  
+  var ROUND_CAP = 99, MAX_RETRY = 1;
+  var GOOD = ["🌟 好叻呀！", "🎉 完全正確！", "💯 犀利！", "🚀 勁呀！", "👏 Excellent!", "😎 Well done!"];
+  var BAD = ["💪 唔緊要，睇吓提示！", "🙂 差少少！記住啦！", "🌱 錯咗先學得識！", "🤗 加油！"];
+
+  function $(id) { return document.getElementById(id); }
+  function pick(a) { return a[Math.floor(Math.random() * a.length)]; }
+  function shuffle(a) { a = a.slice(); for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+  function show(id) { ["home","quiz","finish"].forEach(function(s){ $(s).classList.toggle("hidden", s !== id); }); window.scrollTo(0,0); document.body.classList.remove("picking"); if($("picker")) $("picker").classList.add("hidden"); }
+  function ansKey(it) { return it.answerH || (Array.isArray(it.answer) ? it.answer.join(" … ") : it.answer); }
+  function norm(s) {
+    return String(s).toLowerCase()
+      .replace(/['']/g, "'")
+      .replace(/…/g, "...")
+      .replace(/\s+/g, " ")
+      .replace(/\b(will not)\b/g, "won't")
+      .replace(/\b(do not)\b/g, "don't")
+      .replace(/\b(does not)\b/g, "doesn't")
+      .replace(/\b(did not)\b/g, "didn't")
+      .replace(/\b(is not)\b/g, "isn't")
+      .replace(/\b(are not)\b/g, "aren't")
+      .replace(/\b(was not)\b/g, "wasn't")
+      .replace(/\b(were not)\b/g, "weren't")
+      .replace(/\b(has not)\b/g, "hasn't")
+      .replace(/\b(have not)\b/g, "haven't")
+      .trim();
+  }
+  function answersMatch(word, it) {
+    var key = norm(ansKey(it));
+    var w = norm(word);
+    if (w === key) return true;
+    if (it.alts) for (var i=0;i<it.alts.length;i++) if (norm(it.alts[i]) === w) return true;
+    return false;
+  }
+
+  var synth = ("speechSynthesis" in window) ? window.speechSynthesis : null;
+  var voice = null;
+  function pickVoice() {
+    if (!synth) return;
+    var vs = synth.getVoices() || [];
+    var prefs = [function(v){return /en-GB/i.test(v.lang);}, function(v){return /en-US/i.test(v.lang);}, function(v){return /^en/i.test(v.lang);}];
+    for (var i=0;i<prefs.length;i++) for (var j=0;j<vs.length;j++) if (prefs[i](vs[j])) { voice=vs[j]; return; }
+  }
+  if (synth) { pickVoice(); if (synth.addEventListener) synth.addEventListener("voiceschanged", pickVoice); else synth.onvoiceschanged = pickVoice; }
+  function speakText(t) {
+    if (!synth || !t) return;
+    if (!voice) pickVoice();
+    synth.cancel();
+    var u = new SpeechSynthesisUtterance(String(t).replace(/_/g, " ").replace(/______/g, "blank"));
+    if (voice) { u.voice = voice; u.lang = voice.lang; } else u.lang = "en-GB";
+    u.rate = 0.88;
+    setTimeout(function(){ synth.speak(u); }, 40);
+  }
+
+  var S = null;
+
+  function renderHome() {
+    var box = $("topics"); box.innerHTML = "";
+    Object.keys(TOPICS).forEach(function(k){
+      var g = TOPICS[k], b = document.createElement("button");
+      b.className = "topic" + (k === "all" ? " mix" : "");
+      var n = poolFor(k).length;
+      b.innerHTML = '<span class="ti">'+g.icon+"</span>"+g.name+'<div class="desc">'+g.desc+" · "+n+" 題</div>";
+      b.addEventListener("click", function(){ start(k); });
+      box.appendChild(b);
+    });
+  }
+
+  function poolFor(group) {
+    if (group === "all") return ITEMS.slice();
+    return ITEMS.filter(function(it){ return it.topic === group; });
+  }
+
+  function start(group) {
+    var pool = shuffle(poolFor(group));
+    var n = Math.min(ROUND_CAP, pool.length);
+    var qs = pool.slice(0, n).map(function(it){
+      return { item: it, attempt: 0, choices: shuffle((it.choices || []).slice()) };
+    });
+    S = { group: group, queue: qs, current: null, done: 0, stars: 0, streak: 0, best: 0,
+          stats: {}, missed: {}, totalFirst: n, mode: "mc" };
+    Object.keys(TOPICS).forEach(function(k){ if (k!=="all") S.stats[k]={total:0,ok:0}; });
+    show("quiz"); next();
+  }
+
+  function updateBar() {
+    var total = S.done + S.queue.length + (S.current ? 1 : 0);
+    $("progTxt").textContent = "第 " + Math.min(S.done+1, Math.max(total,1)) + " / " + total + " 題";
+    $("bar").style.width = (total ? Math.round(S.done / total * 100) : 0) + "%";
+    $("stars").textContent = S.stars; $("streak").textContent = S.streak;
+  }
+
+  function sentenceHTML(it, revealed, cls) {
+    var show = !!revealed;
+    var c = "blank" + (cls ? " " + cls : "");
+    var html;
+    if (it.html) {
+      html = it.html;
+      if (show) {
+        var ans = Array.isArray(it.answer) ? it.answer : [it.answer];
+        var i = 0;
+        html = html.replace(/______/g, function(){ return '<span class="'+c+'">'+(ans[i++]||"")+"</span>"; });
+      } else {
+        html = html.replace(/______/g, '<span class="'+c+'">______</span>');
+      }
+    } else if (it.sentence) {
+      var fill = show ? (Array.isArray(it.answer) ? it.answer : [String(it.answer)]) : null;
+      var n = 0;
+      html = it.sentence.replace(/______/g, function(){
+        if (!show) return '<span class="'+c+'">______</span>';
+        return '<span class="'+c+'">'+(fill[n++] || "")+"</span>";
+      });
+    } else {
+      html = (it.before||"") + '<span class="'+c+'">'+(show?ansKey(it):"______")+"</span>" + (it.after||"");
+    }
+    if (it.verb) html += ' <span class="verb">'+it.verb+"</span>";
+    if (it.ipa) html = '<div class="ipa">'+it.ipa+"</div>" + (it.promptWord ? '<div style="margin-top:8px">'+it.promptWord+"</div>" : "");
+    return html;
+  }
+
+  function next() {
+    document.body.classList.remove("picking");
+    if ($("picker")) $("picker").classList.add("hidden");
+    S.current = S.queue.shift() || null;
+    if (!S.current) { finish(); return; }
+    var q = S.current, it = q.item;
+    S.answered = false;
+    if (q.attempt === 0 && S.stats[it.topic]) S.stats[it.topic].total++;
+    $("tag").textContent = (TOPICS[it.topic] ? TOPICS[it.topic].icon + " " + TOPICS[it.topic].name : it.topic);
+    $("retryTag").classList.toggle("hidden", q.attempt === 0);
+    $("prompt").textContent = it.prompt || "揀正確答案：";
+    $("sentence").innerHTML = sentenceHTML(it, false, "");
+    $("fb").textContent=""; $("fb").className="fb"; $("why").innerHTML="";
+    $("nextBtn").classList.add("hidden");
+    var box = $("choices"); box.innerHTML="";
+    (q.choices.length ? q.choices : shuffle((it.choices||[]).slice())).forEach(function(w){
+      var b = document.createElement("button");
+      b.className="choice"; b.textContent=w; b.setAttribute("data-ans", w);
+      b.addEventListener("click", function(){ choose(w,b); });
+      box.appendChild(b);
+    });
+    updateBar();
+  }
+
+  function choose(word, btn) {
+    if (S.answered) return;
+    S.answered = true;
+    var q = S.current, it = q.item;
+    var correct = answersMatch(word, it);
+    Array.prototype.forEach.call($("choices").children, function(c){
+      c.disabled = true;
+      if (answersMatch(c.getAttribute("data-ans"), it)) c.classList.add("right");
+    });
+    if (correct) {
+      btn.classList.add("right");
+      $("sentence").innerHTML = sentenceHTML(it, true, "right");
+      if (q.attempt === 0) { S.stars++; if (S.stats[it.topic]) S.stats[it.topic].ok++; }
+      S.streak++; if (S.streak > S.best) S.best = S.streak;
+      $("fb").className="fb good";
+      $("fb").innerHTML = pick(GOOD) + (S.streak>=3 ? " 🔥 連續 "+S.streak+" 題！" : "");
+      confetti(S.streak>=5?12:6);
+      if (it.speak) speakText(it.speak);
+      else speakText(($("sentence").innerText || "").replace(/\([^)]*\)/g,""));
+    } else {
+      btn.classList.add("wrong");
+      $("sentence").innerHTML = sentenceHTML(it, true, "wrong");
+      S.streak = 0;
+      S.missed[ansKey(it)] = (S.missed[ansKey(it)]||0) + 1;
+      $("fb").className="fb bad";
+      $("fb").innerHTML = pick(BAD) + '<div style="margin-top:6px;color:#2e7d32">正確答案：<b>' + ansKey(it) + "</b></div>";
+      $("why").innerHTML = '<div class="why">💡 ' + (it.tip || "再睇清楚句子提示啦！") + "</div>";
+      setTimeout(function(){ if (S.current === q) $("sentence").innerHTML = sentenceHTML(it, true, "right"); }, 550);
+      if (q.attempt < MAX_RETRY) {
+        S.queue.push({ item: it, attempt: q.attempt+1, choices: shuffle((it.choices||[]).slice()) });
+      }
+    }
+    S.done++;
+    $("nextBtn").classList.remove("hidden");
+    $("nextBtn").textContent = S.queue.length ? "下一題 ➡️" : "睇成績 🏆";
+    updateBar();
+  }
+
+  function finish() {
+    show("finish");
+    var pct = S.totalFirst ? S.stars/S.totalFirst : 0;
+    $("finEmoji").textContent = pct===1?"🏆":pct>=0.8?"🥇":pct>=0.6?"🥈":"💪";
+    $("finTitle").textContent = pct===1?"全部一次答啱！超級犀利！":pct>=0.8?"好叻呀！差少少就滿分！":pct>=0.6?"唔錯呀！繼續努力！":"完成咗！多練習一定進步！";
+    $("finSummary").innerHTML = "⭐ "+S.stars+" / "+S.totalFirst+" 題一次答啱　🔥 最高連續 "+S.best+" 題";
+    var rows = "";
+    Object.keys(S.stats).forEach(function(t){
+      var s = S.stats[t]; if (!s.total) return;
+      var name = TOPICS[t] ? TOPICS[t].icon+" "+TOPICS[t].name : t;
+      rows += "<tr><td>"+name+"</td><td>"+s.total+"</td><td>"+s.ok+"</td></tr>";
+    });
+    $("sumTable").innerHTML = "<tr><th>主題</th><th>題數</th><th>一次答啱</th></tr>"+rows;
+    var box = $("missedBox"); box.innerHTML="";
+    var keys = Object.keys(S.missed);
+    if (!keys.length) box.innerHTML = '<p style="text-align:center;color:#2e7d32;font-weight:bold">🥇 Perfect！</p>';
+    else {
+      box.innerHTML = '<p style="font-weight:bold;color:#e65100">📝 要多練習：</p>';
+      keys.forEach(function(w){
+        var d=document.createElement("div"); d.className="missed";
+        d.innerHTML = "<b>"+w+"</b> <small>（錯 "+S.missed[w]+" 次）</small>";
+        box.appendChild(d);
+      });
+    }
+    confetti(pct>=0.8?28:10);
+  }
+
+  function confetti(n) {
+    var icons=["🎉","⭐","🌟","🎊","📚","✍️","🌈"];
+    for (var i=0;i<n;i++){
+      var s=document.createElement("span"); s.className="confetti";
+      s.textContent=icons[Math.floor(Math.random()*icons.length)];
+      s.style.left=Math.random()*100+"vw"; s.style.animationDuration=(1.4+Math.random()*2)+"s";
+      document.body.appendChild(s);
+      (function(el){ setTimeout(function(){ if(el.parentNode) el.parentNode.removeChild(el); },4000); })(s);
+    }
+  }
+
+  $("againBtn").addEventListener("click", function(){ start(S.group); });
+  $("backBtn").addEventListener("click", function(){ show("home"); });
+  $("homeBtn").addEventListener("click", function(){ if(confirm("要返回主題選單嗎？今輪進度會冇咗。")) show("home"); });
+  $("nextBtn").addEventListener("click", next);
+  if ($("speakBtn")) $("speakBtn").addEventListener("click", function () {
+    if (!S || !S.current) return;
+    var it = S.current.item;
+    if (S.answered && it.speak) speakText(it.speak);
+    else if (it.speakBlank) speakText(it.speakBlank);
+    else speakText(($("sentence").innerText||"").replace(/______/g,"blank"));
+  });
+  document.addEventListener("keydown", function(e){
+    if ($("quiz").classList.contains("hidden")||!S||!S.current) return;
+    if (e.key==="Enter" && S.answered) { e.preventDefault(); next(); return; }
+    if (!S.answered && /^[1-4]$/.test(e.key)) {
+      var b=$("choices").children[+e.key-1]; if (b) b.click();
+    }
+  });
+
+  renderHome();
+
+  
+})();
+</script>
+</body>
+</html>

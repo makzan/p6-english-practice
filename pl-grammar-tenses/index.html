@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>📚 PowerLesson · 時態練習</title>
+<style>
+  :root {
+    --bg: linear-gradient(135deg,#e0c3fc 0%,#8ec5fc 55%,#f9f586 100%);
+    --h: #4527a0;
+    --sub: #5e35b1;
+    --bd: #b39ddb;
+    --soft: #ede7f6;
+    --shadow: #ce93d8;
+    --accent: #7e57c2;
+  }
+  
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body {
+    margin: 0; min-height: 100vh; padding: 14px;
+    font-family: "Arial Rounded MT Bold", "Comic Sans MS", "PingFang TC", "Microsoft JhengHei", "Noto Sans TC", sans-serif;
+    background: var(--bg); background-attachment: fixed; color: #263238;
+  }
+  h1 { text-align: center; font-size: clamp(1.15rem, 4.6vw, 1.85rem); color: var(--h); text-shadow: 2px 2px 0 #fff; margin: 6px 0 2px; }
+  .sub { text-align: center; color: var(--sub); margin: 0 0 14px; font-size: 1.02rem; }
+  .card { background: #fff; border-radius: 26px; max-width: 720px; margin: 0 auto; padding: 20px 16px 24px; box-shadow: 0 10px 28px rgba(0,0,0,.18); border: 5px solid var(--bd); }
+  .hidden { display: none !important; }
+  button { font-family: inherit; cursor: pointer; border: none; }
+  .intro { font-size: 1.05rem; line-height: 1.7; background: var(--soft); border-radius: 16px; padding: 12px 14px; margin-bottom: 12px; }
+  .topics { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .topic { background: var(--soft); border-radius: 18px; padding: 14px 10px; font-size: 1.08rem; font-weight: bold; color: var(--h); box-shadow: 0 5px 0 var(--shadow); text-align: left; }
+  .topic .ti { font-size: 1.8rem; display: block; margin-bottom: 2px; }
+  .topic:active { transform: translateY(3px); box-shadow: 0 2px 0 var(--shadow); }
+  .topic.mix { grid-column: 1 / -1; background: #fff3e0; color: #e65100; box-shadow: 0 5px 0 #ffb74d; }
+  .topic .desc { font-size: .82rem; font-weight: normal; margin-top: 4px; color: #555; }
+  .topbar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
+  .pill { background: var(--soft); border-radius: 999px; padding: 6px 12px; font-weight: bold; color: var(--h); font-size: .95rem; }
+  .pill.star { background: #fff8e1; color: #f57f17; }
+  .pill.fire { background: #fbe9e7; color: #d84315; }
+  .homebtn { background: #eceff1; border-radius: 999px; padding: 6px 12px; font-size: 1rem; }
+  .bar { flex: 1 1 100%; height: 14px; background: #e0e0e0; border-radius: 999px; overflow: hidden; }
+  .bar > div { height: 100%; width: 0; background: linear-gradient(90deg, var(--accent), #42a5f5); transition: width .35s; }
+  .tag { display: inline-block; background: var(--accent); color: #fff; border-radius: 12px; padding: 4px 12px; font-size: .95rem; }
+  .retry { display: inline-block; background: #ffca28; color: #6d4c00; border-radius: 12px; padding: 3px 10px; font-size: .9rem; margin-left: 6px; }
+  .prompt { font-size: 1.05rem; color: var(--h); margin: 10px 0 4px; font-weight: bold; }
+  .sentence {
+    font-size: clamp(1.12rem, 4.2vw, 1.5rem); line-height: 1.75; background: #fffde7;
+    border-radius: 18px; padding: 14px; margin: 8px 0 10px; border: 3px dashed #ffd54f; color: #1a237e; font-weight: 600;
+  }
+  .blank { display: inline-block; min-width: 3.2em; padding: 1px 8px; margin: 0 1px; border-bottom: 3px solid var(--accent); background: var(--soft); border-radius: 6px 6px 0 0; color: var(--h); text-align: center; }
+  .blank.right { background: #c8e6c9; border-bottom-color: #2e7d32; color: #1b5e20; }
+  .blank.wrong { background: #ffcdd2; border-bottom-color: #c62828; color: #b71c1c; }
+  .blank.open { background: #fff59d; border-bottom-color: #f9a825; box-shadow: 0 0 0 3px rgba(249,168,37,.35); cursor: pointer; }
+  .verb { color: #888; font-size: .92em; font-weight: normal; }
+  .ipa { font-size: 1.6rem; color: #6a1b9a; font-weight: bold; letter-spacing: .02em; }
+  .choices { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .choice {
+    background: var(--soft); color: var(--h); font-size: clamp(1rem, 3.8vw, 1.28rem); font-weight: bold;
+    border-radius: 16px; padding: 14px 8px; min-height: 60px; box-shadow: 0 5px 0 var(--shadow);
+  }
+  .choice:active { transform: translateY(3px); box-shadow: 0 2px 0 var(--shadow); }
+  .choice.right { background: #c8e6c9; box-shadow: 0 5px 0 #66bb6a; color: #1b5e20; }
+  .choice.wrong { background: #ffcdd2; box-shadow: 0 5px 0 #e57373; color: #b71c1c; }
+  .choice:disabled { cursor: default; }
+  .speak { display: inline-block; margin: 6px 4px; background: #0288d1; color: #fff; font-size: 1.05rem; font-weight: bold; border-radius: 999px; padding: 10px 16px; box-shadow: 0 4px 0 #01579b; }
+  .speak:active { transform: translateY(3px); box-shadow: 0 1px 0 #01579b; }
+  .fb { text-align: center; font-size: 1.2rem; font-weight: bold; margin-top: 10px; min-height: 1.3em; }
+  .fb.good { color: #2e7d32; } .fb.bad { color: #c62828; }
+  .why { background: #fff3e0; border-left: 6px solid #ff9800; border-radius: 10px; padding: 10px 12px; margin: 10px 0; font-size: 1.05rem; line-height: 1.6; text-align: left; }
+  .why b { color: #e65100; }
+  .next { display: block; margin: 14px auto 0; font-size: 1.3rem; font-weight: bold; color: #fff; background: #fb8c00; border-radius: 20px; padding: 14px 28px; box-shadow: 0 6px 0 #e65100; min-width: 200px; }
+  .next:active { transform: translateY(4px); box-shadow: 0 2px 0 #e65100; }
+  .start { font-size: 1.3rem; font-weight: bold; color: #fff; background: var(--accent); border-radius: 20px; padding: 14px 28px; box-shadow: 0 6px 0 var(--h); }
+  .bigemoji { font-size: 4rem; text-align: center; animation: bounce 1s infinite; }
+  .row { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+  .row .next, .row .start { margin: 10px 0 0; }
+  table.sum { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 1.05rem; }
+  table.sum th, table.sum td { padding: 8px 6px; text-align: center; border-bottom: 2px solid #e0e0e0; }
+  table.sum th { background: var(--soft); color: var(--h); }
+  .missed { background: #fff8e1; border-radius: 12px; padding: 6px 10px; margin: 4px 0; font-size: .98rem; text-align: left; }
+  .wordbank { font-size: .9rem; color: #555; background: var(--soft); border-radius: 12px; padding: 8px 10px; margin-bottom: 10px; line-height: 1.5; }
+  .passage { font-size: clamp(1.05rem, 3.8vw, 1.28rem); line-height: 1.85; color: #1a237e; background: #fffde7; border: 3px dashed #ffd54f; border-radius: 16px; padding: 14px 12px; margin-bottom: 12px; }
+  .passage p { margin: 0 0 12px; }
+  :root { --dock-h: 280px; }
+  #picker {
+    position: fixed !important; left: 0 !important; right: 0 !important; bottom: 0 !important;
+    width: 100% !important; z-index: 1000; max-height: min(46vh, 360px);
+    overflow-x: hidden; overflow-y: auto; -webkit-overflow-scrolling: touch;
+    padding: 10px 12px calc(10px + env(safe-area-inset-bottom, 0px));
+    border-radius: 22px 22px 0 0; border: 4px solid #42a5f5; border-bottom: none;
+    background: linear-gradient(180deg, #e3f2fd 0%, #bbdefb 100%);
+    box-shadow: 0 -12px 32px rgba(0,40,80,.3);
+  }
+  #picker::before { content: ""; display: block; width: 44px; height: 5px; border-radius: 999px; background: rgba(0,0,0,.18); margin: 0 auto 8px; }
+  #picker h3 { margin: 0 0 8px; color: #1565c0; font-size: 1.05rem; text-align: center; }
+  #picker .dock-inner { max-width: 720px; margin: 0 auto; }
+  body.picking #quiz.card { padding-bottom: calc(var(--dock-h) + 36px); }
+  .blank { scroll-margin-bottom: calc(var(--dock-h) + 24px); scroll-margin-top: 72px; }
+  @keyframes bounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+  .confetti { position: fixed; top: -30px; font-size: 1.7rem; pointer-events: none; animation: fall linear forwards; z-index: 99; }
+  @keyframes fall { to { transform: translateY(110vh) rotate(720deg); opacity: .6; } }
+  a.backhome { display: inline-block; margin: 8px auto 0; color: var(--h); font-weight: bold; text-decoration: none; }
+
+</style>
+</head>
+<body>
+<h1>📚 PowerLesson · 時態練習</h1>
+<div class="sub">Past / Perfect / Continuous / Mixed Tenses</div>
+<p style="text-align:center;margin:0 0 10px"><a class="backhome" href="../">🏠 返回練習主頁</a></p>
+
+<div class="card" id="home">
+  <div class="intro">🧠 由 PowerLesson 溫習練習改編：揀正確時態！<br>❌ 答錯會睇到中文提示，之後再出呢題。<br>⭐ 可以揀單一主題，或者一次過全部練。</div>
+  <div class="topics" id="topics"></div>
+</div>
+
+<div class="card hidden" id="quiz">
+  <div class="topbar">
+    <button class="homebtn" id="homeBtn">🏠 返回</button>
+    <span class="pill" id="progTxt">1 / 1</span>
+    <span class="pill star">⭐ <span id="stars">0</span></span>
+    <span class="pill fire">🔥 <span id="streak">0</span></span>
+    <div class="bar"><div id="bar"></div></div>
+  </div>
+  <div><span class="tag" id="tag"></span><span class="retry hidden" id="retryTag">🔁 再試呢題</span></div>
+  <div class="prompt" id="prompt"></div>
+  <div class="sentence" id="sentence"></div>
+  <button class="speak" id="speakBtn">🔊 聽句子</button>
+  <div class="choices" id="choices"></div>
+  <div class="fb" id="fb"></div>
+  <div id="why"></div>
+  <button class="next hidden" id="nextBtn">下一題 ➡️</button>
+</div>
+
+
+
+<div class="card hidden" id="finish">
+  <div class="bigemoji" id="finEmoji">🏆</div>
+  <h2 style="text-align:center;color:var(--h);margin:6px 0" id="finTitle">完成！</h2>
+  <p style="text-align:center;font-size:1.2rem" id="finSummary"></p>
+  <table class="sum" id="sumTable"></table>
+  <div id="missedBox"></div>
+  <div class="row">
+    <button class="start" id="againBtn">🔄 再玩一次</button>
+    <button class="next" id="backBtn">🏠 揀其他主題</button>
+  </div>
+</div>
+
+<script>
+(function () {
+  "use strict";
+  var TOPICS = {"past_perfect": {"name": "Past vs Present Perfect", "icon": "⏪", "desc": "Simple Past / Present Perfect 選擇題"}, "past_cont": {"name": "Past Continuous", "icon": "🧹", "desc": "Past Simple vs Past Continuous"}, "pres_cont": {"name": "Present Continuous", "icon": "👀", "desc": "Present Simple vs Present Continuous"}, "mix1": {"name": "Mixed Tenses 1", "icon": "🧩", "desc": "否定／疑問句混合時態"}, "mix2": {"name": "Mixed Tenses 2 短文", "icon": "📖", "desc": "圖書館短文逐格填空"}, "all": {"name": "全部混合", "icon": "🎲", "desc": "以上全部一齊練"}};
+  var ITEMS = [{"id": "pp1", "topic": "past_perfect", "prompt": "揀正確時態組合（Simple Past / Present Perfect）：", "sentence": "My family ______ to Thailand in 2019, and we ______ back there three times since then.", "answer": "went / have been", "answerH": "went / have been", "choices": ["went / have been", "have gone / were", "went / were", "went / went"], "tip": "有明確過去時間（in 2019 / yesterday / last…）→ <b>Simple Past</b>；有 since / already / yet / ever / three times → <b>Present Perfect</b>。", "speakBlank": "My family blank to Thailand in 2019, and we blank back there three times since then."}, {"id": "pp2", "topic": "past_perfect", "prompt": "揀正確時態組合（Simple Past / Present Perfect）：", "sentence": "I ______ that movie three times already, but my brother only ______ it yesterday.", "answer": "have seen / saw", "answerH": "have seen / saw", "choices": ["have seen / has seen", "saw / has seen", "have seen / saw", "have gone / were"], "tip": "有明確過去時間（in 2019 / yesterday / last…）→ <b>Simple Past</b>；有 since / already / yet / ever / three times → <b>Present Perfect</b>。", "speakBlank": "I blank that movie three times already, but my brother only blank it yesterday."}, {"id": "pp3", "topic": "past_perfect", "prompt": "揀正確時態組合（Simple Past / Present Perfect）：", "sentence": "She ______ her keys on the bus this morning, so she ______ unable to open the door all day.", "answer": "lost / has been", "answerH": "lost / has been", "choices": ["has lost / was", "lost / has been", "lost / was", "have gone / were"], "tip": "有明確過去時間（in 2019 / yesterday / last…）→ <b>Simple Past</b>；有 since / already / yet / ever / three times → <b>Present Perfect</b>。", "speakBlank": "She blank her keys on the bus this morning, so she blank unable to open the door all day."}, {"id": "pp4", "topic": "past_perfect", "prompt": "揀正確時態組合（Simple Past / Present Perfect）：", "sentence": "______ you ______ the new restaurant that opened on Monday? I ______ there last Friday.", "answer": "Have tried / went", "answerH": "Have tried / went", "choices": ["Have tried / have gone", "Did try / went", "Have tried / went", "have gone / were"], "tip": "有明確過去時間（in 2019 / yesterday / last…）→ <b>Simple Past</b>；有 since / already / yet / ever / three times → <b>Present Perfect</b>。", "speakBlank": "blank you blank the new restaurant that opened on Monday? I blank there last Friday."}, {"id": "pp5", "topic": "past_perfect", "prompt": "揀正確時態組合（Simple Past / Present Perfect）：", "sentence": "My grandmother ______ us every summer when we were children, but she ______ us since she moved away.", "answer": "visited / hasn't visited", "answerH": "visited / hasn't visited", "choices": ["has visited / didn't visit", "visited / didn't visit", "visited / hasn't visited", "have gone / were"], "tip": "有明確過去時間（in 2019 / yesterday / last…）→ <b>Simple Past</b>；有 since / already / yet / ever / three times → <b>Present Perfect</b>。", "speakBlank": "My grandmother blank us every summer when we were children, but she blank us since she moved away."}, {"id": "pp6", "topic": "past_perfect", "prompt": "揀正確時態組合（Simple Past / Present Perfect）：", "sentence": "I ______ my phone last night, and I ______ it yet.", "answer": "lost / haven't found", "answerH": "lost / haven't found", "choices": ["lost / haven't found", "have lost / found", "lost / didn't find", "have gone / were"], "tip": "有明確過去時間（in 2019 / yesterday / last…）→ <b>Simple Past</b>；有 since / already / yet / ever / three times → <b>Present Perfect</b>。", "speakBlank": "I blank my phone last night, and I blank it yet."}, {"id": "pp7", "topic": "past_perfect", "prompt": "揀正確時態組合（Simple Past / Present Perfect）：", "sentence": "______ you ever ______ a horse? I ______ one for the first time two weeks ago.", "answer": "Have ridden / rode", "answerH": "Have ridden / rode", "choices": ["Did ride / have ridden", "Have ridden / rode", "Have ridden / have ridden", "have gone / were"], "tip": "有明確過去時間（in 2019 / yesterday / last…）→ <b>Simple Past</b>；有 since / already / yet / ever / three times → <b>Present Perfect</b>。", "speakBlank": "blank you ever blank a horse? I blank one for the first time two weeks ago."}, {"id": "pc1", "topic": "past_cont", "prompt": "揀正確動詞形式：", "sentence": "My grandmother ______ (sweep) the balcony when a bird ______ (fly) into the kitchen.", "verb": "(sweep) (fly)", "answer": ["was sweeping", "flew"], "answerH": "was sweeping … flew", "choices": ["was sweeping … flew", "swept … was flying", "was sweeping … was flying", "swept … flew"], "tip": "when／突然發生 → <b>Simple Past</b>；較長／背景動作 → <b>Past Continuous</b>（was/were + -ing）。", "alts": [], "speak": "My grandmother was sweeping (sweep) the balcony when a bird flew (fly) into the kitchen.", "speakBlank": "My grandmother blank (sweep) the balcony when a bird blank (fly) into the kitchen."}, {"id": "pc2", "topic": "past_cont", "prompt": "揀正確動詞形式：", "sentence": "All yesterday afternoon, we ______ (swim) in the pool. Then my brother ______ (bite) my arm!", "verb": "(swim) (bite)", "answer": ["were swimming", "bit"], "answerH": "were swimming … bit", "choices": ["were swimming … bit", "swam … was biting", "were swimming … was biting", "swam … bit"], "tip": "when／突然發生 → <b>Simple Past</b>；較長／背景動作 → <b>Past Continuous</b>（was/were + -ing）。", "alts": [], "speak": "All yesterday afternoon, we were swimming (swim) in the pool. Then my brother bit (bite) my arm!", "speakBlank": "All yesterday afternoon, we blank (swim) in the pool. Then my brother blank (bite) my arm!"}, {"id": "pc3", "topic": "past_cont", "prompt": "揀正確動詞形式：", "sentence": "The earthquake ______ (begin) while the workers ______ (build) a new road.", "verb": "(begin) (build)", "answer": ["began", "were building"], "answerH": "began … were building", "choices": ["began … were building", "was beginning … built", "began … built", "was beginning … were building"], "tip": "when／突然發生 → <b>Simple Past</b>；較長／背景動作 → <b>Past Continuous</b>（was/were + -ing）。", "alts": [], "speak": "The earthquake began (begin) while the workers were building (build) a new road.", "speakBlank": "The earthquake blank (begin) while the workers blank (build) a new road."}, {"id": "pc4", "topic": "past_cont", "prompt": "揀正確動詞形式：", "sentence": "Ms.Jones ______ (not / speak) to anyone all yesterday night because she was really angry.", "verb": "(not / speak)", "answer": "was not speaking", "answerH": "was not speaking", "choices": ["was not speaking", "did not speak", "is not speaking", "has not spoken"], "tip": "when／突然發生 → <b>Simple Past</b>；較長／背景動作 → <b>Past Continuous</b>（was/were + -ing）。", "alts": ["was not speaking"], "speak": "Ms.Jones was not speaking (not / speak) to anyone all yesterday night because she was really angry.", "speakBlank": "Ms.Jones blank (not / speak) to anyone all yesterday night because she was really angry."}, {"id": "pc5", "topic": "past_cont", "prompt": "揀正確動詞形式：", "sentence": "Tracy ______ (fall) down while she ______ (take) a photo.", "verb": "(fall) (take)", "answer": ["fell", "was taking"], "answerH": "fell … was taking", "choices": ["fell … was taking", "was falling … took", "fell … took", "was falling … was taking"], "tip": "when／突然發生 → <b>Simple Past</b>；較長／背景動作 → <b>Past Continuous</b>（was/were + -ing）。", "alts": [], "speak": "Tracy fell (fall) down while she was taking (take) a photo.", "speakBlank": "Tracy blank (fall) down while she blank (take) a photo."}, {"id": "pc6", "topic": "past_cont", "prompt": "揀正確動詞形式：", "sentence": "______ you ______ (see) the rainbow yesterday?", "verb": "(see)", "answer": ["Did", "see"], "answerH": "Did … see", "choices": ["Did … see", "Have … seen", "Were … seeing", "Do … see"], "tip": "when／突然發生 → <b>Simple Past</b>；較長／背景動作 → <b>Past Continuous</b>（was/were + -ing）。", "alts": [], "speak": "Did you see (see) the rainbow yesterday?", "speakBlank": "blank you blank (see) the rainbow yesterday?"}, {"id": "pc7", "topic": "past_cont", "prompt": "揀正確動詞形式：", "sentence": "The thunder ______ (shake) the windows while they ______ (sleep) on the sofa.", "verb": "(shake) (sleep)", "answer": ["shook", "were sleeping"], "answerH": "shook … were sleeping", "choices": ["shook … were sleeping", "was shaking … slept", "shook … slept", "was shaking … were sleeping"], "tip": "when／突然發生 → <b>Simple Past</b>；較長／背景動作 → <b>Past Continuous</b>（was/were + -ing）。", "alts": [], "speak": "The thunder shook (shake) the windows while they were sleeping (sleep) on the sofa.", "speakBlank": "The thunder blank (shake) the windows while they blank (sleep) on the sofa."}, {"id": "prc1", "topic": "pres_cont", "prompt": "揀正確動詞形式：", "sentence": "On Mondays, my sister ______ (drink) hot chocolate, but right now she ______ (drink) iced tea.", "verb": "(drink) (drink)", "answer": ["drinks", "is drinking"], "answerH": "drinks … is drinking", "choices": ["drinks … is drinking", "is drinking … drinks", "drank … is drinking", "drinks … drinks"], "tip": "習慣／事實／時間表 → <b>Simple Present</b>；right now / Look! / at the moment → <b>Present Continuous</b>。", "alts": [], "speak": "On Mondays, my sister drinks (drink) hot chocolate, but right now she is drinking (drink) iced tea.", "speakBlank": "On Mondays, my sister blank (drink) hot chocolate, but right now she blank (drink) iced tea."}, {"id": "prc2", "topic": "pres_cont", "prompt": "揀正確動詞形式：", "sentence": "Look! The cats ______ (sleep) on your bed again!", "verb": "(sleep)", "answer": "are sleeping", "answerH": "are sleeping", "choices": ["are sleeping", "sleep", "slept", "have slept"], "tip": "習慣／事實／時間表 → <b>Simple Present</b>；right now / Look! / at the moment → <b>Present Continuous</b>。", "alts": ["are sleeping"], "speak": "Look! The cats are sleeping (sleep) on your bed again!", "speakBlank": "Look! The cats blank (sleep) on your bed again!"}, {"id": "prc3", "topic": "pres_cont", "prompt": "揀正確動詞形式：", "sentence": "My cousin ______ (teach) English at a language school. At the moment, she ______ (teach) a new class.", "verb": "(teach) (teach)", "answer": ["teaches", "is teaching"], "answerH": "teaches … is teaching", "choices": ["teaches … is teaching", "is teaching … teaches", "taught … is teaching", "teaches … teaches"], "tip": "習慣／事實／時間表 → <b>Simple Present</b>；right now / Look! / at the moment → <b>Present Continuous</b>。", "alts": [], "speak": "My cousin teaches (teach) English at a language school. At the moment, she is teaching (teach) a new class.", "speakBlank": "My cousin blank (teach) English at a language school. At the moment, she blank (teach) a new class."}, {"id": "prc4", "topic": "pres_cont", "prompt": "揀正確動詞形式：", "sentence": "______ your parents ______ (speak) Italian?", "verb": "(speak)", "answer": ["Do", "speak"], "answerH": "Do … speak", "choices": ["Do … speak", "Are … speaking", "Did … speak", "Have … spoken"], "tip": "習慣／事實／時間表 → <b>Simple Present</b>；right now / Look! / at the moment → <b>Present Continuous</b>。", "alts": [], "speak": "Do your parents speak (speak) Italian?", "speakBlank": "blank your parents blank (speak) Italian?"}, {"id": "prc5", "topic": "pres_cont", "prompt": "揀正確動詞形式：", "sentence": "The shop ______ (sell) fresh bread. It ______ (open) at 7 am.", "verb": "(sell) (open)", "answer": ["sells", "opens"], "answerH": "sells … opens", "choices": ["sells … opens", "is selling … is opening", "sold … opened", "sell … open"], "tip": "習慣／事實／時間表 → <b>Simple Present</b>；right now / Look! / at the moment → <b>Present Continuous</b>。", "alts": [], "speak": "The shop sells (sell) fresh bread. It opens (open) at 7 am.", "speakBlank": "The shop blank (sell) fresh bread. It blank (open) at 7 am."}, {"id": "prc6", "topic": "pres_cont", "prompt": "揀正確動詞形式：", "sentence": "Why ______ the baby ______ (cry) right now?", "verb": "(cry)", "answer": ["is", "crying"], "answerH": "is … crying", "choices": ["is … crying", "does … cry", "did … cry", "has … cried"], "tip": "習慣／事實／時間表 → <b>Simple Present</b>；right now / Look! / at the moment → <b>Present Continuous</b>。", "alts": [], "speak": "Why is the baby crying (cry) right now?", "speakBlank": "Why blank the baby blank (cry) right now?"}, {"id": "prc7", "topic": "pres_cont", "prompt": "揀正確動詞形式：", "sentence": "My brother ______ (not / like) vegetables. He ______ (prefer) fruit.", "verb": "(not / like) (prefer)", "answer": ["does not like", "prefers"], "answerH": "does not like … prefers", "choices": ["does not like … prefers", "is not liking … is preferring", "did not like … preferred", "does not like … prefer"], "tip": "習慣／事實／時間表 → <b>Simple Present</b>；right now / Look! / at the moment → <b>Present Continuous</b>。", "alts": [], "speak": "My brother does not like (not / like) vegetables. He prefers (prefer) fruit.", "speakBlank": "My brother blank (not / like) vegetables. He blank (prefer) fruit."}, {"id": "m11", "topic": "mix1", "prompt": "揀正確動詞形式：", "sentence": "She ______ (not do) her English homework at present.", "verb": "(not do)", "answer": "is not doing", "answerH": "is not doing", "choices": ["is not doing", "does not do", "did not do", "has not done"], "tip": "睇時間詞：at present／at the moment→進行；last night／yesterday→過去；since→完成；soon→will。", "alts": ["is not doing"], "speak": "She is not doing (not do) her English homework at present.", "speakBlank": "She blank (not do) her English homework at present."}, {"id": "m12", "topic": "mix1", "prompt": "揀正確動詞形式：", "sentence": "They______ (not build) Lego with my little brother last night.", "verb": "(not build)", "answer": "did not build", "answerH": "did not build", "choices": ["did not build", "do not build", "are not building", "have not built"], "tip": "睇時間詞：at present／at the moment→進行；last night／yesterday→過去；since→完成；soon→will。", "alts": ["did not build"], "speak": "Theydid not build (not build) Lego with my little brother last night.", "speakBlank": "Theyblank (not build) Lego with my little brother last night."}, {"id": "m13", "topic": "mix1", "prompt": "揀正確動詞形式：", "sentence": "______ you ______ (break) three personal records?", "verb": "(break)", "answer": ["Did", "break"], "answerH": "Did … break", "choices": ["Did … break", "Do … break", "Have … broken", "Were … breaking"], "tip": "睇時間詞：at present／at the moment→進行；last night／yesterday→過去；since→完成；soon→will。", "alts": [], "speak": "Did you break (break) three personal records?", "speakBlank": "blank you blank (break) three personal records?"}, {"id": "m14", "topic": "mix1", "prompt": "揀正確動詞形式：", "sentence": "I ______ (find) four interesting articles about space exploration since last week.", "verb": "(find)", "answer": "have found", "answerH": "have found", "choices": ["have found", "found", "am finding", "had found"], "tip": "睇時間詞：at present／at the moment→進行；last night／yesterday→過去；since→完成；soon→will。", "alts": ["have found"], "speak": "I have found (find) four interesting articles about space exploration since last week.", "speakBlank": "I blank (find) four interesting articles about space exploration since last week."}, {"id": "m15", "topic": "mix1", "prompt": "揀正確動詞形式：", "sentence": "The teachers ______ (chat) with the principal in the room at the moment.", "verb": "(chat)", "answer": "are chatting", "answerH": "are chatting", "choices": ["are chatting", "chat", "are chating", "have chatted"], "tip": "睇時間詞：at present／at the moment→進行；last night／yesterday→過去；since→完成；soon→will。", "alts": ["are chatting"], "speak": "The teachers are chatting (chat) with the principal in the room at the moment.", "speakBlank": "The teachers blank (chat) with the principal in the room at the moment."}, {"id": "m16", "topic": "mix1", "prompt": "揀正確動詞形式：", "sentence": "______the kid ______ (draw) in the classroom every summer?", "verb": "(draw)", "answer": ["Does", "draw"], "answerH": "Does … draw", "choices": ["Does … draw", "Do … draw", "Is … drawing", "Did … draw"], "tip": "睇時間詞：at present／at the moment→進行；last night／yesterday→過去；since→完成；soon→will。", "alts": [], "speak": "Doesthe kid draw (draw) in the classroom every summer?", "speakBlank": "blankthe kid blank (draw) in the classroom every summer?"}, {"id": "m17", "topic": "mix1", "prompt": "揀正確動詞形式：", "sentence": "______ you ever ______ (travel) to South America?", "verb": "(travel)", "answer": ["Have", "travelled"], "answerH": "Have … travelled", "choices": ["Have … travelled", "Did … travel", "Are … travelling", "Have … traveled"], "tip": "睇時間詞：at present／at the moment→進行；last night／yesterday→過去；since→完成；soon→will。", "alts": ["Have … traveled", "Have … travelled"], "speak": "Have you ever travelled (travel) to South America?", "speakBlank": "blank you ever blank (travel) to South America?"}, {"id": "m18", "topic": "mix1", "prompt": "揀正確動詞形式：", "sentence": "The sky is getting dark. It______ (snow) soon.", "verb": "(snow)", "answer": "will snow", "answerH": "will snow", "choices": ["will snow", "is snowing", "snows", "is going to snow"], "tip": "睇時間詞：at present／at the moment→進行；last night／yesterday→過去；since→完成；soon→will。", "alts": ["will snow"], "speak": "The sky is getting dark. Itwill snow (snow) soon.", "speakBlank": "The sky is getting dark. Itblank (snow) soon."}, {"id": "m19", "topic": "mix1", "prompt": "揀正確動詞形式：", "sentence": "My parents ______ (wash) their car in the garden the whole yesterday afternoon.", "verb": "(wash)", "answer": "were washing", "answerH": "were washing", "choices": ["were washing", "washed", "are washing", "have washed"], "tip": "睇時間詞：at present／at the moment→進行；last night／yesterday→過去；since→完成；soon→will。", "alts": ["were washing"], "speak": "My parents were washing (wash) their car in the garden the whole yesterday afternoon.", "speakBlank": "My parents blank (wash) their car in the garden the whole yesterday afternoon."}, {"id": "m110", "topic": "mix1", "prompt": "揀正確動詞形式：", "sentence": "When the car ______ (explode), people ______ (walk) in the street.", "verb": "(explode) (walk)", "answer": ["exploded", "were walking"], "answerH": "exploded … were walking", "choices": ["exploded … were walking", "was exploding … walked", "exploded … walked", "was exploding … were walking"], "tip": "睇時間詞：at present／at the moment→進行；last night／yesterday→過去；since→完成；soon→will。", "alts": [], "speak": "When the car exploded (explode), people were walking (walk) in the street.", "speakBlank": "When the car blank (explode), people blank (walk) in the street."}, {"id": "m2b0", "topic": "mix2", "prompt": "短文填空（第 1 / 12 格）：", "sentence": "The city library ______ usually a very quiet place. It opens at 9 am and closes at 8 pm every day. Many students go there to study. But last Tuesday night, something very strange happened there. While the librarian was arranging the books, all the lights suddenly went out! She has never experienced anything like that before. She doesn't know what to do. Right now, some workers are fixing the lights. The manager says they will buy a new generator next month. Probably, the library won't open tomorrow because of the problem.", "answer": "is", "answerH": "is", "choices": ["is", "was", "has been", "will be"], "tip": "通常／every day → <b>Simple Present</b>：is。", "alts": [], "speakBlank": "The city library blank (be) usually a very quiet place. It blank (open) at 9 am and blank (close) at 8 pm every day. Many students blank (go) there to study. But last Tuesday night, something very strange blank(happen) there. While the librarian blank(arrange) the books, all the lights suddenly blank(go) out! She blank (never experience) anything like that before. She blank (know) what to do. Right now, some workers blank(fix) the lights. The manager says they blank (buy) a new generator next month. Probably, the library blank(open) tomorrow because of the problem."}, {"id": "m2b1", "topic": "mix2", "prompt": "短文填空（第 2 / 12 格）：", "sentence": "The city library is usually a very quiet place. It ______ at 9 am and closes at 8 pm every day. Many students go there to study. But last Tuesday night, something very strange happened there. While the librarian was arranging the books, all the lights suddenly went out! She has never experienced anything like that before. She doesn't know what to do. Right now, some workers are fixing the lights. The manager says they will buy a new generator next month. Probably, the library won't open tomorrow because of the problem.", "answer": "opens", "answerH": "opens", "choices": ["opens", "is opening", "opened", "has opened"], "tip": "時間表 opens → <b>Simple Present</b>。", "alts": [], "speakBlank": "The city library blank (be) usually a very quiet place. It blank (open) at 9 am and blank (close) at 8 pm every day. Many students blank (go) there to study. But last Tuesday night, something very strange blank(happen) there. While the librarian blank(arrange) the books, all the lights suddenly blank(go) out! She blank (never experience) anything like that before. She blank (know) what to do. Right now, some workers blank(fix) the lights. The manager says they blank (buy) a new generator next month. Probably, the library blank(open) tomorrow because of the problem."}, {"id": "m2b2", "topic": "mix2", "prompt": "短文填空（第 3 / 12 格）：", "sentence": "The city library is usually a very quiet place. It opens at 9 am and ______ at 8 pm every day. Many students go there to study. But last Tuesday night, something very strange happened there. While the librarian was arranging the books, all the lights suddenly went out! She has never experienced anything like that before. She doesn't know what to do. Right now, some workers are fixing the lights. The manager says they will buy a new generator next month. Probably, the library won't open tomorrow because of the problem.", "answer": "closes", "answerH": "closes", "choices": ["closes", "is closing", "closed", "has closed"], "tip": "時間表 closes → <b>Simple Present</b>。", "alts": [], "speakBlank": "The city library blank (be) usually a very quiet place. It blank (open) at 9 am and blank (close) at 8 pm every day. Many students blank (go) there to study. But last Tuesday night, something very strange blank(happen) there. While the librarian blank(arrange) the books, all the lights suddenly blank(go) out! She blank (never experience) anything like that before. She blank (know) what to do. Right now, some workers blank(fix) the lights. The manager says they blank (buy) a new generator next month. Probably, the library blank(open) tomorrow because of the problem."}, {"id": "m2b3", "topic": "mix2", "prompt": "短文填空（第 4 / 12 格）：", "sentence": "The city library is usually a very quiet place. It opens at 9 am and closes at 8 pm every day. Many students ______ there to study. But last Tuesday night, something very strange happened there. While the librarian was arranging the books, all the lights suddenly went out! She has never experienced anything like that before. She doesn't know what to do. Right now, some workers are fixing the lights. The manager says they will buy a new generator next month. Probably, the library won't open tomorrow because of the problem.", "answer": "go", "answerH": "go", "choices": ["go", "are going", "went", "have gone"], "tip": "習慣 go → <b>Simple Present</b>。", "alts": [], "speakBlank": "The city library blank (be) usually a very quiet place. It blank (open) at 9 am and blank (close) at 8 pm every day. Many students blank (go) there to study. But last Tuesday night, something very strange blank(happen) there. While the librarian blank(arrange) the books, all the lights suddenly blank(go) out! She blank (never experience) anything like that before. She blank (know) what to do. Right now, some workers blank(fix) the lights. The manager says they blank (buy) a new generator next month. Probably, the library blank(open) tomorrow because of the problem."}, {"id": "m2b4", "topic": "mix2", "prompt": "短文填空（第 5 / 12 格）：", "sentence": "The city library is usually a very quiet place. It opens at 9 am and closes at 8 pm every day. Many students go there to study. But last Tuesday night, something very strange ______ there. While the librarian was arranging the books, all the lights suddenly went out! She has never experienced anything like that before. She doesn't know what to do. Right now, some workers are fixing the lights. The manager says they will buy a new generator next month. Probably, the library won't open tomorrow because of the problem.", "answer": "happened", "answerH": "happened", "choices": ["happened", "was happening", "has happened", "happens"], "tip": "last Tuesday → <b>Simple Past</b>：happened。", "alts": [], "speakBlank": "The city library blank (be) usually a very quiet place. It blank (open) at 9 am and blank (close) at 8 pm every day. Many students blank (go) there to study. But last Tuesday night, something very strange blank(happen) there. While the librarian blank(arrange) the books, all the lights suddenly blank(go) out! She blank (never experience) anything like that before. She blank (know) what to do. Right now, some workers blank(fix) the lights. The manager says they blank (buy) a new generator next month. Probably, the library blank(open) tomorrow because of the problem."}, {"id": "m2b5", "topic": "mix2", "prompt": "短文填空（第 6 / 12 格）：", "sentence": "The city library is usually a very quiet place. It opens at 9 am and closes at 8 pm every day. Many students go there to study. But last Tuesday night, something very strange happened there. While the librarian ______ the books, all the lights suddenly went out! She has never experienced anything like that before. She doesn't know what to do. Right now, some workers are fixing the lights. The manager says they will buy a new generator next month. Probably, the library won't open tomorrow because of the problem.", "answer": "was arranging", "answerH": "was arranging", "choices": ["was arranging", "arranged", "is arranging", "has arranged"], "tip": "While + 背景 → <b>Past Continuous</b>：was arranging。", "alts": [], "speakBlank": "The city library blank (be) usually a very quiet place. It blank (open) at 9 am and blank (close) at 8 pm every day. Many students blank (go) there to study. But last Tuesday night, something very strange blank(happen) there. While the librarian blank(arrange) the books, all the lights suddenly blank(go) out! She blank (never experience) anything like that before. She blank (know) what to do. Right now, some workers blank(fix) the lights. The manager says they blank (buy) a new generator next month. Probably, the library blank(open) tomorrow because of the problem."}, {"id": "m2b6", "topic": "mix2", "prompt": "短文填空（第 7 / 12 格）：", "sentence": "The city library is usually a very quiet place. It opens at 9 am and closes at 8 pm every day. Many students go there to study. But last Tuesday night, something very strange happened there. While the librarian was arranging the books, all the lights suddenly ______ out! She has never experienced anything like that before. She doesn't know what to do. Right now, some workers are fixing the lights. The manager says they will buy a new generator next month. Probably, the library won't open tomorrow because of the problem.", "answer": "went", "answerH": "went", "choices": ["went", "was going", "goes", "has gone"], "tip": "突然熄燈 → <b>Simple Past</b>：went out。", "alts": [], "speakBlank": "The city library blank (be) usually a very quiet place. It blank (open) at 9 am and blank (close) at 8 pm every day. Many students blank (go) there to study. But last Tuesday night, something very strange blank(happen) there. While the librarian blank(arrange) the books, all the lights suddenly blank(go) out! She blank (never experience) anything like that before. She blank (know) what to do. Right now, some workers blank(fix) the lights. The manager says they blank (buy) a new generator next month. Probably, the library blank(open) tomorrow because of the problem."}, {"id": "m2b7", "topic": "mix2", "prompt": "短文填空（第 8 / 12 格）：", "sentence": "The city library is usually a very quiet place. It opens at 9 am and closes at 8 pm every day. Many students go there to study. But last Tuesday night, something very strange happened there. While the librarian was arranging the books, all the lights suddenly went out! She ______ anything like that before. She doesn't know what to do. Right now, some workers are fixing the lights. The manager says they will buy a new generator next month. Probably, the library won't open tomorrow because of the problem.", "answer": "has never experienced", "answerH": "has never experienced", "choices": ["has never experienced", "never experienced", "was never experiencing", "never experiences"], "tip": "never … before（到而家）→ <b>Present Perfect</b>：has never experienced。", "alts": [], "speakBlank": "The city library blank (be) usually a very quiet place. It blank (open) at 9 am and blank (close) at 8 pm every day. Many students blank (go) there to study. But last Tuesday night, something very strange blank(happen) there. While the librarian blank(arrange) the books, all the lights suddenly blank(go) out! She blank (never experience) anything like that before. She blank (know) what to do. Right now, some workers blank(fix) the lights. The manager says they blank (buy) a new generator next month. Probably, the library blank(open) tomorrow because of the problem."}, {"id": "m2b8", "topic": "mix2", "prompt": "短文填空（第 9 / 12 格）：", "sentence": "The city library is usually a very quiet place. It opens at 9 am and closes at 8 pm every day. Many students go there to study. But last Tuesday night, something very strange happened there. While the librarian was arranging the books, all the lights suddenly went out! She has never experienced anything like that before. She ______ what to do. Right now, some workers are fixing the lights. The manager says they will buy a new generator next month. Probably, the library won't open tomorrow because of the problem.", "answer": "doesn't know", "answerH": "doesn't know", "choices": ["doesn't know", "knows", "didn't know", "hasn't known"], "tip": "而家仍然唔知 → <b>Simple Present</b> 否定：doesn't know。", "alts": ["doesn't know", "does not know"], "speakBlank": "The city library blank (be) usually a very quiet place. It blank (open) at 9 am and blank (close) at 8 pm every day. Many students blank (go) there to study. But last Tuesday night, something very strange blank(happen) there. While the librarian blank(arrange) the books, all the lights suddenly blank(go) out! She blank (never experience) anything like that before. She blank (know) what to do. Right now, some workers blank(fix) the lights. The manager says they blank (buy) a new generator next month. Probably, the library blank(open) tomorrow because of the problem."}, {"id": "m2b9", "topic": "mix2", "prompt": "短文填空（第 10 / 12 格）：", "sentence": "The city library is usually a very quiet place. It opens at 9 am and closes at 8 pm every day. Many students go there to study. But last Tuesday night, something very strange happened there. While the librarian was arranging the books, all the lights suddenly went out! She has never experienced anything like that before. She doesn't know what to do. Right now, some workers ______ the lights. The manager says they will buy a new generator next month. Probably, the library won't open tomorrow because of the problem.", "answer": "are fixing", "answerH": "are fixing", "choices": ["are fixing", "fix", "fixed", "have fixed"], "tip": "Right now → <b>Present Continuous</b>：are fixing。", "alts": [], "speakBlank": "The city library blank (be) usually a very quiet place. It blank (open) at 9 am and blank (close) at 8 pm every day. Many students blank (go) there to study. But last Tuesday night, something very strange blank(happen) there. While the librarian blank(arrange) the books, all the lights suddenly blank(go) out! She blank (never experience) anything like that before. She blank (know) what to do. Right now, some workers blank(fix) the lights. The manager says they blank (buy) a new generator next month. Probably, the library blank(open) tomorrow because of the problem."}, {"id": "m2b10", "topic": "mix2", "prompt": "短文填空（第 11 / 12 格）：", "sentence": "The city library is usually a very quiet place. It opens at 9 am and closes at 8 pm every day. Many students go there to study. But last Tuesday night, something very strange happened there. While the librarian was arranging the books, all the lights suddenly went out! She has never experienced anything like that before. She doesn't know what to do. Right now, some workers are fixing the lights. The manager says they ______ a new generator next month. Probably, the library won't open tomorrow because of the problem.", "answer": "will buy", "answerH": "will buy", "choices": ["will buy", "are buying", "bought", "are going to buy"], "tip": "next month 計劃／決定 → <b>will</b>：will buy。", "alts": [], "speakBlank": "The city library blank (be) usually a very quiet place. It blank (open) at 9 am and blank (close) at 8 pm every day. Many students blank (go) there to study. But last Tuesday night, something very strange blank(happen) there. While the librarian blank(arrange) the books, all the lights suddenly blank(go) out! She blank (never experience) anything like that before. She blank (know) what to do. Right now, some workers blank(fix) the lights. The manager says they blank (buy) a new generator next month. Probably, the library blank(open) tomorrow because of the problem."}, {"id": "m2b11", "topic": "mix2", "prompt": "短文填空（第 12 / 12 格）：", "sentence": "The city library is usually a very quiet place. It opens at 9 am and closes at 8 pm every day. Many students go there to study. But last Tuesday night, something very strange happened there. While the librarian was arranging the books, all the lights suddenly went out! She has never experienced anything like that before. She doesn't know what to do. Right now, some workers are fixing the lights. The manager says they will buy a new generator next month. Probably, the library ______ tomorrow because of the problem.", "answer": "won't open", "answerH": "won't open", "choices": ["won't open", "will open", "doesn't open", "isn't opening"], "tip": "Probably … tomorrow 因為問題 → 否定預測：won't open。", "alts": ["won't open", "will not open"], "speakBlank": "The city library blank (be) usually a very quiet place. It blank (open) at 9 am and blank (close) at 8 pm every day. Many students blank (go) there to study. But last Tuesday night, something very strange blank(happen) there. While the librarian blank(arrange) the books, all the lights suddenly blank(go) out! She blank (never experience) anything like that before. She blank (know) what to do. Right now, some workers blank(fix) the lights. The manager says they blank (buy) a new generator next month. Probably, the library blank(open) tomorrow because of the problem."}];
+  
+  var ROUND_CAP = 99, MAX_RETRY = 1;
+  var GOOD = ["🌟 好叻呀！", "🎉 完全正確！", "💯 犀利！", "🚀 勁呀！", "👏 Excellent!", "😎 Well done!"];
+  var BAD = ["💪 唔緊要，睇吓提示！", "🙂 差少少！記住啦！", "🌱 錯咗先學得識！", "🤗 加油！"];
+
+  function $(id) { return document.getElementById(id); }
+  function pick(a) { return a[Math.floor(Math.random() * a.length)]; }
+  function shuffle(a) { a = a.slice(); for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+  function show(id) { ["home","quiz","finish"].forEach(function(s){ $(s).classList.toggle("hidden", s !== id); }); window.scrollTo(0,0); document.body.classList.remove("picking"); if($("picker")) $("picker").classList.add("hidden"); }
+  function ansKey(it) { return it.answerH || (Array.isArray(it.answer) ? it.answer.join(" … ") : it.answer); }
+  function norm(s) {
+    return String(s).toLowerCase()
+      .replace(/['']/g, "'")
+      .replace(/…/g, "...")
+      .replace(/\s+/g, " ")
+      .replace(/\b(will not)\b/g, "won't")
+      .replace(/\b(do not)\b/g, "don't")
+      .replace(/\b(does not)\b/g, "doesn't")
+      .replace(/\b(did not)\b/g, "didn't")
+      .replace(/\b(is not)\b/g, "isn't")
+      .replace(/\b(are not)\b/g, "aren't")
+      .replace(/\b(was not)\b/g, "wasn't")
+      .replace(/\b(were not)\b/g, "weren't")
+      .replace(/\b(has not)\b/g, "hasn't")
+      .replace(/\b(have not)\b/g, "haven't")
+      .trim();
+  }
+  function answersMatch(word, it) {
+    var key = norm(ansKey(it));
+    var w = norm(word);
+    if (w === key) return true;
+    if (it.alts) for (var i=0;i<it.alts.length;i++) if (norm(it.alts[i]) === w) return true;
+    return false;
+  }
+
+  var synth = ("speechSynthesis" in window) ? window.speechSynthesis : null;
+  var voice = null;
+  function pickVoice() {
+    if (!synth) return;
+    var vs = synth.getVoices() || [];
+    var prefs = [function(v){return /en-GB/i.test(v.lang);}, function(v){return /en-US/i.test(v.lang);}, function(v){return /^en/i.test(v.lang);}];
+    for (var i=0;i<prefs.length;i++) for (var j=0;j<vs.length;j++) if (prefs[i](vs[j])) { voice=vs[j]; return; }
+  }
+  if (synth) { pickVoice(); if (synth.addEventListener) synth.addEventListener("voiceschanged", pickVoice); else synth.onvoiceschanged = pickVoice; }
+  function speakText(t) {
+    if (!synth || !t) return;
+    if (!voice) pickVoice();
+    synth.cancel();
+    var u = new SpeechSynthesisUtterance(String(t).replace(/_/g, " ").replace(/______/g, "blank"));
+    if (voice) { u.voice = voice; u.lang = voice.lang; } else u.lang = "en-GB";
+    u.rate = 0.88;
+    setTimeout(function(){ synth.speak(u); }, 40);
+  }
+
+  var S = null;
+
+  function renderHome() {
+    var box = $("topics"); box.innerHTML = "";
+    Object.keys(TOPICS).forEach(function(k){
+      var g = TOPICS[k], b = document.createElement("button");
+      b.className = "topic" + (k === "all" ? " mix" : "");
+      var n = poolFor(k).length;
+      b.innerHTML = '<span class="ti">'+g.icon+"</span>"+g.name+'<div class="desc">'+g.desc+" · "+n+" 題</div>";
+      b.addEventListener("click", function(){ start(k); });
+      box.appendChild(b);
+    });
+  }
+
+  function poolFor(group) {
+    if (group === "all") return ITEMS.slice();
+    return ITEMS.filter(function(it){ return it.topic === group; });
+  }
+
+  function start(group) {
+    var pool = shuffle(poolFor(group));
+    var n = Math.min(ROUND_CAP, pool.length);
+    var qs = pool.slice(0, n).map(function(it){
+      return { item: it, attempt: 0, choices: shuffle((it.choices || []).slice()) };
+    });
+    S = { group: group, queue: qs, current: null, done: 0, stars: 0, streak: 0, best: 0,
+          stats: {}, missed: {}, totalFirst: n, mode: "mc" };
+    Object.keys(TOPICS).forEach(function(k){ if (k!=="all") S.stats[k]={total:0,ok:0}; });
+    show("quiz"); next();
+  }
+
+  function updateBar() {
+    var total = S.done + S.queue.length + (S.current ? 1 : 0);
+    $("progTxt").textContent = "第 " + Math.min(S.done+1, Math.max(total,1)) + " / " + total + " 題";
+    $("bar").style.width = (total ? Math.round(S.done / total * 100) : 0) + "%";
+    $("stars").textContent = S.stars; $("streak").textContent = S.streak;
+  }
+
+  function sentenceHTML(it, revealed, cls) {
+    var show = !!revealed;
+    var c = "blank" + (cls ? " " + cls : "");
+    var html;
+    if (it.html) {
+      html = it.html;
+      if (show) {
+        var ans = Array.isArray(it.answer) ? it.answer : [it.answer];
+        var i = 0;
+        html = html.replace(/______/g, function(){ return '<span class="'+c+'">'+(ans[i++]||"")+"</span>"; });
+      } else {
+        html = html.replace(/______/g, '<span class="'+c+'">______</span>');
+      }
+    } else if (it.sentence) {
+      var fill = show ? (Array.isArray(it.answer) ? it.answer : [String(it.answer)]) : null;
+      var n = 0;
+      html = it.sentence.replace(/______/g, function(){
+        if (!show) return '<span class="'+c+'">______</span>';
+        return '<span class="'+c+'">'+(fill[n++] || "")+"</span>";
+      });
+    } else {
+      html = (it.before||"") + '<span class="'+c+'">'+(show?ansKey(it):"______")+"</span>" + (it.after||"");
+    }
+    if (it.verb) html += ' <span class="verb">'+it.verb+"</span>";
+    if (it.ipa) html = '<div class="ipa">'+it.ipa+"</div>" + (it.promptWord ? '<div style="margin-top:8px">'+it.promptWord+"</div>" : "");
+    return html;
+  }
+
+  function next() {
+    document.body.classList.remove("picking");
+    if ($("picker")) $("picker").classList.add("hidden");
+    S.current = S.queue.shift() || null;
+    if (!S.current) { finish(); return; }
+    var q = S.current, it = q.item;
+    S.answered = false;
+    if (q.attempt === 0 && S.stats[it.topic]) S.stats[it.topic].total++;
+    $("tag").textContent = (TOPICS[it.topic] ? TOPICS[it.topic].icon + " " + TOPICS[it.topic].name : it.topic);
+    $("retryTag").classList.toggle("hidden", q.attempt === 0);
+    $("prompt").textContent = it.prompt || "揀正確答案：";
+    $("sentence").innerHTML = sentenceHTML(it, false, "");
+    $("fb").textContent=""; $("fb").className="fb"; $("why").innerHTML="";
+    $("nextBtn").classList.add("hidden");
+    var box = $("choices"); box.innerHTML="";
+    (q.choices.length ? q.choices : shuffle((it.choices||[]).slice())).forEach(function(w){
+      var b = document.createElement("button");
+      b.className="choice"; b.textContent=w; b.setAttribute("data-ans", w);
+      b.addEventListener("click", function(){ choose(w,b); });
+      box.appendChild(b);
+    });
+    updateBar();
+  }
+
+  function choose(word, btn) {
+    if (S.answered) return;
+    S.answered = true;
+    var q = S.current, it = q.item;
+    var correct = answersMatch(word, it);
+    Array.prototype.forEach.call($("choices").children, function(c){
+      c.disabled = true;
+      if (answersMatch(c.getAttribute("data-ans"), it)) c.classList.add("right");
+    });
+    if (correct) {
+      btn.classList.add("right");
+      $("sentence").innerHTML = sentenceHTML(it, true, "right");
+      if (q.attempt === 0) { S.stars++; if (S.stats[it.topic]) S.stats[it.topic].ok++; }
+      S.streak++; if (S.streak > S.best) S.best = S.streak;
+      $("fb").className="fb good";
+      $("fb").innerHTML = pick(GOOD) + (S.streak>=3 ? " 🔥 連續 "+S.streak+" 題！" : "");
+      confetti(S.streak>=5?12:6);
+      if (it.speak) speakText(it.speak);
+      else speakText(($("sentence").innerText || "").replace(/\([^)]*\)/g,""));
+    } else {
+      btn.classList.add("wrong");
+      $("sentence").innerHTML = sentenceHTML(it, true, "wrong");
+      S.streak = 0;
+      S.missed[ansKey(it)] = (S.missed[ansKey(it)]||0) + 1;
+      $("fb").className="fb bad";
+      $("fb").innerHTML = pick(BAD) + '<div style="margin-top:6px;color:#2e7d32">正確答案：<b>' + ansKey(it) + "</b></div>";
+      $("why").innerHTML = '<div class="why">💡 ' + (it.tip || "再睇清楚句子提示啦！") + "</div>";
+      setTimeout(function(){ if (S.current === q) $("sentence").innerHTML = sentenceHTML(it, true, "right"); }, 550);
+      if (q.attempt < MAX_RETRY) {
+        S.queue.push({ item: it, attempt: q.attempt+1, choices: shuffle((it.choices||[]).slice()) });
+      }
+    }
+    S.done++;
+    $("nextBtn").classList.remove("hidden");
+    $("nextBtn").textContent = S.queue.length ? "下一題 ➡️" : "睇成績 🏆";
+    updateBar();
+  }
+
+  function finish() {
+    show("finish");
+    var pct = S.totalFirst ? S.stars/S.totalFirst : 0;
+    $("finEmoji").textContent = pct===1?"🏆":pct>=0.8?"🥇":pct>=0.6?"🥈":"💪";
+    $("finTitle").textContent = pct===1?"全部一次答啱！超級犀利！":pct>=0.8?"好叻呀！差少少就滿分！":pct>=0.6?"唔錯呀！繼續努力！":"完成咗！多練習一定進步！";
+    $("finSummary").innerHTML = "⭐ "+S.stars+" / "+S.totalFirst+" 題一次答啱　🔥 最高連續 "+S.best+" 題";
+    var rows = "";
+    Object.keys(S.stats).forEach(function(t){
+      var s = S.stats[t]; if (!s.total) return;
+      var name = TOPICS[t] ? TOPICS[t].icon+" "+TOPICS[t].name : t;
+      rows += "<tr><td>"+name+"</td><td>"+s.total+"</td><td>"+s.ok+"</td></tr>";
+    });
+    $("sumTable").innerHTML = "<tr><th>主題</th><th>題數</th><th>一次答啱</th></tr>"+rows;
+    var box = $("missedBox"); box.innerHTML="";
+    var keys = Object.keys(S.missed);
+    if (!keys.length) box.innerHTML = '<p style="text-align:center;color:#2e7d32;font-weight:bold">🥇 Perfect！</p>';
+    else {
+      box.innerHTML = '<p style="font-weight:bold;color:#e65100">📝 要多練習：</p>';
+      keys.forEach(function(w){
+        var d=document.createElement("div"); d.className="missed";
+        d.innerHTML = "<b>"+w+"</b> <small>（錯 "+S.missed[w]+" 次）</small>";
+        box.appendChild(d);
+      });
+    }
+    confetti(pct>=0.8?28:10);
+  }
+
+  function confetti(n) {
+    var icons=["🎉","⭐","🌟","🎊","📚","✍️","🌈"];
+    for (var i=0;i<n;i++){
+      var s=document.createElement("span"); s.className="confetti";
+      s.textContent=icons[Math.floor(Math.random()*icons.length)];
+      s.style.left=Math.random()*100+"vw"; s.style.animationDuration=(1.4+Math.random()*2)+"s";
+      document.body.appendChild(s);
+      (function(el){ setTimeout(function(){ if(el.parentNode) el.parentNode.removeChild(el); },4000); })(s);
+    }
+  }
+
+  $("againBtn").addEventListener("click", function(){ start(S.group); });
+  $("backBtn").addEventListener("click", function(){ show("home"); });
+  $("homeBtn").addEventListener("click", function(){ if(confirm("要返回主題選單嗎？今輪進度會冇咗。")) show("home"); });
+  $("nextBtn").addEventListener("click", next);
+  if ($("speakBtn")) $("speakBtn").addEventListener("click", function () {
+    if (!S || !S.current) return;
+    var it = S.current.item;
+    if (S.answered && it.speak) speakText(it.speak);
+    else if (it.speakBlank) speakText(it.speakBlank);
+    else speakText(($("sentence").innerText||"").replace(/______/g,"blank"));
+  });
+  document.addEventListener("keydown", function(e){
+    if ($("quiz").classList.contains("hidden")||!S||!S.current) return;
+    if (e.key==="Enter" && S.answered) { e.preventDefault(); next(); return; }
+    if (!S.answered && /^[1-4]$/.test(e.key)) {
+      var b=$("choices").children[+e.key-1]; if (b) b.click();
+    }
+  });
+
+  renderHome();
+
+  
+})();
+</script>
+</body>
+</html>

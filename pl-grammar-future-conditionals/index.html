@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>🔮 PowerLesson · Future &amp; Conditionals</title>
+<style>
+  :root {
+    --bg: linear-gradient(135deg,#fbc2eb 0%,#a6c1ee 100%);
+    --h: #ad1457;
+    --sub: #c2185b;
+    --bd: #f48fb1;
+    --soft: #fce4ec;
+    --shadow: #f48fb1;
+    --accent: #ec407a;
+  }
+  
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body {
+    margin: 0; min-height: 100vh; padding: 14px;
+    font-family: "Arial Rounded MT Bold", "Comic Sans MS", "PingFang TC", "Microsoft JhengHei", "Noto Sans TC", sans-serif;
+    background: var(--bg); background-attachment: fixed; color: #263238;
+  }
+  h1 { text-align: center; font-size: clamp(1.15rem, 4.6vw, 1.85rem); color: var(--h); text-shadow: 2px 2px 0 #fff; margin: 6px 0 2px; }
+  .sub { text-align: center; color: var(--sub); margin: 0 0 14px; font-size: 1.02rem; }
+  .card { background: #fff; border-radius: 26px; max-width: 720px; margin: 0 auto; padding: 20px 16px 24px; box-shadow: 0 10px 28px rgba(0,0,0,.18); border: 5px solid var(--bd); }
+  .hidden { display: none !important; }
+  button { font-family: inherit; cursor: pointer; border: none; }
+  .intro { font-size: 1.05rem; line-height: 1.7; background: var(--soft); border-radius: 16px; padding: 12px 14px; margin-bottom: 12px; }
+  .topics { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .topic { background: var(--soft); border-radius: 18px; padding: 14px 10px; font-size: 1.08rem; font-weight: bold; color: var(--h); box-shadow: 0 5px 0 var(--shadow); text-align: left; }
+  .topic .ti { font-size: 1.8rem; display: block; margin-bottom: 2px; }
+  .topic:active { transform: translateY(3px); box-shadow: 0 2px 0 var(--shadow); }
+  .topic.mix { grid-column: 1 / -1; background: #fff3e0; color: #e65100; box-shadow: 0 5px 0 #ffb74d; }
+  .topic .desc { font-size: .82rem; font-weight: normal; margin-top: 4px; color: #555; }
+  .topbar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
+  .pill { background: var(--soft); border-radius: 999px; padding: 6px 12px; font-weight: bold; color: var(--h); font-size: .95rem; }
+  .pill.star { background: #fff8e1; color: #f57f17; }
+  .pill.fire { background: #fbe9e7; color: #d84315; }
+  .homebtn { background: #eceff1; border-radius: 999px; padding: 6px 12px; font-size: 1rem; }
+  .bar { flex: 1 1 100%; height: 14px; background: #e0e0e0; border-radius: 999px; overflow: hidden; }
+  .bar > div { height: 100%; width: 0; background: linear-gradient(90deg, var(--accent), #42a5f5); transition: width .35s; }
+  .tag { display: inline-block; background: var(--accent); color: #fff; border-radius: 12px; padding: 4px 12px; font-size: .95rem; }
+  .retry { display: inline-block; background: #ffca28; color: #6d4c00; border-radius: 12px; padding: 3px 10px; font-size: .9rem; margin-left: 6px; }
+  .prompt { font-size: 1.05rem; color: var(--h); margin: 10px 0 4px; font-weight: bold; }
+  .sentence {
+    font-size: clamp(1.12rem, 4.2vw, 1.5rem); line-height: 1.75; background: #fffde7;
+    border-radius: 18px; padding: 14px; margin: 8px 0 10px; border: 3px dashed #ffd54f; color: #1a237e; font-weight: 600;
+  }
+  .blank { display: inline-block; min-width: 3.2em; padding: 1px 8px; margin: 0 1px; border-bottom: 3px solid var(--accent); background: var(--soft); border-radius: 6px 6px 0 0; color: var(--h); text-align: center; }
+  .blank.right { background: #c8e6c9; border-bottom-color: #2e7d32; color: #1b5e20; }
+  .blank.wrong { background: #ffcdd2; border-bottom-color: #c62828; color: #b71c1c; }
+  .blank.open { background: #fff59d; border-bottom-color: #f9a825; box-shadow: 0 0 0 3px rgba(249,168,37,.35); cursor: pointer; }
+  .verb { color: #888; font-size: .92em; font-weight: normal; }
+  .ipa { font-size: 1.6rem; color: #6a1b9a; font-weight: bold; letter-spacing: .02em; }
+  .choices { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .choice {
+    background: var(--soft); color: var(--h); font-size: clamp(1rem, 3.8vw, 1.28rem); font-weight: bold;
+    border-radius: 16px; padding: 14px 8px; min-height: 60px; box-shadow: 0 5px 0 var(--shadow);
+  }
+  .choice:active { transform: translateY(3px); box-shadow: 0 2px 0 var(--shadow); }
+  .choice.right { background: #c8e6c9; box-shadow: 0 5px 0 #66bb6a; color: #1b5e20; }
+  .choice.wrong { background: #ffcdd2; box-shadow: 0 5px 0 #e57373; color: #b71c1c; }
+  .choice:disabled { cursor: default; }
+  .speak { display: inline-block; margin: 6px 4px; background: #0288d1; color: #fff; font-size: 1.05rem; font-weight: bold; border-radius: 999px; padding: 10px 16px; box-shadow: 0 4px 0 #01579b; }
+  .speak:active { transform: translateY(3px); box-shadow: 0 1px 0 #01579b; }
+  .fb { text-align: center; font-size: 1.2rem; font-weight: bold; margin-top: 10px; min-height: 1.3em; }
+  .fb.good { color: #2e7d32; } .fb.bad { color: #c62828; }
+  .why { background: #fff3e0; border-left: 6px solid #ff9800; border-radius: 10px; padding: 10px 12px; margin: 10px 0; font-size: 1.05rem; line-height: 1.6; text-align: left; }
+  .why b { color: #e65100; }
+  .next { display: block; margin: 14px auto 0; font-size: 1.3rem; font-weight: bold; color: #fff; background: #fb8c00; border-radius: 20px; padding: 14px 28px; box-shadow: 0 6px 0 #e65100; min-width: 200px; }
+  .next:active { transform: translateY(4px); box-shadow: 0 2px 0 #e65100; }
+  .start { font-size: 1.3rem; font-weight: bold; color: #fff; background: var(--accent); border-radius: 20px; padding: 14px 28px; box-shadow: 0 6px 0 var(--h); }
+  .bigemoji { font-size: 4rem; text-align: center; animation: bounce 1s infinite; }
+  .row { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+  .row .next, .row .start { margin: 10px 0 0; }
+  table.sum { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 1.05rem; }
+  table.sum th, table.sum td { padding: 8px 6px; text-align: center; border-bottom: 2px solid #e0e0e0; }
+  table.sum th { background: var(--soft); color: var(--h); }
+  .missed { background: #fff8e1; border-radius: 12px; padding: 6px 10px; margin: 4px 0; font-size: .98rem; text-align: left; }
+  .wordbank { font-size: .9rem; color: #555; background: var(--soft); border-radius: 12px; padding: 8px 10px; margin-bottom: 10px; line-height: 1.5; }
+  .passage { font-size: clamp(1.05rem, 3.8vw, 1.28rem); line-height: 1.85; color: #1a237e; background: #fffde7; border: 3px dashed #ffd54f; border-radius: 16px; padding: 14px 12px; margin-bottom: 12px; }
+  .passage p { margin: 0 0 12px; }
+  :root { --dock-h: 280px; }
+  #picker {
+    position: fixed !important; left: 0 !important; right: 0 !important; bottom: 0 !important;
+    width: 100% !important; z-index: 1000; max-height: min(46vh, 360px);
+    overflow-x: hidden; overflow-y: auto; -webkit-overflow-scrolling: touch;
+    padding: 10px 12px calc(10px + env(safe-area-inset-bottom, 0px));
+    border-radius: 22px 22px 0 0; border: 4px solid #42a5f5; border-bottom: none;
+    background: linear-gradient(180deg, #e3f2fd 0%, #bbdefb 100%);
+    box-shadow: 0 -12px 32px rgba(0,40,80,.3);
+  }
+  #picker::before { content: ""; display: block; width: 44px; height: 5px; border-radius: 999px; background: rgba(0,0,0,.18); margin: 0 auto 8px; }
+  #picker h3 { margin: 0 0 8px; color: #1565c0; font-size: 1.05rem; text-align: center; }
+  #picker .dock-inner { max-width: 720px; margin: 0 auto; }
+  body.picking #quiz.card { padding-bottom: calc(var(--dock-h) + 36px); }
+  .blank { scroll-margin-bottom: calc(var(--dock-h) + 24px); scroll-margin-top: 72px; }
+  @keyframes bounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+  .confetti { position: fixed; top: -30px; font-size: 1.7rem; pointer-events: none; animation: fall linear forwards; z-index: 99; }
+  @keyframes fall { to { transform: translateY(110vh) rotate(720deg); opacity: .6; } }
+  a.backhome { display: inline-block; margin: 8px auto 0; color: var(--h); font-weight: bold; text-decoration: none; }
+
+</style>
+</head>
+<body>
+<h1>🔮 PowerLesson · Future & Conditionals</h1>
+<div class="sub">Future tense + First & Second Conditionals</div>
+<p style="text-align:center;margin:0 0 10px"><a class="backhome" href="../">🏠 返回練習主頁</a></p>
+
+<div class="card" id="home">
+  <div class="intro">📌 Future：will（承諾／即時決定／預測）、going to（已決定）、present continuous（已安排）。<br>📌 Conditional：First = if + present, will…　Second = if + past, would…<br>❌ 答錯有中文規則提示。</div>
+  <div class="topics" id="topics"></div>
+</div>
+
+<div class="card hidden" id="quiz">
+  <div class="topbar">
+    <button class="homebtn" id="homeBtn">🏠 返回</button>
+    <span class="pill" id="progTxt">1 / 1</span>
+    <span class="pill star">⭐ <span id="stars">0</span></span>
+    <span class="pill fire">🔥 <span id="streak">0</span></span>
+    <div class="bar"><div id="bar"></div></div>
+  </div>
+  <div><span class="tag" id="tag"></span><span class="retry hidden" id="retryTag">🔁 再試呢題</span></div>
+  <div class="prompt" id="prompt"></div>
+  <div class="sentence" id="sentence"></div>
+  <button class="speak" id="speakBtn">🔊 聽句子</button>
+  <div class="choices" id="choices"></div>
+  <div class="fb" id="fb"></div>
+  <div id="why"></div>
+  <button class="next hidden" id="nextBtn">下一題 ➡️</button>
+</div>
+
+
+
+<div class="card hidden" id="finish">
+  <div class="bigemoji" id="finEmoji">🏆</div>
+  <h2 style="text-align:center;color:var(--h);margin:6px 0" id="finTitle">完成！</h2>
+  <p style="text-align:center;font-size:1.2rem" id="finSummary"></p>
+  <table class="sum" id="sumTable"></table>
+  <div id="missedBox"></div>
+  <div class="row">
+    <button class="start" id="againBtn">🔄 再玩一次</button>
+    <button class="next" id="backBtn">🏠 揀其他主題</button>
+  </div>
+</div>
+
+<script>
+(function () {
+  "use strict";
+  var TOPICS = {"future": {"name": "Future forms", "icon": "🔮", "desc": "will / going to / 已安排"}, "cond": {"name": "Conditionals", "icon": "🪄", "desc": "First & Second Conditional"}, "all": {"name": "全部混合", "icon": "🎲", "desc": "Future + Conditionals"}};
+  var ITEMS = [{"id": "fu1", "topic": "future", "prompt": "揀正確動詞形式：", "sentence": "My grandparents ______(live) with us next week. They have already sold their apartment in the city.", "verb": "(live)", "answer": "are living", "answerH": "are living", "choices": ["are living", "will live", "are going to live", "live"], "tip": "已賣咗屋＝已安排 → <b>Present Continuous</b>：are living。", "alts": ["are living"], "speak": "My grandparents are living(live) with us next week. They have already sold their apartment in the city.", "speakBlank": "My grandparents blank(live) with us next week. They have already sold their apartment in the city."}, {"id": "fu2", "topic": "future", "prompt": "揀正確動詞形式：", "sentence": "My sister ______ (spend) a week in Tokoyo, but she hasn’t booked the flight ticket yet.", "verb": "(spend)", "answer": "is going to spend", "answerH": "is going to spend", "choices": ["is going to spend", "will spend", "is spending", "spends"], "tip": "未訂飛但已決定 → <b>be going to</b>：is going to spend。", "alts": ["is going to spend"], "speak": "My sister is going to spend (spend) a week in Tokoyo, but she hasn’t booked the flight ticket yet.", "speakBlank": "My sister blank (spend) a week in Tokoyo, but she hasn’t booked the flight ticket yet."}, {"id": "fu3", "topic": "future", "prompt": "揀正確動詞形式：", "sentence": "A: I am thirsty! B: Wait! I ______(bring) you a glass of water.", "verb": "(bring)", "answer": "will bring", "answerH": "will bring", "choices": ["will bring", "am bringing", "am going to bring", "bring"], "tip": "傾談中即時決定 → <b>will</b>：will bring。", "alts": ["will bring"], "speak": "A: I am thirsty! B: Wait! I will bring(bring) you a glass of water.", "speakBlank": "A: I am thirsty! B: Wait! I blank(bring) you a glass of water."}, {"id": "fu4", "topic": "future", "prompt": "揀正確動詞形式：", "sentence": "I hope my teacher ______ (stay) after the lesson.", "verb": "(stay)", "answer": "will stay", "answerH": "will stay", "choices": ["will stay", "is staying", "is going to stay", "stays"], "tip": "I hope → 預測／希望 → <b>will</b>。", "alts": ["will stay"], "speak": "I hope my teacher will stay (stay) after the lesson.", "speakBlank": "I hope my teacher blank (stay) after the lesson."}, {"id": "fu5", "topic": "future", "prompt": "揀正確動詞形式：", "sentence": "Sammi ______ (see) the doctor on Friday at 10 a.m.", "verb": "(see)", "answer": "is seeing", "answerH": "is seeing", "choices": ["is seeing", "will see", "is going to see", "sees"], "tip": "Friday at 10 a.m. 已約時間 → <b>Present Continuous</b>：is seeing。", "alts": ["is seeing"], "speak": "Sammi is seeing (see) the doctor on Friday at 10 a.m.", "speakBlank": "Sammi blank (see) the doctor on Friday at 10 a.m."}, {"id": "fu6", "topic": "future", "prompt": "揀正確動詞形式：", "sentence": "He promises he ______ (finish) all his homework tomorrow morning.", "verb": "(finish)", "answer": "will finish", "answerH": "will finish", "choices": ["will finish", "is finishing", "is going to finish", "finishes"], "tip": "promises → 承諾 → <b>will</b>。", "alts": ["will finish"], "speak": "He promises he will finish (finish) all his homework tomorrow morning.", "speakBlank": "He promises he blank (finish) all his homework tomorrow morning."}, {"id": "fu7", "topic": "future", "prompt": "揀正確動詞形式：", "sentence": "Ron thinks you ______ (understand) what he means soon.", "verb": "(understand)", "answer": "will understand", "answerH": "will understand", "choices": ["will understand", "are understanding", "are going to understand", "understand"], "tip": "thinks → 意見／預測 → <b>will</b>。", "alts": ["will understand"], "speak": "Ron thinks you will understand (understand) what he means soon.", "speakBlank": "Ron thinks you blank (understand) what he means soon."}, {"id": "fu8", "topic": "future", "prompt": "揀正確動詞形式：", "sentence": "My friends and I ______ (go) to Germany next week. The tourist agency has booked a trip for us.", "verb": "(go)", "answer": "are going", "answerH": "are going", "choices": ["are going", "will go", "are going to go", "go"], "tip": "旅行社已訂行程＝已安排 → <b>Present Continuous</b>：are going。", "alts": ["are going"], "speak": "My friends and I are going (go) to Germany next week. The tourist agency has booked a trip for us.", "speakBlank": "My friends and I blank (go) to Germany next week. The tourist agency has booked a trip for us."}, {"id": "fu9", "topic": "future", "prompt": "揀正確動詞形式：", "sentence": "A: This pile of books is very heavy. B: I______ (carry) it for you.", "verb": "(carry)", "answer": "will carry", "answerH": "will carry", "choices": ["will carry", "am carrying", "am going to carry", "carry"], "tip": "即時提議幫忙 → <b>will</b>：will carry。", "alts": ["will carry"], "speak": "A: This pile of books is very heavy. B: Iwill carry (carry) it for you.", "speakBlank": "A: This pile of books is very heavy. B: Iblank (carry) it for you."}, {"id": "fu10", "topic": "future", "prompt": "揀正確動詞形式：", "sentence": "Benny ______ (take) fencing lessons this summer. He has already signed up.", "verb": "(take)", "answer": "is taking", "answerH": "is taking", "choices": ["is taking", "will take", "is going to take", "takes"], "tip": "已報名＝已安排 → <b>Present Continuous</b>：is taking。", "alts": ["is taking"], "speak": "Benny is taking (take) fencing lessons this summer. He has already signed up.", "speakBlank": "Benny blank (take) fencing lessons this summer. He has already signed up."}, {"id": "cd1", "topic": "cond", "prompt": "揀正確動詞形式：", "sentence": "If I ______ (pass) my English exam tomorrow, my parents ______ (take) me to a theme park.", "verb": "(pass) (take)", "answer": ["pass", "will take"], "answerH": "pass … will take", "choices": ["pass … will take", "will pass … take", "passed … would take", "pass … would take"], "tip": "First：if + present，will + base。Second：if + past（be→were），would + base。", "alts": [], "speak": "If I pass (pass) my English exam tomorrow, my parents will take (take) me to a theme park.", "speakBlank": "If I blank (pass) my English exam tomorrow, my parents blank (take) me to a theme park."}, {"id": "cd2", "topic": "cond", "prompt": "揀正確動詞形式：", "sentence": "We don’t have a pet dragon. If we ______ (have) a pet dragon, we ______ (fly) to school on its back.", "verb": "(have) (fly)", "answer": ["had", "would fly"], "answerH": "had … would fly", "choices": ["had … would fly", "have … will fly", "had … will fly", "have … would fly"], "tip": "First：if + present，will + base。Second：if + past（be→were），would + base。", "alts": [], "speak": "We don’t have a pet dragon. If we had (have) a pet dragon, we would fly (fly) to school on its back.", "speakBlank": "We don’t have a pet dragon. If we blank (have) a pet dragon, we blank (fly) to school on its back."}, {"id": "cd3", "topic": "cond", "prompt": "揀正確動詞形式：", "sentence": "If you ______ (drop) your phone, you ______ (break) it.", "verb": "(drop) (break)", "answer": ["drop", "will break"], "answerH": "drop … will break", "choices": ["drop … will break", "dropped … would break", "drop … would break", "will drop … break"], "tip": "First：if + present，will + base。Second：if + past（be→were），would + base。", "alts": [], "speak": "If you drop (drop) your phone, you will break (break) it.", "speakBlank": "If you blank (drop) your phone, you blank (break) it."}, {"id": "cd4", "topic": "cond", "prompt": "揀正確動詞形式：", "sentence": "Ice ______ (not/melt) if you ______ (keep) it cold.", "verb": "(not/melt) (keep)", "answer": ["will not melt", "keep"], "answerH": "will not melt … keep", "choices": ["will not melt … keep", "doesn't melt … will keep", "won't melt … kept", "will not melt … will keep"], "tip": "First：if + present，will + base。Second：if + past（be→were），would + base。", "alts": ["won't melt … keep", "will not melt … keep"], "speak": "Ice will not melt (not/melt) if you keep (keep) it cold.", "speakBlank": "Ice blank (not/melt) if you blank (keep) it cold."}, {"id": "cd5", "topic": "cond", "prompt": "揀正確動詞形式：", "sentence": "My best friend lives far away. If she ______ (live) closer to my house, we ______ (walk) to school together every morning.", "verb": "(live) (walk)", "answer": ["lived", "would walk"], "answerH": "lived … would walk", "choices": ["lived … would walk", "lives … will walk", "lived … will walk", "live … would walk"], "tip": "First：if + present，will + base。Second：if + past（be→were），would + base。", "alts": [], "speak": "My best friend lives far away. If she lived (live) closer to my house, we would walk (walk) to school together every morning.", "speakBlank": "My best friend lives far away. If she blank (live) closer to my house, we blank (walk) to school together every morning."}, {"id": "cd6", "topic": "cond", "prompt": "揀正確動詞形式：", "sentence": "If it ______ (start) to rain during recess, we ______ (stay) inside the classroom.", "verb": "(start) (stay)", "answer": ["starts", "will stay"], "answerH": "starts … will stay", "choices": ["starts … will stay", "started … would stay", "starts … would stay", "start … will stay"], "tip": "First：if + present，will + base。Second：if + past（be→were），would + base。", "alts": [], "speak": "If it starts (start) to rain during recess, we will stay (stay) inside the classroom.", "speakBlank": "If it blank (start) to rain during recess, we blank (stay) inside the classroom."}, {"id": "cd7", "topic": "cond", "prompt": "揀正確動詞形式：", "sentence": "I am not a bird. If I ______ (be) a bird, I ______ (build) my nest high up in the mountains.", "verb": "(be) (build)", "answer": ["were", "would build"], "answerH": "were … would build", "choices": ["were … would build", "was … would build", "am … will build", "were … will build"], "tip": "First：if + present，will + base。Second：if + past（be→were），would + base。", "alts": [], "speak": "I am not a bird. If I were (be) a bird, I would build (build) my nest high up in the mountains.", "speakBlank": "I am not a bird. If I blank (be) a bird, I blank (build) my nest high up in the mountains."}, {"id": "cd8", "topic": "cond", "prompt": "揀正確動詞形式：", "sentence": "What ______ you ______ (do) if you ______ (find) a magic lamp?", "verb": "(do) (find)", "answer": ["would", "do", "found"], "answerH": "would … do … found", "choices": ["would … do … found", "will … do … find", "would … did … found", "will … do … found"], "tip": "First：if + present，will + base。Second：if + past（be→were），would + base。", "alts": [], "speak": "What would you do (do) if you found (find) a magic lamp?", "speakBlank": "What blank you blank (do) if you blank (find) a magic lamp?"}, {"id": "cd9", "topic": "cond", "prompt": "揀正確動詞形式：", "sentence": "Tom ______ (not/feel) tired if he ______ (go) to bed early.", "verb": "(not/feel) (go)", "answer": ["will not feel", "goes"], "answerH": "will not feel … goes", "choices": ["will not feel … goes", "doesn't feel … will go", "won't feel … go", "will not feel … go"], "tip": "First：if + present，will + base。Second：if + past（be→were），would + base。", "alts": ["won't feel … goes", "will not feel … goes"], "speak": "Tom will not feel (not/feel) tired if he goes (go) to bed early.", "speakBlank": "Tom blank (not/feel) tired if he blank (go) to bed early."}, {"id": "cd10", "topic": "cond", "prompt": "揀正確動詞形式：", "sentence": "I am terrible at drawing. If I ______ (can) draw like a professional artist, I ______ (paint) a giant mural on my bedroom wall.", "verb": "(can) (paint)", "answer": ["could", "would paint"], "answerH": "could … would paint", "choices": ["could … would paint", "can … will paint", "could … will paint", "can … would paint"], "tip": "First：if + present，will + base。Second：if + past（be→were），would + base。", "alts": [], "speak": "I am terrible at drawing. If I could (can) draw like a professional artist, I would paint (paint) a giant mural on my bedroom wall.", "speakBlank": "I am terrible at drawing. If I blank (can) draw like a professional artist, I blank (paint) a giant mural on my bedroom wall."}, {"id": "cd11", "topic": "cond", "prompt": "揀正確動詞形式：", "sentence": "If you ______ (not/run) fast, you ______ (miss) the bus.", "verb": "(not/run) (miss)", "answer": ["do not run", "will miss"], "answerH": "do not run … will miss", "choices": ["do not run … will miss", "don't run … would miss", "did not run … will miss", "do not run … would miss"], "tip": "First：if + present，will + base。Second：if + past（be→were），would + base。", "alts": ["do not run … will miss", "don't run … will miss"], "speak": "If you do not run (not/run) fast, you will miss (miss) the bus.", "speakBlank": "If you blank (not/run) fast, you blank (miss) the bus."}, {"id": "cd12", "topic": "cond", "prompt": "揀正確動詞形式：", "sentence": "I'm not the principal. If I ______ (be) principal, I ______ (give) students an extra hour of recess every day.", "verb": "(be) (give)", "answer": ["were", "would give"], "answerH": "were … would give", "choices": ["were … would give", "was … would give", "am … will give", "were … will give"], "tip": "First：if + present，will + base。Second：if + past（be→were），would + base。", "alts": [], "speak": "I'm not the principal. If I were (be) principal, I would give (give) students an extra hour of recess every day.", "speakBlank": "I'm not the principal. If I blank (be) principal, I blank (give) students an extra hour of recess every day."}];
+  
+  var ROUND_CAP = 99, MAX_RETRY = 1;
+  var GOOD = ["🌟 好叻呀！", "🎉 完全正確！", "💯 犀利！", "🚀 勁呀！", "👏 Excellent!", "😎 Well done!"];
+  var BAD = ["💪 唔緊要，睇吓提示！", "🙂 差少少！記住啦！", "🌱 錯咗先學得識！", "🤗 加油！"];
+
+  function $(id) { return document.getElementById(id); }
+  function pick(a) { return a[Math.floor(Math.random() * a.length)]; }
+  function shuffle(a) { a = a.slice(); for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+  function show(id) { ["home","quiz","finish"].forEach(function(s){ $(s).classList.toggle("hidden", s !== id); }); window.scrollTo(0,0); document.body.classList.remove("picking"); if($("picker")) $("picker").classList.add("hidden"); }
+  function ansKey(it) { return it.answerH || (Array.isArray(it.answer) ? it.answer.join(" … ") : it.answer); }
+  function norm(s) {
+    return String(s).toLowerCase()
+      .replace(/['']/g, "'")
+      .replace(/…/g, "...")
+      .replace(/\s+/g, " ")
+      .replace(/\b(will not)\b/g, "won't")
+      .replace(/\b(do not)\b/g, "don't")
+      .replace(/\b(does not)\b/g, "doesn't")
+      .replace(/\b(did not)\b/g, "didn't")
+      .replace(/\b(is not)\b/g, "isn't")
+      .replace(/\b(are not)\b/g, "aren't")
+      .replace(/\b(was not)\b/g, "wasn't")
+      .replace(/\b(were not)\b/g, "weren't")
+      .replace(/\b(has not)\b/g, "hasn't")
+      .replace(/\b(have not)\b/g, "haven't")
+      .trim();
+  }
+  function answersMatch(word, it) {
+    var key = norm(ansKey(it));
+    var w = norm(word);
+    if (w === key) return true;
+    if (it.alts) for (var i=0;i<it.alts.length;i++) if (norm(it.alts[i]) === w) return true;
+    return false;
+  }
+
+  var synth = ("speechSynthesis" in window) ? window.speechSynthesis : null;
+  var voice = null;
+  function pickVoice() {
+    if (!synth) return;
+    var vs = synth.getVoices() || [];
+    var prefs = [function(v){return /en-GB/i.test(v.lang);}, function(v){return /en-US/i.test(v.lang);}, function(v){return /^en/i.test(v.lang);}];
+    for (var i=0;i<prefs.length;i++) for (var j=0;j<vs.length;j++) if (prefs[i](vs[j])) { voice=vs[j]; return; }
+  }
+  if (synth) { pickVoice(); if (synth.addEventListener) synth.addEventListener("voiceschanged", pickVoice); else synth.onvoiceschanged = pickVoice; }
+  function speakText(t) {
+    if (!synth || !t) return;
+    if (!voice) pickVoice();
+    synth.cancel();
+    var u = new SpeechSynthesisUtterance(String(t).replace(/_/g, " ").replace(/______/g, "blank"));
+    if (voice) { u.voice = voice; u.lang = voice.lang; } else u.lang = "en-GB";
+    u.rate = 0.88;
+    setTimeout(function(){ synth.speak(u); }, 40);
+  }
+
+  var S = null;
+
+  function renderHome() {
+    var box = $("topics"); box.innerHTML = "";
+    Object.keys(TOPICS).forEach(function(k){
+      var g = TOPICS[k], b = document.createElement("button");
+      b.className = "topic" + (k === "all" ? " mix" : "");
+      var n = poolFor(k).length;
+      b.innerHTML = '<span class="ti">'+g.icon+"</span>"+g.name+'<div class="desc">'+g.desc+" · "+n+" 題</div>";
+      b.addEventListener("click", function(){ start(k); });
+      box.appendChild(b);
+    });
+  }
+
+  function poolFor(group) {
+    if (group === "all") return ITEMS.slice();
+    return ITEMS.filter(function(it){ return it.topic === group; });
+  }
+
+  function start(group) {
+    var pool = shuffle(poolFor(group));
+    var n = Math.min(ROUND_CAP, pool.length);
+    var qs = pool.slice(0, n).map(function(it){
+      return { item: it, attempt: 0, choices: shuffle((it.choices || []).slice()) };
+    });
+    S = { group: group, queue: qs, current: null, done: 0, stars: 0, streak: 0, best: 0,
+          stats: {}, missed: {}, totalFirst: n, mode: "mc" };
+    Object.keys(TOPICS).forEach(function(k){ if (k!=="all") S.stats[k]={total:0,ok:0}; });
+    show("quiz"); next();
+  }
+
+  function updateBar() {
+    var total = S.done + S.queue.length + (S.current ? 1 : 0);
+    $("progTxt").textContent = "第 " + Math.min(S.done+1, Math.max(total,1)) + " / " + total + " 題";
+    $("bar").style.width = (total ? Math.round(S.done / total * 100) : 0) + "%";
+    $("stars").textContent = S.stars; $("streak").textContent = S.streak;
+  }
+
+  function sentenceHTML(it, revealed, cls) {
+    var show = !!revealed;
+    var c = "blank" + (cls ? " " + cls : "");
+    var html;
+    if (it.html) {
+      html = it.html;
+      if (show) {
+        var ans = Array.isArray(it.answer) ? it.answer : [it.answer];
+        var i = 0;
+        html = html.replace(/______/g, function(){ return '<span class="'+c+'">'+(ans[i++]||"")+"</span>"; });
+      } else {
+        html = html.replace(/______/g, '<span class="'+c+'">______</span>');
+      }
+    } else if (it.sentence) {
+      var fill = show ? (Array.isArray(it.answer) ? it.answer : [String(it.answer)]) : null;
+      var n = 0;
+      html = it.sentence.replace(/______/g, function(){
+        if (!show) return '<span class="'+c+'">______</span>';
+        return '<span class="'+c+'">'+(fill[n++] || "")+"</span>";
+      });
+    } else {
+      html = (it.before||"") + '<span class="'+c+'">'+(show?ansKey(it):"______")+"</span>" + (it.after||"");
+    }
+    if (it.verb) html += ' <span class="verb">'+it.verb+"</span>";
+    if (it.ipa) html = '<div class="ipa">'+it.ipa+"</div>" + (it.promptWord ? '<div style="margin-top:8px">'+it.promptWord+"</div>" : "");
+    return html;
+  }
+
+  function next() {
+    document.body.classList.remove("picking");
+    if ($("picker")) $("picker").classList.add("hidden");
+    S.current = S.queue.shift() || null;
+    if (!S.current) { finish(); return; }
+    var q = S.current, it = q.item;
+    S.answered = false;
+    if (q.attempt === 0 && S.stats[it.topic]) S.stats[it.topic].total++;
+    $("tag").textContent = (TOPICS[it.topic] ? TOPICS[it.topic].icon + " " + TOPICS[it.topic].name : it.topic);
+    $("retryTag").classList.toggle("hidden", q.attempt === 0);
+    $("prompt").textContent = it.prompt || "揀正確答案：";
+    $("sentence").innerHTML = sentenceHTML(it, false, "");
+    $("fb").textContent=""; $("fb").className="fb"; $("why").innerHTML="";
+    $("nextBtn").classList.add("hidden");
+    var box = $("choices"); box.innerHTML="";
+    (q.choices.length ? q.choices : shuffle((it.choices||[]).slice())).forEach(function(w){
+      var b = document.createElement("button");
+      b.className="choice"; b.textContent=w; b.setAttribute("data-ans", w);
+      b.addEventListener("click", function(){ choose(w,b); });
+      box.appendChild(b);
+    });
+    updateBar();
+  }
+
+  function choose(word, btn) {
+    if (S.answered) return;
+    S.answered = true;
+    var q = S.current, it = q.item;
+    var correct = answersMatch(word, it);
+    Array.prototype.forEach.call($("choices").children, function(c){
+      c.disabled = true;
+      if (answersMatch(c.getAttribute("data-ans"), it)) c.classList.add("right");
+    });
+    if (correct) {
+      btn.classList.add("right");
+      $("sentence").innerHTML = sentenceHTML(it, true, "right");
+      if (q.attempt === 0) { S.stars++; if (S.stats[it.topic]) S.stats[it.topic].ok++; }
+      S.streak++; if (S.streak > S.best) S.best = S.streak;
+      $("fb").className="fb good";
+      $("fb").innerHTML = pick(GOOD) + (S.streak>=3 ? " 🔥 連續 "+S.streak+" 題！" : "");
+      confetti(S.streak>=5?12:6);
+      if (it.speak) speakText(it.speak);
+      else speakText(($("sentence").innerText || "").replace(/\([^)]*\)/g,""));
+    } else {
+      btn.classList.add("wrong");
+      $("sentence").innerHTML = sentenceHTML(it, true, "wrong");
+      S.streak = 0;
+      S.missed[ansKey(it)] = (S.missed[ansKey(it)]||0) + 1;
+      $("fb").className="fb bad";
+      $("fb").innerHTML = pick(BAD) + '<div style="margin-top:6px;color:#2e7d32">正確答案：<b>' + ansKey(it) + "</b></div>";
+      $("why").innerHTML = '<div class="why">💡 ' + (it.tip || "再睇清楚句子提示啦！") + "</div>";
+      setTimeout(function(){ if (S.current === q) $("sentence").innerHTML = sentenceHTML(it, true, "right"); }, 550);
+      if (q.attempt < MAX_RETRY) {
+        S.queue.push({ item: it, attempt: q.attempt+1, choices: shuffle((it.choices||[]).slice()) });
+      }
+    }
+    S.done++;
+    $("nextBtn").classList.remove("hidden");
+    $("nextBtn").textContent = S.queue.length ? "下一題 ➡️" : "睇成績 🏆";
+    updateBar();
+  }
+
+  function finish() {
+    show("finish");
+    var pct = S.totalFirst ? S.stars/S.totalFirst : 0;
+    $("finEmoji").textContent = pct===1?"🏆":pct>=0.8?"🥇":pct>=0.6?"🥈":"💪";
+    $("finTitle").textContent = pct===1?"全部一次答啱！超級犀利！":pct>=0.8?"好叻呀！差少少就滿分！":pct>=0.6?"唔錯呀！繼續努力！":"完成咗！多練習一定進步！";
+    $("finSummary").innerHTML = "⭐ "+S.stars+" / "+S.totalFirst+" 題一次答啱　🔥 最高連續 "+S.best+" 題";
+    var rows = "";
+    Object.keys(S.stats).forEach(function(t){
+      var s = S.stats[t]; if (!s.total) return;
+      var name = TOPICS[t] ? TOPICS[t].icon+" "+TOPICS[t].name : t;
+      rows += "<tr><td>"+name+"</td><td>"+s.total+"</td><td>"+s.ok+"</td></tr>";
+    });
+    $("sumTable").innerHTML = "<tr><th>主題</th><th>題數</th><th>一次答啱</th></tr>"+rows;
+    var box = $("missedBox"); box.innerHTML="";
+    var keys = Object.keys(S.missed);
+    if (!keys.length) box.innerHTML = '<p style="text-align:center;color:#2e7d32;font-weight:bold">🥇 Perfect！</p>';
+    else {
+      box.innerHTML = '<p style="font-weight:bold;color:#e65100">📝 要多練習：</p>';
+      keys.forEach(function(w){
+        var d=document.createElement("div"); d.className="missed";
+        d.innerHTML = "<b>"+w+"</b> <small>（錯 "+S.missed[w]+" 次）</small>";
+        box.appendChild(d);
+      });
+    }
+    confetti(pct>=0.8?28:10);
+  }
+
+  function confetti(n) {
+    var icons=["🎉","⭐","🌟","🎊","📚","✍️","🌈"];
+    for (var i=0;i<n;i++){
+      var s=document.createElement("span"); s.className="confetti";
+      s.textContent=icons[Math.floor(Math.random()*icons.length)];
+      s.style.left=Math.random()*100+"vw"; s.style.animationDuration=(1.4+Math.random()*2)+"s";
+      document.body.appendChild(s);
+      (function(el){ setTimeout(function(){ if(el.parentNode) el.parentNode.removeChild(el); },4000); })(s);
+    }
+  }
+
+  $("againBtn").addEventListener("click", function(){ start(S.group); });
+  $("backBtn").addEventListener("click", function(){ show("home"); });
+  $("homeBtn").addEventListener("click", function(){ if(confirm("要返回主題選單嗎？今輪進度會冇咗。")) show("home"); });
+  $("nextBtn").addEventListener("click", next);
+  if ($("speakBtn")) $("speakBtn").addEventListener("click", function () {
+    if (!S || !S.current) return;
+    var it = S.current.item;
+    if (S.answered && it.speak) speakText(it.speak);
+    else if (it.speakBlank) speakText(it.speakBlank);
+    else speakText(($("sentence").innerText||"").replace(/______/g,"blank"));
+  });
+  document.addEventListener("keydown", function(e){
+    if ($("quiz").classList.contains("hidden")||!S||!S.current) return;
+    if (e.key==="Enter" && S.answered) { e.preventDefault(); next(); return; }
+    if (!S.answered && /^[1-4]$/.test(e.key)) {
+      var b=$("choices").children[+e.key-1]; if (b) b.click();
+    }
+  });
+
+  renderHome();
+
+  
+})();
+</script>
+</body>
+</html>
