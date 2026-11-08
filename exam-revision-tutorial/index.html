@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>📚 Exam Revision Tutorial · P6</title>
+<style>
+
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body {
+    margin: 0; min-height: 100vh; padding: 14px;
+    font-family: "Arial Rounded MT Bold", "Comic Sans MS", "PingFang TC", "Microsoft JhengHei", "Noto Sans TC", sans-serif;
+    background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 50%, #f9f586 100%);
+    background-attachment: fixed; color: #263238;
+  }
+  h1 { text-align: center; font-size: clamp(1.2rem, 4.8vw, 1.9rem); color: #4527a0; text-shadow: 2px 2px 0 #fff; margin: 6px 0 2px; }
+  .sub { text-align: center; color: #5e35b1; margin: 0 0 14px; font-size: 1.05rem; }
+  .card { background: #fff; border-radius: 26px; max-width: 720px; margin: 0 auto; padding: 20px 18px 24px; box-shadow: 0 10px 28px rgba(60,20,120,.22); border: 5px solid #b39ddb; }
+  .hidden { display: none !important; }
+  button { font-family: inherit; cursor: pointer; border: none; }
+  .intro { font-size: 1.08rem; line-height: 1.7; background: #ede7f6; border-radius: 16px; padding: 12px 14px; margin-bottom: 12px; }
+  .topics { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .topic { background: #f3e5f5; border-radius: 18px; padding: 16px 10px; font-size: 1.15rem; font-weight: bold; color: #4527a0; box-shadow: 0 5px 0 #ce93d8; }
+  .topic .ti { font-size: 2rem; display: block; margin-bottom: 4px; }
+  .topic:active { transform: translateY(3px); box-shadow: 0 2px 0 #ce93d8; }
+  .topic.mix { grid-column: 1 / -1; background: #fff3e0; color: #e65100; box-shadow: 0 5px 0 #ffb74d; font-size: 1.35rem; }
+  .topic .desc { font-size: .85rem; font-weight: normal; margin-top: 4px; color: #666; }
+  .topbar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
+  .pill { background: #ede7f6; border-radius: 999px; padding: 6px 12px; font-weight: bold; color: #4527a0; font-size: 1rem; }
+  .pill.star { background: #fff8e1; color: #f57f17; }
+  .pill.fire { background: #fbe9e7; color: #d84315; }
+  .homebtn { background: #eceff1; border-radius: 999px; padding: 6px 12px; font-size: 1rem; }
+  .bar { flex: 1 1 100%; height: 14px; background: #e0e0e0; border-radius: 999px; overflow: hidden; }
+  .bar > div { height: 100%; width: 0; background: linear-gradient(90deg, #7e57c2, #42a5f5); transition: width .4s; }
+  .tag { display: inline-block; background: #7e57c2; color: #fff; border-radius: 12px; padding: 4px 12px; font-size: .95rem; }
+  .retry { display: inline-block; background: #ffca28; color: #6d4c00; border-radius: 12px; padding: 3px 10px; font-size: .9rem; margin-left: 6px; }
+  .prompt { font-size: 1.05rem; color: #6a1b9a; margin: 10px 0 4px; font-weight: bold; }
+  .sentence {
+    font-size: clamp(1.2rem, 4.6vw, 1.6rem); line-height: 1.75; background: #fffde7;
+    border-radius: 18px; padding: 14px; margin: 8px 0 10px; border: 3px dashed #ffd54f; color: #1a237e; font-weight: 600;
+  }
+  .blank { display: inline-block; min-width: 3.5em; padding: 1px 8px; margin: 0 1px; border-bottom: 3px solid #7e57c2; background: #ede7f6; border-radius: 6px 6px 0 0; color: #4527a0; text-align: center; }
+  .blank.right { background: #c8e6c9; border-bottom-color: #2e7d32; color: #1b5e20; }
+  .blank.wrong { background: #ffcdd2; border-bottom-color: #c62828; color: #b71c1c; }
+  .verb { color: #888; font-size: .95em; font-weight: normal; }
+  .hintbox { background: #e3f2fd; border-radius: 12px; padding: 8px 12px; font-size: 1rem; color: #1565c0; margin-bottom: 8px; }
+  .choices { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .choice {
+    background: #ede7f6; color: #311b92; font-size: clamp(1.05rem, 4vw, 1.35rem); font-weight: bold;
+    border-radius: 16px; padding: 14px 8px; min-height: 64px; box-shadow: 0 5px 0 #b39ddb;
+  }
+  .choice:active { transform: translateY(3px); box-shadow: 0 2px 0 #b39ddb; }
+  .choice.right { background: #c8e6c9; box-shadow: 0 5px 0 #66bb6a; color: #1b5e20; }
+  .choice.wrong { background: #ffcdd2; box-shadow: 0 5px 0 #e57373; color: #b71c1c; }
+  .choice:disabled { cursor: default; }
+  .speak { display: block; margin: 8px auto; background: #0288d1; color: #fff; font-size: 1.1rem; font-weight: bold; border-radius: 999px; padding: 10px 18px; box-shadow: 0 4px 0 #01579b; }
+  .speak:active { transform: translateY(3px); box-shadow: 0 1px 0 #01579b; }
+  .fb { text-align: center; font-size: 1.25rem; font-weight: bold; margin-top: 12px; min-height: 1.4em; }
+  .fb.good { color: #2e7d32; } .fb.bad { color: #c62828; }
+  .why { background: #fff3e0; border-left: 6px solid #ff9800; border-radius: 10px; padding: 10px 12px; margin: 10px 0; font-size: 1.08rem; line-height: 1.65; text-align: left; }
+  .why b { color: #e65100; }
+  .rule { background: #f3e5f5; border-radius: 10px; padding: 6px 10px; margin-top: 6px; font-size: .98rem; color: #6a1b9a; }
+  .next { display: block; margin: 14px auto 0; font-size: 1.35rem; font-weight: bold; color: #fff; background: #fb8c00; border-radius: 20px; padding: 14px 28px; box-shadow: 0 6px 0 #e65100; min-width: 200px; }
+  .next:active { transform: translateY(4px); box-shadow: 0 2px 0 #e65100; }
+  .start { font-size: 1.4rem; font-weight: bold; color: #fff; background: #7e57c2; border-radius: 20px; padding: 14px 28px; box-shadow: 0 6px 0 #4527a0; }
+  .bigemoji { font-size: 4rem; text-align: center; animation: bounce 1s infinite; }
+  .row { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+  .row .next, .row .start { margin: 10px 0 0; }
+  table.sum { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 1.05rem; }
+  table.sum th, table.sum td { padding: 8px 6px; text-align: center; border-bottom: 2px solid #e0e0e0; }
+  table.sum th { background: #ede7f6; color: #4527a0; }
+  .missed { background: #fff8e1; border-radius: 12px; padding: 6px 10px; margin: 4px 0; font-size: .98rem; text-align: left; }
+  @keyframes bounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+  .confetti { position: fixed; top: -30px; font-size: 1.7rem; pointer-events: none; animation: fall linear forwards; z-index: 99; }
+  @keyframes fall { to { transform: translateY(110vh) rotate(720deg); opacity: .6; } }
+
+  a.backhome { display:inline-block; margin:8px auto 0; color:#4527a0; font-weight:bold; text-decoration:none; }
+  .topic.mix { grid-column: 1 / -1; }
+</style>
+</head>
+<body>
+<h1>📚 Exam Revision Tutorial ✍️</h1>
+<div class="sub">Unit 1–2 Vocab · Tenses · IPA · Future · Conditionals</div>
+<p style="text-align:center;margin:0 0 10px"><a class="backhome" href="../">🏠 返回練習主頁</a></p>
+
+<div class="card" id="home">
+  <div class="intro">
+    🧠 溫習 Tutorial Class Exam Revision 工作紙！<br>
+    📌 六個主題：Unit 1／2 生字、混合時態、IPA、Future、Conditionals<br>
+    ❌ 答錯會睇到中文提示，之後再出呢題。<br>
+    ⭐ 一次答啱先計星。
+  </div>
+  <div class="topics" id="topics"></div>
+</div>
+
+<div class="card hidden" id="quiz">
+  <div class="topbar">
+    <button class="homebtn" id="homeBtn">🏠 返回</button>
+    <span class="pill" id="progTxt">1 / 1</span>
+    <span class="pill star">⭐ <span id="stars">0</span></span>
+    <span class="pill fire">🔥 <span id="streak">0</span></span>
+    <div class="bar"><div id="bar"></div></div>
+  </div>
+  <div><span class="tag" id="tag"></span><span class="retry hidden" id="retryTag">🔁 再試呢題</span></div>
+  <div class="prompt" id="prompt"></div>
+  <div class="hintbox hidden" id="hintbox"></div>
+  <div class="sentence" id="sentence"></div>
+  <button class="speak" id="speakBtn">🔊 聽句子</button>
+  <div class="choices" id="choices"></div>
+  <div class="fb" id="fb"></div>
+  <div id="why"></div>
+  <button class="next hidden" id="nextBtn">下一題 ➡️</button>
+</div>
+
+<div class="card hidden" id="finish">
+  <div class="bigemoji" id="finEmoji">🏆</div>
+  <h2 style="text-align:center;color:#4527a0;margin:6px 0" id="finTitle">完成！</h2>
+  <p style="text-align:center;font-size:1.2rem" id="finSummary"></p>
+  <table class="sum" id="sumTable"></table>
+  <div id="missedBox"></div>
+  <div class="row">
+    <button class="start" id="againBtn">🔄 再玩一次</button>
+    <button class="next" id="backBtn">🏠 揀其他主題</button>
+  </div>
+</div>
+
+<script>
+(function () {
+  "use strict";
+  var TOPICS = {"u1": {"name": "Unit 1 Vocab", "icon": "📖", "desc": "Productive 填空 + Receptive 片語"}, "u2": {"name": "Unit 2 Vocab", "icon": "🌍", "desc": "環境生字 MC／填空"}, "mixed": {"name": "Mixed Tenses", "icon": "⏱️", "desc": "混合時態填空"}, "ipa": {"name": "IPA 音標", "icon": "🗣️", "desc": "認音標、揀正確字"}, "future": {"name": "Future Forms", "icon": "🔮", "desc": "will / going to / 安排 / 時間表"}, "cond": {"name": "Conditionals", "icon": "🪄", "desc": "First + Second + Mixed"}, "all": {"name": "全部混合", "icon": "🎲", "desc": "六大範疇一次過練"}};
+  var ITEMS = [{"id": "u1p01", "sentence": "Waking up, eating breakfast and packing my bag at the same time every day is my morning ______.", "answer": "routine", "choices": ["routine", "assignment", "equipment", "journal"], "tip": "每日固定做法 → <b>routine</b>（日常作息）。", "topic": "u1", "prompt": "用 Unit 1 生字／片語填空："}, {"id": "u1p02", "sentence": "At the start of the school year, I like to ______ so I know what I want to achieve.", "answer": "set goals", "choices": ["set goals", "take notes", "ask for help", "play fair"], "tip": "訂立目標 → <b>set goals</b>。", "topic": "u1", "prompt": "用 Unit 1 生字／片語填空："}, {"id": "u1p03", "sentence": "I am going to ______ after school. Do you think I should do music or science?", "answer": "join a club", "choices": ["join a club", "tidy the classroom", "go to university", "manage stress"], "tip": "參加學會 → <b>join a club</b>。", "topic": "u1", "prompt": "用 Unit 1 生字／片語填空："}, {"id": "u1p04", "sentence": "If you want to feel fresh in the morning, you should ______ and get enough sleep.", "answer": "go to bed early", "choices": ["go to bed early", "study harder", "take notes", "feel proud"], "tip": "早睡 → <b>go to bed early</b>。", "topic": "u1", "prompt": "用 Unit 1 生字／片語填空："}, {"id": "u1p05", "sentence": "In group projects we must ______ with our classmates and share the work fairly.", "answer": "cooperate", "choices": ["cooperate", "be honest", "ask for help", "discover new things"], "tip": "合作 → <b>cooperate</b>。", "topic": "u1", "prompt": "用 Unit 1 生字／片語填空："}, {"id": "u1p06", "sentence": "Please ______ for the assembly. The teacher does not like students who are late.", "answer": "arrive on time", "choices": ["arrive on time", "play fair", "take notes", "feel proud"], "tip": "準時到達 → <b>arrive on time</b>。", "topic": "u1", "prompt": "用 Unit 1 生字／片語填空："}, {"id": "u1p07", "sentence": "My sister doesn't know how to ______ — every time she feels nervous about school, she gets angry.", "answer": "manage stress", "choices": ["manage stress", "feel proud", "be honest", "join a club"], "tip": "處理壓力 → <b>manage stress</b>。", "topic": "u1", "prompt": "用 Unit 1 生字／片語填空："}, {"id": "u1p08", "sentence": "If we don't ______, it will smell bad and look very messy during class time.", "answer": "tidy the classroom", "choices": ["tidy the classroom", "join a club", "learn a language", "win an award"], "tip": "收拾課室 → <b>tidy the classroom</b>。", "topic": "u1", "prompt": "用 Unit 1 生字／片語填空："}, {"id": "u1p09", "sentence": "It is easiest to ______ as a baby or young child. That is why we start English early.", "answer": "learn a language", "choices": ["learn a language", "discover new things", "go to university", "set goals"], "tip": "學語言 → <b>learn a language</b>。", "topic": "u1", "prompt": "用 Unit 1 生字／片語填空："}, {"id": "u1p10", "sentence": "You did really well in the race. You should ______ of yourself.", "answer": "feel proud", "choices": ["feel proud", "be honest", "ask for help", "play fair"], "tip": "為自己感到驕傲 → <b>feel proud</b>。", "topic": "u1", "prompt": "用 Unit 1 生字／片語填空："}, {"id": "u1p11", "sentence": "Last month I came first in the reading contest and I was happy to ______.", "answer": "win an award", "choices": ["win an award", "go to university", "take notes", "set goals"], "tip": "獲獎 → <b>win an award</b>。", "alts": ["receive an award"], "topic": "u1", "prompt": "用 Unit 1 生字／片語填空："}, {"id": "u1p12", "sentence": "Even if you make a mistake, you should always ______ and tell the truth.", "answer": "be honest", "choices": ["be honest", "feel proud", "cooperate", "manage stress"], "tip": "誠實 → <b>be honest</b>。", "topic": "u1", "prompt": "用 Unit 1 生字／片語填空："}, {"id": "u1p13", "sentence": "The students promise they will ______ for the next quiz.", "answer": "study harder", "choices": ["study harder", "go to bed early", "take notes", "play fair"], "tip": "更努力溫習 → <b>study harder</b>。", "topic": "u1", "prompt": "用 Unit 1 生字／片語填空："}, {"id": "u1p14", "sentence": "In the last 100 years, humans have been able to ______ about outer space.", "answer": "discover new things", "choices": ["discover new things", "learn a language", "join a club", "ask for help"], "tip": "發現新事物 → <b>discover new things</b>。", "topic": "u1", "prompt": "用 Unit 1 生字／片語填空："}, {"id": "u1p15", "sentence": "The PE teacher checked the sports ______ before the match to make sure everything was safe.", "answer": "equipment", "choices": ["equipment", "counsellor", "routine", "assignment"], "tip": "器材／設備 → <b>equipment</b>。", "topic": "u1", "prompt": "用 Unit 1 生字／片語填空："}, {"id": "u1p16", "sentence": "If you feel worried at school, you can talk to the school ______.", "answer": "counsellor", "choices": ["counsellor", "equipment", "journal", "assignment"], "tip": "輔導員 → <b>counsellor</b>（美式 counselor 亦可）。", "alts": ["counselor"], "topic": "u1", "prompt": "用 Unit 1 生字／片語填空："}, {"id": "u1p17", "sentence": "In sports we always ______ and never cheat.", "answer": "play fair", "choices": ["play fair", "arrive on time", "be honest", "cooperate"], "tip": "公平比賽、唔作弊 → <b>play fair</b>。", "topic": "u1", "prompt": "用 Unit 1 生字／片語填空："}, {"id": "u1p18", "sentence": "When I finish high school, I hope to ______ and study to become a doctor.", "answer": "go to university", "choices": ["go to university", "join a club", "win an award", "set goals"], "tip": "上大學 → <b>go to university</b>。", "topic": "u1", "prompt": "用 Unit 1 生字／片語填空："}, {"id": "u1p19", "sentence": "If you don't understand the homework, you should ______ from the teacher.", "answer": "ask for help", "choices": ["ask for help", "take notes", "feel proud", "be honest"], "tip": "求助 → <b>ask for help</b>。", "topic": "u1", "prompt": "用 Unit 1 生字／片語填空："}, {"id": "u1p20", "sentence": "During the lesson, please ______ carefully so you can revise later.", "answer": "take notes", "choices": ["take notes", "set goals", "play fair", "tidy the classroom"], "tip": "做筆記 → <b>take notes</b>。", "topic": "u1", "prompt": "用 Unit 1 生字／片語填空："}, {"id": "u1r01", "sentence": "My mum taught me to ______ by putting things away and folding my clothes.", "answer": "stay organised", "choices": ["stay organised", "go through", "self-care", "journal"], "tip": "保持整齊有條理 → <b>stay organised</b>。", "topic": "u1", "prompt": "Unit 1 Receptive：揀正確片語："}, {"id": "u1r02", "sentence": "Our teacher promised she would ______ the material with us before the exam.", "answer": "go through", "choices": ["go through", "build confidence", "reflect on progress", "positive mindset"], "tip": "溫習／過一次內容 → <b>go through</b>。", "topic": "u1", "prompt": "Unit 1 Receptive：揀正確片語："}, {"id": "u1r03", "sentence": "Joining competitions helps me to ______ — even if I don't win, I improve every time.", "answer": "build confidence", "choices": ["build confidence", "positive mindset", "self-care", "stay organised"], "tip": "建立自信 → <b>build confidence</b>。", "topic": "u1", "prompt": "Unit 1 Receptive：揀正確片語："}, {"id": "u1r04", "sentence": "Relaxing and spending time with your friends is an important part of ______.", "answer": "self-care", "choices": ["self-care", "distractions", "journal", "go through"], "tip": "照顧自己 → <b>self-care</b>。", "topic": "u1", "prompt": "Unit 1 Receptive：揀正確片語："}, {"id": "u1r05", "sentence": "My sister is the worst ______ — she always talks to me while I am trying to study!", "answer": "distraction", "choices": ["distraction", "journal", "self-care", "positive mindset"], "tip": "令你分心嘅事物 → <b>distraction</b>。", "alts": ["distractions"], "topic": "u1", "prompt": "Unit 1 Receptive：揀正確片語："}, {"id": "u1r06", "sentence": "The end of the year is a good time to look back and ______.", "answer": "reflect on progress", "choices": ["reflect on progress", "go through", "stay organised", "build confidence"], "tip": "反思進度 → <b>reflect on progress</b>。", "topic": "u1", "prompt": "Unit 1 Receptive：揀正確片語："}, {"id": "u1r07", "sentence": "Every night, I write about what I did that day in my ______.", "answer": "journal", "choices": ["journal", "distraction", "equipment", "counsellor"], "tip": "日記本 → <b>journal</b>。", "topic": "u1", "prompt": "Unit 1 Receptive：揀正確片語："}, {"id": "u1r08", "sentence": "When you run a race, it is important to keep a ______. That helps you keep going.", "answer": "positive mindset", "choices": ["positive mindset", "self-care", "distraction", "routine"], "tip": "正面心態 → <b>positive mindset</b>。", "topic": "u1", "prompt": "Unit 1 Receptive：揀正確片語："}, {"id": "u2r01", "topic": "u2", "sentence": "The ______ of frogs in this pond has dropped because the water is polluted.", "answer": "population", "choices": ["population", "biodiversity", "ecosystem", "conservation"], "tip": "某物種嘅數量 → <b>population</b>。", "prompt": "用 Unit 2 生字填空："}, {"id": "u2r02", "topic": "u2", "sentence": "A frog is an ______ because it can live both in water and on land.", "answer": "amphibian", "choices": ["amphibian", "reptile", "mammal", "insect"], "tip": "兩棲動物 → <b>amphibian</b>。", "prompt": "用 Unit 2 生字填空："}, {"id": "u2r03", "topic": "u2", "sentence": "______ destroys forests and leaves many animals without a home.", "answer": "Deforestation", "choices": ["Deforestation", "Conservation", "Biodiversity", "Population"], "tip": "砍伐森林 → <b>Deforestation</b>。", "alts": ["deforestation"], "prompt": "用 Unit 2 生字填空："}, {"id": "u2r04", "topic": "u2", "sentence": "An earthquake is a ______ that can destroy buildings and roads.", "answer": "natural disaster", "choices": ["natural disaster", "carbon footprint", "ecosystem", "conservation"], "tip": "天災 → <b>natural disaster</b>。", "prompt": "用 Unit 2 生字填空："}, {"id": "u2r05", "topic": "u2", "sentence": "Taking the bus instead of a car can help reduce your ______.", "answer": "carbon footprint", "choices": ["carbon footprint", "carbon emission", "biodiversity", "population"], "tip": "碳足跡 → <b>carbon footprint</b>。", "prompt": "用 Unit 2 生字填空："}, {"id": "u2r06", "topic": "u2", "sentence": "A snake is a ______ — it is cold-blooded and has scales.", "answer": "reptile", "choices": ["reptile", "amphibian", "mammal", "insect"], "tip": "爬行動物 → <b>reptile</b>。", "prompt": "用 Unit 2 生字填空："}, {"id": "u2r07", "topic": "u2", "sentence": "A coral reef with hundreds of different fish has high ______.", "answer": "biodiversity", "choices": ["biodiversity", "population", "deforestation", "equipment"], "tip": "生物多樣性 → <b>biodiversity</b>。", "prompt": "用 Unit 2 生字填空："}, {"id": "u2r08", "topic": "u2", "sentence": "The rainforest ______ includes trees, insects, birds and soil working together.", "answer": "ecosystem", "choices": ["ecosystem", "population", "conservation", "routine"], "tip": "生態系統 → <b>ecosystem</b>。", "prompt": "用 Unit 2 生字填空："}, {"id": "u2r09", "topic": "u2", "sentence": "Wildlife ______ projects help protect endangered animals.", "answer": "conservation", "choices": ["conservation", "deforestation", "pollution", "population"], "tip": "保育 → <b>conservation</b>。", "prompt": "用 Unit 2 生字填空："}, {"id": "u2r10", "topic": "u2", "sentence": "Factories that burn coal produce a lot of ______.", "answer": "carbon emission", "choices": ["carbon emission", "carbon footprint", "biodiversity", "amphibian"], "tip": "碳排放 → <b>carbon emission</b>。", "alts": ["carbon emissions"], "prompt": "用 Unit 2 生字填空："}, {"id": "u2p01", "topic": "u2", "sentence": "Tigers are ______ — there are only a few thousand left in the wild.", "answer": "endangered", "choices": ["endangered", "vulnerable", "extinct", "trapped"], "tip": "瀕臨絕種 → <b>endangered</b>。", "prompt": "用 Unit 2 生字填空："}, {"id": "u2p02", "topic": "u2", "sentence": "Baby turtles are ______ because they cannot protect themselves yet.", "answer": "vulnerable", "choices": ["vulnerable", "endangered", "extinct", "illegal"], "tip": "脆弱、易受傷 → <b>vulnerable</b>。", "prompt": "用 Unit 2 生字填空："}, {"id": "u2p03", "topic": "u2", "sentence": "Factories that put dirty water into rivers ______ the water.", "answer": "pollute", "choices": ["pollute", "damage", "capture", "preserve"], "tip": "污染 → <b>pollute</b>。", "prompt": "用 Unit 2 生字填空："}, {"id": "u2p04", "topic": "u2", "sentence": "Plastic in the ocean can ______ the homes of fish.", "answer": "damage", "choices": ["damage", "pollute", "poach", "exist"], "tip": "損害 → <b>damage</b>。", "prompt": "用 Unit 2 生字填空："}, {"id": "u2p05", "topic": "u2", "sentence": "Illegal hunters ______ elephants for their ivory.", "answer": "poach", "choices": ["poach", "capture", "preserve", "pollute"], "tip": "盜獵 → <b>poach</b>。", "prompt": "用 Unit 2 生字填空："}, {"id": "u2p06", "topic": "u2", "sentence": "A forest is the natural ______ of many wild animals.", "answer": "habitat", "choices": ["habitat", "shelter", "species", "ecosystem"], "tip": "棲息地 → <b>habitat</b>。", "prompt": "用 Unit 2 生字填空："}, {"id": "u2p07", "topic": "u2", "sentence": "Each kind of animal is called a ______.", "answer": "species", "choices": ["species", "mammal", "habitat", "population"], "tip": "物種 → <b>species</b>。", "prompt": "用 Unit 2 生字填空："}, {"id": "m01", "sentence": "They ______ (not feed) the farm animals yet.", "answer": "haven't fed", "choices": ["haven't fed", "didn't feed", "don't feed", "weren't feeding"], "tip": "yet → <b>Present Perfect</b>：haven't fed。", "topic": "mixed", "prompt": "揀正確時態："}, {"id": "m02", "sentence": "She ______ (be) happy every time she gets a good grade.", "answer": "is", "choices": ["is", "was", "has been", "is being"], "tip": "every time＝習慣 → <b>Simple Present</b>：is。", "topic": "mixed", "prompt": "揀正確時態："}, {"id": "m03", "sentence": "They ______ (build) a new bridge in our city last year.", "answer": "built", "choices": ["built", "have built", "were building", "build"], "tip": "last year → <b>Past Simple</b>：built。", "topic": "mixed", "prompt": "揀正確時態："}, {"id": "m04", "sentence": "What score ______ you ______ (get) on your test last week?", "answer": "did … get", "choices": ["did … get", "have … got", "were … getting", "do … get"], "tip": "last week → <b>did + get</b>。", "topic": "mixed", "prompt": "揀正確時態："}, {"id": "m05", "sentence": "The leaves ______ (shake) while the strong wind ______ (blow).", "answer": "were shaking … was blowing", "choices": ["were shaking … was blowing", "shook … blew", "are shaking … is blowing", "have shaken … has blown"], "tip": "while 兩邊同時進行 → <b>Past Continuous</b>。", "topic": "mixed", "prompt": "揀正確時態："}, {"id": "m06", "sentence": "______ the dog ______ (dig) a hole in the garden yesterday?", "answer": "Did … dig", "choices": ["Did … dig", "Has … dug", "Was … digging", "Does … dig"], "tip": "yesterday → <b>Did + dig</b>。", "topic": "mixed", "prompt": "揀正確時態："}, {"id": "m07", "sentence": "Why ______ you ______ (stand) in the rain right now?", "answer": "are … standing", "choices": ["are … standing", "do … stand", "were … standing", "have … stood"], "tip": "right now → <b>Present Continuous</b>。", "topic": "mixed", "prompt": "揀正確時態："}, {"id": "m08", "sentence": "She ______ (ride) her bike to school yesterday.", "answer": "rode", "choices": ["rode", "rides", "has ridden", "was riding"], "tip": "yesterday → <b>Past Simple</b>：rode。", "topic": "mixed", "prompt": "揀正確時態："}, {"id": "m09", "sentence": "Quiet please! The teacher ______ (speak) to the students right now.", "answer": "is speaking", "choices": ["is speaking", "speaks", "spoke", "has spoken"], "tip": "right now / Quiet! → <b>is speaking</b>。", "topic": "mixed", "prompt": "揀正確時態："}, {"id": "m10", "sentence": "What ______ you ______ (do) at 8 PM last night?", "answer": "were … doing", "choices": ["were … doing", "did … do", "have … done", "are … doing"], "tip": "at 8 PM last night → <b>Past Continuous</b>。", "topic": "mixed", "prompt": "揀正確時態："}, {"id": "m11", "sentence": "I ______ already ______ (write) three pages of my project.", "answer": "have … written", "choices": ["have … written", "did … write", "was … writing", "am … writing"], "tip": "already → <b>Present Perfect</b>：have written。", "topic": "mixed", "prompt": "揀正確時態："}, {"id": "m12", "sentence": "Dad ______ (drive) to work when it ______ (start) to rain.", "answer": "was driving … started", "choices": ["was driving … started", "drove … started", "was driving … was starting", "has driven … started"], "tip": "when：背景用過去進行，突然發生用過去式。", "topic": "mixed", "prompt": "揀正確時態："}, {"id": "m13", "sentence": "Look! The children ______ (play) football in the park.", "answer": "are playing", "choices": ["are playing", "play", "played", "have played"], "tip": "Look! → <b>Present Continuous</b>。", "topic": "mixed", "prompt": "揀正確時態："}, {"id": "m14", "sentence": "I ______ (know) him for five years.", "answer": "have known", "choices": ["have known", "know", "knew", "am knowing"], "tip": "for five years → <b>Present Perfect</b>。", "topic": "mixed", "prompt": "揀正確時態："}, {"id": "m15", "sentence": "While Mum ______ (cook), Dad ______ (set) the table.", "answer": "was cooking … was setting", "choices": ["was cooking … was setting", "cooked … set", "is cooking … is setting", "has cooked … has set"], "tip": "while 兩個同時進行 → 兩邊 Past Continuous。", "topic": "mixed", "prompt": "揀正確時態："}, {"id": "ipa01", "prompt": "Which word has the /ʃ/ sound?", "sentence": "揀含有 /ʃ/ 嘅字：", "answer": "shop", "choices": ["shop", "chip", "thin", "sing"], "tip": "/ʃ/ 好似「sh」→ <b>shop</b>。", "topic": "ipa"}, {"id": "ipa02", "prompt": "Which word has the /θ/ sound?", "sentence": "揀含有 /θ/ 嘅字：", "answer": "think", "choices": ["think", "this", "sing", "chip"], "tip": "/θ/ 清齒擦音 → <b>think</b>（唔係 this 嘅 /ð/）。", "topic": "ipa"}, {"id": "ipa03", "prompt": "Which word has the /ŋ/ sound?", "sentence": "揀含有 /ŋ/ 嘅字：", "answer": "sing", "choices": ["sing", "sin", "thin", "ship"], "tip": "/ŋ/ 「ng」音 → <b>sing</b>。", "topic": "ipa"}, {"id": "ipa04", "prompt": "Which word has the /tʃ/ sound?", "sentence": "揀含有 /tʃ/ 嘅字：", "answer": "chair", "choices": ["chair", "share", "care", "tear"], "tip": "/tʃ/ 「ch」→ <b>chair</b>。", "topic": "ipa"}, {"id": "ipa05", "prompt": "Which word has the /ð/ sound?", "sentence": "揀含有 /ð/ 嘅字：", "answer": "this", "choices": ["this", "think", "thin", "sing"], "tip": "/ð/ 濁齒擦音 → <b>this</b>。", "topic": "ipa"}, {"id": "ipa06", "prompt": "Which word has the /ɔː/ sound?", "sentence": "揀含有 /ɔː/ 嘅字：", "answer": "fall", "choices": ["fall", "full", "fool", "fill"], "tip": "/ɔː/ 長音 → <b>fall</b>。", "topic": "ipa"}, {"id": "ipa07", "prompt": "Which word has the /ɪ/ sound?", "sentence": "揀含有 /ɪ/ 嘅字：", "answer": "pick", "choices": ["pick", "peak", "park", "pork"], "tip": "/ɪ/ 短音 → <b>pick</b>。", "topic": "ipa"}, {"id": "ipa08", "prompt": "Which word has the /æ/ sound?", "sentence": "揀含有 /æ/ 嘅字：", "answer": "cat", "choices": ["cat", "cut", "cart", "caught"], "tip": "/æ/ → <b>cat</b>。", "topic": "ipa"}, {"id": "ipa09", "prompt": "Which word has the /ʒ/ sound?", "sentence": "揀含有 /ʒ/ 嘅字：", "answer": "measure", "choices": ["measure", "pressure", "mission", "mesh"], "tip": "/ʒ/ → <b>measure</b> 中間嘅音。", "topic": "ipa"}, {"id": "ipa10", "prompt": "Which word has the /dʒ/ sound?", "sentence": "揀含有 /dʒ/ 嘅字：", "answer": "jump", "choices": ["jump", "dump", "chump", "bump"], "tip": "/dʒ/ 「j」→ <b>jump</b>。", "topic": "ipa"}, {"id": "f01", "sentence": "The students promise they ______ (study) harder for the next quiz.", "answer": "will study", "choices": ["will study", "are going to study", "are studying", "study"], "tip": "promise → <b>will</b>。", "topic": "future", "prompt": "揀正確未來形式："}, {"id": "f02", "sentence": "I think they ______ (pass) the English test.", "answer": "will pass", "choices": ["will pass", "are going to pass", "are passing", "pass"], "tip": "I think → <b>will</b> 預測。", "topic": "future", "prompt": "揀正確未來形式："}, {"id": "f03", "sentence": "The school basketball team ______ (have) a match at 4:00 PM this Saturday.", "answer": "is having", "choices": ["is having", "will have", "is going to have", "has"], "tip": "已安排好嘅比賽（有時間地點）→ <b>Present Continuous</b>。", "topic": "future", "prompt": "揀正確未來形式："}, {"id": "f04", "sentence": "Harry hopes Mary ______ (dance) with him.", "answer": "will dance", "choices": ["will dance", "is going to dance", "is dancing", "dances"], "tip": "hopes → <b>will</b>。", "topic": "future", "prompt": "揀正確未來形式："}, {"id": "f05", "sentence": "A: I forgot my colour pencils. B: Don't worry! I ______ (share) mine with you.", "answer": "will share", "choices": ["will share", "am going to share", "am sharing", "share"], "tip": "即時決定幫忙 → <b>will</b>。", "topic": "future", "prompt": "揀正確未來形式："}, {"id": "f06", "sentence": "Tom ______ (not / sell) his old iPhone. He decided to keep it.", "answer": "is not going to sell", "choices": ["is not going to sell", "will not sell", "is not selling", "does not sell"], "tip": "已決定 → <b>be going to</b>：is not going to sell。", "alts": ["isn't going to sell"], "topic": "future", "prompt": "揀正確未來形式："}, {"id": "f07", "sentence": "______ your sister ______ (travel) to London next week?", "answer": "Is … travelling", "choices": ["Is … travelling", "Will … travel", "Is … going to travel", "Does … travel"], "tip": "已安排行程 → <b>Present Continuous</b> 問句。", "alts": ["Is … traveling", "Will … be travelling"], "topic": "future", "prompt": "揀正確未來形式："}, {"id": "f08", "sentence": "I ______ (meet) Jackson Wang tomorrow. I have already bought a ticket.", "answer": "am meeting", "choices": ["am meeting", "will meet", "am going to meet", "meet"], "tip": "已買飛＝已安排 → <b>am meeting</b>。", "topic": "future", "prompt": "揀正確未來形式："}, {"id": "f09", "sentence": "Jack ______ (be) a YouTuber when he's older.", "answer": "is going to be", "choices": ["is going to be", "will be", "is being", "is"], "tip": "將來計劃／意圖 → <b>be going to</b>。", "topic": "future", "prompt": "揀正確未來形式："}, {"id": "f10", "sentence": "What time ______ the plane ______ (arrive) in Shanghai tomorrow?", "answer": "does … arrive", "choices": ["does … arrive", "will … arrive", "is … arriving", "is … going to arrive"], "tip": "時間表 → <b>Simple Present</b>：does arrive。", "topic": "future", "prompt": "揀正確未來形式："}, {"id": "f11", "sentence": "Look at those dark clouds! It ______ (rain).", "answer": "is going to rain", "choices": ["is going to rain", "will rain", "is raining", "rains"], "tip": "有跡象 → <b>be going to</b>。", "topic": "future", "prompt": "揀正確未來形式："}, {"id": "f12", "sentence": "I promise I ______ (help) you with your homework.", "answer": "will help", "choices": ["will help", "am going to help", "am helping", "help"], "tip": "promise → <b>will</b>。", "topic": "future", "prompt": "揀正確未來形式："}, {"id": "c01", "sentence": "If it ______ (rain) tomorrow, we ______ (stay) at home.", "answer": "rains … will stay", "choices": ["rains … will stay", "will rain … stay", "rained … would stay", "rains … stay"], "tip": "First Conditional：If + <b>present</b>，will + 原形。", "topic": "cond", "prompt": "揀正確條件句形式："}, {"id": "c02", "sentence": "If she ______ (study) hard, she ______ (pass) the exam.", "answer": "studies … will pass", "choices": ["studies … will pass", "will study … passes", "studied … would pass", "study … will pass"], "tip": "First：If + studies，will pass。", "topic": "cond", "prompt": "揀正確條件句形式："}, {"id": "c03", "sentence": "If I ______ (be) you, I ______ (talk) to the teacher.", "answer": "were … would talk", "choices": ["were … would talk", "am … will talk", "was … will talk", "were … will talk"], "tip": "Second Conditional：If + <b>past</b>（were），would + 原形。", "topic": "cond", "prompt": "揀正確條件句形式："}, {"id": "c04", "sentence": "If we ______ (have) more time, we ______ (visit) the museum.", "answer": "had … would visit", "choices": ["had … would visit", "have … will visit", "had … will visit", "have … would visit"], "tip": "Second：假設而家唔真實 → had / would visit。", "topic": "cond", "prompt": "揀正確條件句形式："}, {"id": "c05", "sentence": "If you ______ (not hurry), you ______ (miss) the bus.", "answer": "don't hurry … will miss", "choices": ["don't hurry … will miss", "didn't hurry … would miss", "won't hurry … miss", "don't hurry … miss"], "tip": "First 否定：don't hurry / will miss。", "topic": "cond", "prompt": "揀正確條件句形式："}, {"id": "c06", "sentence": "If he ______ (live) nearer, we ______ (meet) more often.", "answer": "lived … would meet", "choices": ["lived … would meet", "lives … will meet", "lived … will meet", "live … would meet"], "tip": "Second：lived / would meet。", "topic": "cond", "prompt": "揀正確條件句形式："}, {"id": "c07", "sentence": "If the weather ______ (be) nice, we ______ (go) hiking this weekend.", "answer": "is … will go", "choices": ["is … will go", "was … would go", "will be … go", "is … go"], "tip": "First：真實可能 → is / will go。", "topic": "cond", "prompt": "揀正確條件句形式："}, {"id": "c08", "sentence": "If I ______ (win) the lottery, I ______ (buy) a big house.", "answer": "won … would buy", "choices": ["won … would buy", "win … will buy", "won … will buy", "win … would buy"], "tip": "Second：唔太可能 → won / would buy。", "topic": "cond", "prompt": "揀正確條件句形式："}, {"id": "c09", "sentence": "If you heat ice, it ______ (melt).", "answer": "melts", "choices": ["melts", "will melt", "would melt", "melted"], "tip": "科學事實可用 Simple Present：melts。（Zero／First 都常見）", "topic": "cond", "prompt": "揀正確條件句形式："}, {"id": "c10", "sentence": "If she ______ (not be) so busy, she ______ (join) the club.", "answer": "weren't … would join", "choices": ["weren't … would join", "isn't … will join", "wasn't … will join", "aren't … would join"], "tip": "Second 否定：weren't / would join。", "alts": ["wasn't … would join"], "topic": "cond", "prompt": "揀正確條件句形式："}, {"id": "c11", "sentence": "If it ______ (snow) tomorrow, school ______ (be) cancelled.", "answer": "snows … will be", "choices": ["snows … will be", "snowed … would be", "will snow … is", "snows … is"], "tip": "First：snows / will be。", "topic": "cond", "prompt": "揀正確條件句形式："}, {"id": "c12", "sentence": "If I ______ (know) the answer, I ______ (tell) you.", "answer": "knew … would tell", "choices": ["knew … would tell", "know … will tell", "knew … will tell", "know … would tell"], "tip": "Second：knew / would tell。", "topic": "cond", "prompt": "揀正確條件句形式："}];
+
+  var ROUND_CAP = 99, MAX_RETRY = 1;
+  var GOOD = ["🌟 好叻呀！", "🎉 完全正確！", "💯 犀利！", "🚀 勁呀！", "👏 Excellent!", "😎 Well done!"];
+  var BAD = ["💪 唔緊要，睇吓提示！", "🙂 差少少！記住啦！", "🌱 錯咗先學得識！", "🤗 加油！"];
+
+  function $(id) { return document.getElementById(id); }
+  function pick(a) { return a[Math.floor(Math.random() * a.length)]; }
+  function shuffle(a) { a = a.slice(); for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+  function show(id) { ["home","quiz","finish"].forEach(function(s){ $(s).classList.toggle("hidden", s !== id); }); window.scrollTo(0,0); }
+  function ansKey(it) { return it.answerH || (Array.isArray(it.answer) ? it.answer.join(" … ") : it.answer); }
+  function norm(s) {
+    return String(s).toLowerCase()
+      .replace(/['']/g, "'")
+      .replace(/…/g, "...")
+      .replace(/\s+/g, " ")
+      .replace(/(will not)/g, "won't")
+      .replace(/(do not)/g, "don't")
+      .replace(/(does not)/g, "doesn't")
+      .replace(/(did not)/g, "didn't")
+      .replace(/(is not)/g, "isn't")
+      .replace(/(are not)/g, "aren't")
+      .replace(/(was not)/g, "wasn't")
+      .replace(/(were not)/g, "weren't")
+      .replace(/(has not)/g, "hasn't")
+      .replace(/(have not)/g, "haven't")
+      .trim();
+  }
+  function answersMatch(word, it) {
+    var key = norm(ansKey(it));
+    var w = norm(word);
+    if (w === key) return true;
+    if (it.alts) for (var i=0;i<it.alts.length;i++) if (norm(it.alts[i]) === w) return true;
+    // allow ellipsis variants: "did … get" vs "did get"
+    if (key.replace(/\s*\.\.\.\s*/g," ").replace(/\s+/g," ") === w.replace(/\s*\.\.\.\s*/g," ").replace(/\s+/g," ")) return true;
+    return false;
+  }
+
+  var synth = ("speechSynthesis" in window) ? window.speechSynthesis : null;
+  var voice = null;
+  function pickVoice() {
+    if (!synth) return;
+    var vs = synth.getVoices() || [];
+    var prefs = [function(v){return /en-GB/i.test(v.lang);}, function(v){return /en-US/i.test(v.lang);}, function(v){return /^en/i.test(v.lang);}];
+    for (var i=0;i<prefs.length;i++) for (var j=0;j<vs.length;j++) if (prefs[i](vs[j])) { voice=vs[j]; return; }
+  }
+  if (synth) { pickVoice(); if (synth.addEventListener) synth.addEventListener("voiceschanged", pickVoice); else synth.onvoiceschanged = pickVoice; }
+  function speakText(t) {
+    if (!synth || !t) return;
+    if (!voice) pickVoice();
+    synth.cancel();
+    var u = new SpeechSynthesisUtterance(String(t).replace(/_/g, " ").replace(/______/g, "blank").replace(/…/g," "));
+    if (voice) { u.voice = voice; u.lang = voice.lang; } else u.lang = "en-GB";
+    u.rate = 0.88;
+    setTimeout(function(){ synth.speak(u); }, 40);
+  }
+
+  var S = null;
+
+  function renderHome() {
+    var box = $("topics"); box.innerHTML = "";
+    Object.keys(TOPICS).forEach(function(k){
+      var g = TOPICS[k], b = document.createElement("button");
+      b.className = "topic" + (k === "all" ? " mix" : "");
+      var n = poolFor(k).length;
+      b.innerHTML = '<span class="ti">'+g.icon+"</span>"+g.name+'<div class="desc">'+g.desc+" · "+n+" 題</div>";
+      b.addEventListener("click", function(){ start(k); });
+      box.appendChild(b);
+    });
+  }
+
+  function poolFor(group) {
+    if (group === "all") return ITEMS.slice();
+    return ITEMS.filter(function(it){ return it.topic === group; });
+  }
+
+  function start(group) {
+    var pool = shuffle(poolFor(group));
+    var n = Math.min(ROUND_CAP, pool.length);
+    var qs = pool.slice(0, n).map(function(it){
+      return { item: it, attempt: 0, choices: shuffle((it.choices || []).slice()) };
+    });
+    S = { group: group, queue: qs, current: null, done: 0, stars: 0, streak: 0, best: 0,
+          stats: {}, missed: {}, totalFirst: n };
+    Object.keys(TOPICS).forEach(function(k){ if (k!=="all") S.stats[k]={total:0,ok:0}; });
+    show("quiz"); next();
+  }
+
+  function updateBar() {
+    var total = S.done + S.queue.length + (S.current ? 1 : 0);
+    $("progTxt").textContent = "第 " + Math.min(S.done+1, Math.max(total,1)) + " / " + total + " 題";
+    $("bar").style.width = (total ? Math.round(S.done / total * 100) : 0) + "%";
+    $("stars").textContent = S.stars; $("streak").textContent = S.streak;
+  }
+
+  function sentenceHTML(it, revealed, cls) {
+    var show = !!revealed;
+    var c = "blank" + (cls ? " " + cls : "");
+    var html;
+    if (it.sentence) {
+      var fill = show ? (Array.isArray(it.answer) ? it.answer : [String(it.answer)]) : null;
+      var n = 0;
+      html = it.sentence.replace(/______/g, function(){
+        if (!show) return '<span class="'+c+'">______</span>';
+        return '<span class="'+c+'">'+(fill[n++] || "")+"</span>";
+      });
+      // also support ______(verb) style already in sentence as blank already
+    } else {
+      html = (it.before||"") + '<span class="'+c+'">'+(show?ansKey(it):"______")+"</span>" + (it.after||"");
+    }
+    return html;
+  }
+
+  function next() {
+    S.current = S.queue.shift() || null;
+    if (!S.current) { finish(); return; }
+    var q = S.current, it = q.item;
+    S.answered = false;
+    if (q.attempt === 0 && S.stats[it.topic]) S.stats[it.topic].total++;
+    $("tag").textContent = (TOPICS[it.topic] ? TOPICS[it.topic].icon + " " + TOPICS[it.topic].name : it.topic);
+    $("retryTag").classList.toggle("hidden", q.attempt === 0);
+    $("prompt").textContent = it.prompt || "揀正確答案：";
+    $("hintbox").classList.add("hidden");
+    $("sentence").innerHTML = sentenceHTML(it, false, "");
+    $("fb").textContent=""; $("fb").className="fb"; $("why").innerHTML="";
+    $("nextBtn").classList.add("hidden");
+    var box = $("choices"); box.innerHTML="";
+    (q.choices.length ? q.choices : shuffle((it.choices||[]).slice())).forEach(function(w){
+      var b = document.createElement("button");
+      b.className="choice"; b.textContent=w; b.setAttribute("data-ans", w);
+      b.addEventListener("click", function(){ choose(w,b); });
+      box.appendChild(b);
+    });
+    updateBar();
+  }
+
+  function choose(word, btn) {
+    if (S.answered) return;
+    S.answered = true;
+    var q = S.current, it = q.item;
+    var correct = answersMatch(word, it);
+    Array.prototype.forEach.call($("choices").children, function(c){
+      c.disabled = true;
+      if (answersMatch(c.getAttribute("data-ans"), it)) c.classList.add("right");
+    });
+    if (correct) {
+      btn.classList.add("right");
+      $("sentence").innerHTML = sentenceHTML(it, true, "right");
+      if (q.attempt === 0) { S.stars++; if (S.stats[it.topic]) S.stats[it.topic].ok++; }
+      S.streak++; if (S.streak > S.best) S.best = S.streak;
+      $("fb").className="fb good";
+      $("fb").innerHTML = pick(GOOD) + (S.streak>=3 ? " 🔥 連續 "+S.streak+" 題！" : "");
+      confetti(S.streak>=5?12:6);
+      speakText(($("sentence").innerText || "").replace(/\([^)]*\)/g,""));
+    } else {
+      btn.classList.add("wrong");
+      $("sentence").innerHTML = sentenceHTML(it, true, "wrong");
+      S.streak = 0;
+      S.missed[ansKey(it)] = (S.missed[ansKey(it)]||0) + 1;
+      $("fb").className="fb bad";
+      $("fb").innerHTML = pick(BAD) + '<div style="margin-top:6px;color:#2e7d32">正確答案：<b>' + ansKey(it) + "</b></div>";
+      $("why").innerHTML = '<div class="why">💡 ' + (it.tip || "再睇清楚句子提示啦！") + "</div>";
+      setTimeout(function(){ if (S.current === q) $("sentence").innerHTML = sentenceHTML(it, true, "right"); }, 550);
+      if (q.attempt < MAX_RETRY) {
+        S.queue.push({ item: it, attempt: q.attempt+1, choices: shuffle((it.choices||[]).slice()) });
+      }
+    }
+    S.done++;
+    $("nextBtn").classList.remove("hidden");
+    $("nextBtn").textContent = S.queue.length ? "下一題 ➡️" : "睇成績 🏆";
+    updateBar();
+  }
+
+  function finish() {
+    show("finish");
+    var pct = S.totalFirst ? S.stars/S.totalFirst : 0;
+    $("finEmoji").textContent = pct===1?"🏆":pct>=0.8?"🥇":pct>=0.6?"🥈":"💪";
+    $("finTitle").textContent = pct===1?"全部一次答啱！超級犀利！":pct>=0.8?"好叻呀！差少少就滿分！":pct>=0.6?"唔錯呀！繼續努力！":"完成咗！多練習一定進步！";
+    $("finSummary").innerHTML = "⭐ "+S.stars+" / "+S.totalFirst+" 題一次答啱　🔥 最高連續 "+S.best+" 題";
+    var rows = "";
+    Object.keys(S.stats).forEach(function(t){
+      var s = S.stats[t]; if (!s.total) return;
+      var name = TOPICS[t] ? TOPICS[t].icon+" "+TOPICS[t].name : t;
+      rows += "<tr><td>"+name+"</td><td>"+s.total+"</td><td>"+s.ok+"</td></tr>";
+    });
+    $("sumTable").innerHTML = "<tr><th>主題</th><th>題數</th><th>一次答啱</th></tr>"+rows;
+    var box = $("missedBox"); box.innerHTML="";
+    var keys = Object.keys(S.missed);
+    if (!keys.length) box.innerHTML = '<p style="text-align:center;color:#2e7d32;font-weight:bold">🥇 Perfect！</p>';
+    else {
+      box.innerHTML = '<p style="font-weight:bold;color:#e65100">📝 要多練習：</p>';
+      keys.forEach(function(w){
+        var d=document.createElement("div"); d.className="missed";
+        d.innerHTML = "<b>"+w+"</b> <small>（錯 "+S.missed[w]+" 次）</small>";
+        box.appendChild(d);
+      });
+    }
+    confetti(pct>=0.8?28:10);
+  }
+
+  function confetti(n) {
+    var icons=["🎉","⭐","🌟","🎊","📚","✍️","🌈"];
+    for (var i=0;i<n;i++){
+      var s=document.createElement("span"); s.className="confetti";
+      s.textContent=icons[Math.floor(Math.random()*icons.length)];
+      s.style.left=Math.random()*100+"vw"; s.style.animationDuration=(1.4+Math.random()*2)+"s";
+      document.body.appendChild(s);
+      (function(el){ setTimeout(function(){ if(el.parentNode) el.parentNode.removeChild(el); },4000); })(s);
+    }
+  }
+
+  $("againBtn").addEventListener("click", function(){ start(S.group); });
+  $("backBtn").addEventListener("click", function(){ show("home"); });
+  $("homeBtn").addEventListener("click", function(){ if(confirm("要返回主題選單嗎？今輪進度會冇咗。")) show("home"); });
+  $("nextBtn").addEventListener("click", next);
+  if ($("speakBtn")) $("speakBtn").addEventListener("click", function () {
+    if (!S || !S.current) return;
+    var it = S.current.item;
+    if (S.answered) speakText(($("sentence").innerText||"").replace(/\([^)]*\)/g,""));
+    else speakText(($("sentence").innerText||"").replace(/______/g,"blank"));
+  });
+  document.addEventListener("keydown", function(e){
+    if ($("quiz").classList.contains("hidden")||!S||!S.current) return;
+    if (e.key==="Enter" && S.answered) { e.preventDefault(); next(); return; }
+    if (!S.answered && /^[1-4]$/.test(e.key)) {
+      var b=$("choices").children[+e.key-1]; if (b) b.click();
+    }
+  });
+
+  renderHome();
+})();
+</script>
+</body>
+</html>
