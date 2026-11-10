@@ -1,0 +1,2733 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>第一段數學復習 練習</title>
+<style>
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body {
+    margin: 0; min-height: 100vh; padding: 14px;
+    font-family: "Arial Rounded MT Bold", "PingFang TC", "Microsoft JhengHei", "Noto Sans TC", sans-serif;
+    background: linear-gradient(135deg, #d4fc79 0%, #96e6a1 35%, #84fab0 60%, #8fd3f4 100%);
+    background-attachment: fixed; color: #263238;
+  }
+  h1 { text-align: center; font-size: clamp(1.3rem, 5vw, 2.1rem); color: #1b5e20; text-shadow: 2px 2px 0 #fff; margin: 6px 0 2px; }
+  .sub { text-align: center; color: #2e7d32; margin: 0 0 14px; font-size: 1.05rem; }
+  .card { background: #fff; border-radius: 26px; max-width: 760px; margin: 0 auto; padding: 20px 18px 24px; box-shadow: 0 10px 28px rgba(0,80,40,.22); border: 5px solid #ffd54f; }
+  .hidden { display: none !important; }
+  button { font-family: inherit; cursor: pointer; border: none; }
+  a.homelink { display: inline-block; color: #2e7d32; font-weight: bold; text-decoration: none; margin: 0 auto 8px; }
+  .topnav { text-align: center; margin-bottom: 4px; }
+  /* fractions */
+  .fr { display: inline-flex; flex-direction: column; vertical-align: middle; text-align: center; margin: 0 .1em; font-size: .85em; line-height: 1.1; }
+  .fr .fn { border-bottom: .09em solid currentColor; padding: 0 .18em .04em; }
+  .fr .fd { padding: .04em .18em 0; }
+  .num { white-space: nowrap; display: inline-flex; align-items: center; }
+  .mw { margin-right: .04em; }
+  .op { margin: 0 .12em; color: #d81b60; font-weight: bold; }
+  .par { color: #6a1b9a; font-weight: bold; }
+  /* home */
+  .topics { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; margin-top: 10px; }
+  .topic { background: #f1f8e9; border-radius: 20px; padding: 18px 12px; font-size: 1.15rem; font-weight: bold; color: #1b5e20; box-shadow: 0 6px 0 #aed581; transition: transform .1s; }
+  .topic .ti { font-size: 2.4rem; display: block; margin-bottom: 4px; }
+  .topic .tc { display: block; font-size: .9rem; font-weight: normal; color: #558b2f; margin-top: 4px; }
+  .topic:active { transform: translateY(4px); box-shadow: 0 2px 0 #aed581; }
+  .topic.mix { background: #fff3e0; box-shadow: 0 6px 0 #ffb74d; color: #e65100; grid-column: 1 / -1; font-size: 1.45rem; }
+  .topic.paper { background: #e3f2fd; box-shadow: 0 6px 0 #64b5f6; color: #0d47a1; }
+  .topic.paper:active { box-shadow: 0 2px 0 #64b5f6; }
+  .sec { margin: 18px 4px 6px; font-size: 1.05rem; color: #33691e; font-weight: bold; }
+  .intro { font-size: 1.08rem; line-height: 1.7; background: #e8f5e9; border-radius: 16px; padding: 10px 14px; }
+  /* quiz */
+  .topbar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
+  .pill { background: #e8f5e9; border-radius: 999px; padding: 6px 12px; font-weight: bold; color: #1b5e20; font-size: 1rem; }
+  .pill.star { background: #fff8e1; color: #f57f17; }
+  .pill.fire { background: #fbe9e7; color: #d84315; }
+  .homebtn { background: #eceff1; border-radius: 999px; padding: 6px 12px; font-size: 1rem; }
+  .bar { flex: 1 1 100%; height: 14px; background: #e0e0e0; border-radius: 999px; overflow: hidden; }
+  .bar > div { height: 100%; width: 0; background: linear-gradient(90deg, #66bb6a, #26c6da); transition: width .4s; }
+  .tag { display: inline-block; background: #7e57c2; color: #fff; border-radius: 12px; padding: 4px 12px; font-size: .95rem; }
+  .retry { display: inline-block; background: #ffca28; color: #6d4c00; border-radius: 12px; padding: 4px 10px; font-size: .9rem; margin-left: 6px; }
+  .prompt { font-size: 1.25rem; margin: 12px 0 6px; line-height: 1.6; }
+  .expr { font-size: clamp(1.8rem, 7.5vw, 2.8rem); font-weight: bold; text-align: center; margin: 10px 0; color: #0d47a1; line-height: 1.6; overflow-x: auto; overflow-y: hidden; padding: 6px 0; }
+  .figbox { text-align: center; margin: 8px 0; }
+  svg.fig { width: min(360px, 92%); height: auto; max-height: 300px; }
+  svg.fig .sh { fill: #9e9e9e; stroke: #212121; stroke-width: 2; stroke-linejoin: round; }
+  svg.fig .un { fill: #fff; stroke: #212121; stroke-width: 2; stroke-linejoin: round; }
+  svg.fig text { font-family: "PingFang TC", "Microsoft JhengHei", "Noto Sans TC", sans-serif; }
+  .hint { text-align: center; color: #6d4c41; background: #fff8e1; border-radius: 12px; padding: 6px 10px; margin: 6px auto; font-size: 1.05rem; max-width: 520px; }
+  .mcq { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 10px; }
+  .mcq.one { grid-template-columns: 1fr; }
+  .opt { background: #e3f2fd; color: #0d47a1; font-size: clamp(1.3rem, 5.5vw, 1.9rem); font-weight: bold; border-radius: 18px; padding: 16px 8px; min-height: 84px; box-shadow: 0 6px 0 #90caf9; }
+  .opt:active { transform: translateY(4px); box-shadow: 0 2px 0 #90caf9; }
+  .opt.right { background: #c8e6c9; box-shadow: 0 6px 0 #66bb6a; color: #1b5e20; }
+  .opt.wrong { background: #ffcdd2; box-shadow: 0 6px 0 #e57373; color: #b71c1c; }
+  .opt:disabled { cursor: default; }
+  .yn { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 10px; }
+  /* keypad / inputs */
+  .ansrow { display: flex; justify-content: center; align-items: center; gap: 10px; margin: 10px 0 4px; flex-wrap: wrap; }
+  .kfrac { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+  .kline { width: 120px; height: 5px; background: #37474f; border-radius: 3px; }
+  .kbox { min-width: 110px; height: 64px; border: 4px dashed #90a4ae; border-radius: 14px; font-size: 2rem; font-weight: bold; color: #0d47a1; background: #fafafa; display: flex; align-items: center; justify-content: center; padding: 0 8px; }
+  .kbox.w { min-width: 90px; height: 80px; }
+  .kbox.act { border: 4px solid #ff7043; background: #fff3e0; box-shadow: 0 0 0 4px rgba(255,112,67,.2); }
+  .kbox:empty::after { content: attr(data-ph); color: #b0bec5; font-size: 1rem; font-weight: normal; }
+  .nbox { min-width: 200px; height: 72px; border: 4px dashed #90a4ae; border-radius: 16px; font-size: 2.2rem; font-weight: bold; color: #0d47a1; background: #fafafa; display: flex; align-items: center; justify-content: center; padding: 0 12px; }
+  .nbox.act { border: 4px solid #ff7043; background: #fff3e0; }
+  .nbox:empty::after { content: attr(data-ph); color: #b0bec5; font-size: 1.1rem; font-weight: normal; }
+  .unit { font-size: 1.6rem; font-weight: bold; color: #37474f; }
+  .ktip { text-align: center; color: #78909c; font-size: .95rem; margin-bottom: 8px; }
+  .keys { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; max-width: 380px; margin: 0 auto; }
+  .key { background: #ede7f6; color: #4527a0; font-size: 1.8rem; font-weight: bold; border-radius: 16px; padding: 12px 0; box-shadow: 0 5px 0 #b39ddb; }
+  .key:active { transform: translateY(3px); box-shadow: 0 2px 0 #b39ddb; }
+  .key.fn { background: #eceff1; color: #455a64; font-size: 1.25rem; box-shadow: 0 5px 0 #b0bec5; }
+  .big { display: block; margin: 14px auto 0; font-size: 1.45rem; font-weight: bold; color: #fff; border-radius: 20px; padding: 14px 30px; min-width: 220px; box-shadow: 0 6px 0 rgba(0,0,0,.2); }
+  .big:active { transform: translateY(4px); box-shadow: 0 2px 0 rgba(0,0,0,.2); }
+  .submit { background: #43a047; }
+  .next { background: #fb8c00; }
+  .feedback { text-align: center; font-size: 1.35rem; font-weight: bold; margin-top: 12px; min-height: 1.5em; }
+  .feedback.good { color: #2e7d32; }
+  .feedback.bad { color: #c62828; }
+  .feedback.info { color: #ef6c00; font-size: 1.15rem; }
+  .why { background: #fff3e0; border-left: 6px solid #ff9800; border-radius: 10px; padding: 8px 12px; margin: 10px 0; font-size: 1.1rem; }
+  .solution { background: #f3e5f5; border-radius: 16px; padding: 10px 14px; margin-top: 12px; }
+  .solution h3 { margin: 4px 0 8px; color: #6a1b9a; font-size: 1.15rem; }
+  .step { padding: 6px 0; border-bottom: 1px dashed #ce93d8; }
+  .step:last-child { border-bottom: none; }
+  .snote { color: #8e24aa; font-size: .98rem; }
+  .shtml { font-size: 1.4rem; color: #263238; line-height: 1.8; overflow-x: auto; overflow-y: hidden; padding: 4px 0; }
+  .sdetail { font-size: 1.15rem; color: #455a64; background: #fff; border-radius: 8px; padding: 2px 8px; display: inline-block; margin-top: 2px; line-height: 1.7; }
+  .linkbtn { background: none; color: #6a1b9a; text-decoration: underline; font-size: 1.05rem; display: block; margin: 8px auto 0; }
+  table.sum { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 1.05rem; }
+  table.sum th, table.sum td { padding: 8px 6px; text-align: center; border-bottom: 2px solid #e0e0e0; }
+  table.sum th { background: #e8f5e9; color: #1b5e20; }
+  .bigemoji { font-size: 4rem; text-align: center; animation: bounce 1s infinite; }
+  .row { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+  .row .big { margin: 10px 0 0; }
+  .rtable { width: 100%; border-collapse: collapse; margin: 10px auto; font-size: 1.05rem; }
+  .rtable th, .rtable td { border: 2px solid #90caf9; padding: 6px 4px; text-align: center; }
+  .rtable th { background: #e3f2fd; color: #0d47a1; }
+  .cell-in { min-width: 52px; min-height: 44px; border: 3px dashed #90a4ae; border-radius: 10px; display: inline-flex; align-items: center; justify-content: center; font-weight: bold; font-size: 1.2rem; background: #fafafa; color: #0d47a1; padding: 4px 6px; }
+  .cell-in.act { border-color: #ff7043; background: #fff3e0; box-shadow: 0 0 0 3px rgba(255,112,67,.2); }
+  .mlbtn { background: #fff3e0; color: #e65100; font-size: 1.6rem; font-weight: bold; border-radius: 16px; padding: 14px 8px; min-height: 72px; box-shadow: 0 5px 0 #ffcc80; }
+  .mlbtn.act { background: #ffe0b2; box-shadow: 0 2px 0 #ffcc80; outline: 3px solid #ff7043; }
+  .mlbtn.right { background: #c8e6c9; box-shadow: 0 5px 0 #66bb6a; color: #1b5e20; }
+  .mlbtn.wrong { background: #ffcdd2; box-shadow: 0 5px 0 #e57373; color: #b71c1c; }
+  .unitbtn { background: #e3f2fd; color: #0d47a1; font-size: 1.3rem; font-weight: bold; border-radius: 14px; padding: 12px 16px; box-shadow: 0 4px 0 #90caf9; }
+  .unitbtn.act { background: #bbdefb; outline: 3px solid #ff7043; }
+  .flab { font-size: 1.15rem; color: #455a64; }
+  .colon { font-size: 2rem; font-weight: bold; color: #0d47a1; }
+  @keyframes bounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+  @keyframes pop { 0% { transform: scale(.85); } 60% { transform: scale(1.05); } 100% { transform: scale(1); } }
+  .pop { animation: pop .3s ease; }
+  .confetti { position: fixed; top: -30px; font-size: 1.7rem; pointer-events: none; animation: fall linear forwards; z-index: 99; }
+  @keyframes fall { to { transform: translateY(110vh) rotate(720deg); opacity: .6; } }
+  @media (max-width: 420px) { .kbox { min-width: 90px; height: 56px; font-size: 1.7rem; } .key { font-size: 1.6rem; } .nbox { min-width: 160px; height: 64px; } }
+</style>
+</head>
+<body>
+<h1>🧮 第一段數學復習 📐</h1>
+<div class="sub">比率、百分數、折扣賺賠、四則計算</div>
+
+<div class="card" id="home">
+  <div class="topnav"><a class="homelink" href="../">🏠 練習首頁</a></div>
+  <div class="intro">
+    👋 先溫習工作紙原題，再做同類新題，唔好死記答案！<br>
+    ✅ 答啱有 ⭐，連續答啱有 🔥！<br>
+    ❌ 答錯會睇到<b>逐步解法</b>，之後再出一條類似題畀你再試。
+  </div>
+  <div class="sec">📄 工作紙練習</div>
+  <div class="topics" id="papers"></div>
+  <div class="sec">🎯 專項練習（同類新題）</div>
+  <div class="topics" id="topics"></div>
+</div>
+
+<div class="card hidden" id="quiz">
+  <div class="topbar">
+    <button class="homebtn" id="homeBtn">🏠 返回</button>
+    <span class="pill" id="progTxt">1 / 15</span>
+    <span class="pill star">⭐ <span id="stars">0</span></span>
+    <span class="pill fire">🔥 <span id="streak">0</span></span>
+    <div class="bar"><div id="bar"></div></div>
+  </div>
+  <div><span class="tag" id="tag"></span><span class="retry hidden" id="retryTag">🔁 再試類似題</span></div>
+  <div class="prompt" id="prompt"></div>
+  <div class="expr" id="expr"></div>
+  <div class="figbox" id="figure"></div>
+  <div class="hint hidden" id="hint"></div>
+
+  <div class="mcq hidden" id="mcq"></div>
+  <div class="yn hidden" id="yn"></div>
+  <div class="hidden" id="mlrow"></div>
+
+  <div class="hidden" id="keypad">
+    <div class="ansrow" id="ansrow"></div>
+    <div class="ktip" id="ktip">👆 撳格仔再撳數字。可以用小數點或分數。</div>
+    <div class="keys" id="keys"></div>
+    <button class="big submit" id="submitBtn">✔ 提交答案</button>
+  </div>
+
+  <div class="feedback" id="feedback"></div>
+  <div id="why"></div>
+  <button class="linkbtn hidden" id="showSolBtn">📖 睇解題步驟</button>
+  <div class="solution hidden" id="solution"></div>
+  <button class="big next hidden" id="nextBtn">下一題 ➡️</button>
+</div>
+
+<div class="card hidden" id="finish">
+  <div class="bigemoji" id="finEmoji">🏆</div>
+  <h2 style="text-align:center;color:#1b5e20;margin:6px 0" id="finTitle">完成！</h2>
+  <p style="text-align:center;font-size:1.2rem" id="finSummary"></p>
+  <table class="sum" id="sumTable"></table>
+  <div class="row">
+    <button class="big submit" id="againBtn">🔄 再玩一次</button>
+    <button class="big next" id="backBtn">🏠 揀其他主題</button>
+  </div>
+</div>
+<script>
+(function () {
+  "use strict";
+  function rnd(a, b) { return a + Math.floor(Math.random() * (b - a + 1)); }
+  function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+  function shuffle(arr) {
+    var a = arr.slice();
+    for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; }
+    return a;
+  }
+  function gcd(a, b) { a = Math.abs(a); b = Math.abs(b); while (b) { var t = a % b; a = b; b = t; } return a || 1; }
+  function fracH(n, d) { return '<span class="fr"><span class="fn">' + n + '</span><span class="fd">' + d + '</span></span>'; }
+  function mixedH(w, n, d) { return '<span class="num">' + (w ? '<span class="mw">' + w + '</span>' : "") + fracH(n, d) + '</span>'; }
+  function decStr(x) {
+    if (typeof x === "number") {
+      if (Number.isInteger(x)) return String(x);
+      var s = x.toFixed(8).replace(/0+$/, "").replace(/\.$/, "");
+      return s;
+    }
+    return String(x);
+  }
+  function nearly(a, b) { return Math.abs(a - b) < 1e-8 || Math.abs(a - b) <= 1e-6 * Math.max(1, Math.abs(b)); }
+  function tidy(x) {
+    if (typeof x !== "number" || !isFinite(x)) return x;
+    var r = Math.round(x * 1e10) / 1e10;
+    var places = [1, 10, 100, 1000, 10000, 100000];
+    for (var i = 0; i < places.length; i++) {
+      var d = Math.round(r * places[i]) / places[i];
+      if (Math.abs(r - d) < 1e-8) return d;
+    }
+    return r;
+  }
+
+  function parseNum(s) {
+    if (s == null) return null;
+    s = String(s).trim().replace(/，/g, ".").replace(/／/g, "/").replace(/\s+/g, "").replace(/％/g, "%");
+    if (!s) return null;
+    var neg = 1;
+    if (s.charAt(0) === "-") { neg = -1; s = s.slice(1); }
+    s = s.replace(/%$/, "");
+    // mixed 8 1/20 already stripped spaces... 81/20 would be wrong. mixed with leftover: 8+1/20 written as 8_1/20?
+    var m = /^(\d+)[_+](\d+)\/(\d+)$/.exec(s);
+    if (m) return neg * (+m[1] + +m[2] / +m[3]);
+    if (s.indexOf("/") >= 0) {
+      var p = s.split("/");
+      if (p.length === 2 && p[0] !== "" && p[1] !== "" && +p[1] !== 0) return neg * (+p[0] / +p[1]);
+      return null;
+    }
+    if (s === "." || s === "-.") return null;
+    var v = Number(s);
+    return isFinite(v) ? neg * v : null;
+  }
+
+  function uniquePush(arr, v) {
+    if (v == null || !isFinite(v)) return;
+    for (var i = 0; i < arr.length; i++) if (nearly(arr[i], v)) return;
+    arr.push(v);
+  }
+
+  function makeMcq(correct, distractors, fmt, whys) {
+    fmt = fmt || decStr;
+    var opts = [{ html: fmt(correct), correct: true, why: "" }];
+    (distractors || []).forEach(function (d, i) {
+      if (d == null || (typeof d === "number" && nearly(d, correct))) return;
+      var h = typeof d === "object" && d.html ? d.html : fmt(d);
+      var already = opts.some(function (o) { return o.html === h; });
+      if (already) return;
+      opts.push({ html: h, correct: false, why: (typeof d === "object" && d.why) || (whys && whys[i]) || "" });
+    });
+    while (opts.length < 4) {
+      var bump = typeof correct === "number" ? correct + (opts.length) : null;
+      if (bump == null || opts.some(function (o) { return o.html === fmt(bump); })) break;
+      opts.push({ html: fmt(bump), correct: false, why: "" });
+    }
+    return shuffle(opts.slice(0, 4));
+  }
+
+  // ---------- SVG ----------
+  function svgPie(unPct) {
+    var a = unPct / 100 * 2 * Math.PI;
+    var x = 100 + 80 * Math.sin(a);
+    var y = 100 - 80 * Math.cos(a);
+    var large = unPct > 50 ? 1 : 0;
+    var tx = 100 + 42 * Math.sin(a / 2);
+    var ty = 100 - 42 * Math.cos(a / 2) + 6;
+    return '<svg class="fig" viewBox="0 0 200 200" aria-label="圓圖，空白部分標示 ' + unPct + '%">' +
+      '<circle class="sh" cx="100" cy="100" r="80"/>' +
+      '<path class="un" d="M100,100 L100,20 A80,80 0 ' + large + ' 1 ' + x.toFixed(2) + ',' + y.toFixed(2) + ' Z"/>' +
+      '<text x="' + tx.toFixed(1) + '" y="' + ty.toFixed(1) + '" text-anchor="middle" font-size="18" font-weight="bold" fill="#333">' + unPct + '%</text></svg>';
+  }
+
+  function svgHex(num, den) {
+    // rectangle + two side triangles; each triangle labelled num/den %
+    var lab = '<tspan baseline-shift="super" font-size="11">' + num + '</tspan><tspan font-size="11">⁄</tspan><tspan baseline-shift="sub" font-size="11">' + den + '</tspan>';
+    return '<svg class="fig" viewBox="0 0 300 170" aria-label="六邊形，中間長方形著色，兩側三角形各佔 ' + num + '/' + den + '%">' +
+      '<polygon class="un" points="20,85 80,20 80,150"/>' +
+      '<rect class="sh" x="80" y="20" width="140" height="130"/>' +
+      '<polygon class="un" points="220,20 280,85 220,150"/>' +
+      '<text x="48" y="80" text-anchor="middle" font-size="15" fill="#333">' + lab + '%</text>' +
+      '<text x="252" y="80" text-anchor="middle" font-size="15" fill="#333">' + lab + '%</text></svg>';
+  }
+
+  function svgCornerTri(top, left, right) {
+    return '<svg class="fig" viewBox="0 0 280 250" aria-label="大三角形，三個白角分別標 ' + top + '%、' + left + '%、' + right + '%">' +
+      '<polygon class="un" points="140,18 20,230 260,230"/>' +
+      '<polygon class="sh" points="140,78 88,200 192,200"/>' +
+      '<line x1="92" y1="78" x2="188" y2="78" stroke="#212121" stroke-width="2"/>' +
+      '<line x1="88" y1="200" x2="192" y2="200" stroke="#212121" stroke-width="2"/>' +
+      '<text x="140" y="58" text-anchor="middle" font-size="18" font-weight="bold" fill="#333">' + top + '%</text>' +
+      '<text x="62" y="210" text-anchor="middle" font-size="16" font-weight="bold" fill="#333">' + left + '%</text>' +
+      '<text x="218" y="210" text-anchor="middle" font-size="16" font-weight="bold" fill="#333">' + right + '%</text></svg>';
+  }
+
+  function svgGridTri(n, shadeUp) {
+    if (shadeUp == null) shadeUp = true;
+    var side = 220, h = side * Math.sqrt(3) / 2;
+    var ox = 20, oy = 16;
+    function pt(r, i) {
+      var y = oy + h * r / n;
+      var width = side * r / n;
+      var x = ox + side / 2 - width / 2 + (r ? width * i / r : 0);
+      return [x, y];
+    }
+    var parts = "", r, i, a, b, c;
+    function poly(a, b, c, sh) {
+      return '<polygon class="' + (sh ? "sh" : "un") + '" points="' +
+        a[0].toFixed(2) + ',' + a[1].toFixed(2) + ' ' +
+        b[0].toFixed(2) + ',' + b[1].toFixed(2) + ' ' +
+        c[0].toFixed(2) + ',' + c[1].toFixed(2) + '"/>';
+    }
+    for (r = 0; r < n; r++) {
+      for (i = 0; i <= r; i++) {
+        parts += poly(pt(r, i), pt(r + 1, i), pt(r + 1, i + 1), shadeUp);
+      }
+      for (i = 0; i < r; i++) {
+        parts += poly(pt(r, i), pt(r, i + 1), pt(r + 1, i + 1), !shadeUp);
+      }
+    }
+    return '<svg class="fig" viewBox="0 0 260 ' + (h + 28).toFixed(1) + '" aria-label="大三角形分成小三角形，著色部分是向上的小三角形">' + parts + '</svg>';
+  }
+
+  function svgSegIs(aName, aVal, bName, bVal) {
+    var max = Math.max(aVal, bVal), unit = 240 / max;
+    var wA = aVal * unit, wB = bVal * unit, x0 = 40, y1 = 48, y2 = 92, bh = 32;
+    return '<svg class="fig" viewBox="0 0 330 150" style="width:min(520px,100%);max-height:none" aria-label="' + aName + aVal + '，' + bName + bVal + ' 為 100%">' +
+      '<path d="M' + x0 + ',28 H' + (x0 + wA) + '" stroke="#5d4037" stroke-width="2" fill="none"/>' +
+      '<path d="M' + x0 + ',20 v16 M' + (x0 + wA) + ',20 v16" stroke="#5d4037" stroke-width="2"/>' +
+      '<text x="' + (x0 + wA / 2) + '" y="16" text-anchor="middle" font-size="14" font-weight="bold" fill="#5d4037">是' + bName + '的？%</text>' +
+      '<rect x="' + x0 + '" y="' + y1 + '" width="' + wA + '" height="' + bh + '" rx="4" fill="#ffcc80" stroke="#e65100" stroke-width="2"/>' +
+      '<text x="' + (x0 + wA / 2) + '" y="' + (y1 + 22) + '" text-anchor="middle" font-size="15" font-weight="bold" fill="#4e342e">' + aName + ' ' + aVal + ' 人</text>' +
+      '<rect x="' + x0 + '" y="' + y2 + '" width="' + wB + '" height="' + bh + '" rx="4" fill="#aed581" stroke="#33691e" stroke-width="2"/>' +
+      '<text x="' + (x0 + wB / 2) + '" y="' + (y2 + 22) + '" text-anchor="middle" font-size="15" font-weight="bold" fill="#1b5e20">' + bName + ' ' + bVal + ' 人</text>' +
+      '<path d="M' + x0 + ',136 H' + (x0 + wB) + '" stroke="#5d4037" stroke-width="2"/>' +
+      '<path d="M' + x0 + ',128 v16 M' + (x0 + wB) + ',128 v16" stroke="#5d4037" stroke-width="2"/>' +
+      '<text x="' + (x0 + wB / 2) + '" y="150" text-anchor="middle" font-size="14" font-weight="bold" fill="#5d4037">100%</text></svg>';
+  }
+
+  function svgSegLess(aName, aVal, bName, bVal) {
+    var max = Math.max(aVal, bVal), unit = 240 / max;
+    var wA = aVal * unit, wB = bVal * unit, x0 = 40, y1 = 40, y2 = 88, bh = 32;
+    return '<svg class="fig" viewBox="0 0 330 155" style="width:min(520px,100%);max-height:none" aria-label="' + aName + '比' + bName + '少？%">' +
+      '<path d="M' + (x0 + wA) + ',22 H' + (x0 + wB) + '" stroke="#5d4037" stroke-width="2" fill="none"/>' +
+      '<path d="M' + (x0 + wA) + ',14 v16 M' + (x0 + wB) + ',14 v16" stroke="#5d4037" stroke-width="2"/>' +
+      '<text x="' + (x0 + (wA + wB) / 2) + '" y="12" text-anchor="middle" font-size="14" font-weight="bold" fill="#5d4037">少？%</text>' +
+      '<rect x="' + x0 + '" y="' + y1 + '" width="' + wA + '" height="' + bh + '" rx="4" fill="#ffcc80" stroke="#e65100" stroke-width="2"/>' +
+      '<text x="' + (x0 + wA / 2) + '" y="' + (y1 + 22) + '" text-anchor="middle" font-size="15" font-weight="bold" fill="#4e342e">' + aName + ' ' + aVal + ' 人</text>' +
+      '<rect x="' + x0 + '" y="' + y2 + '" width="' + wB + '" height="' + bh + '" rx="4" fill="#aed581" stroke="#33691e" stroke-width="2"/>' +
+      '<text x="' + (x0 + wB / 2) + '" y="' + (y2 + 22) + '" text-anchor="middle" font-size="15" font-weight="bold" fill="#1b5e20">' + bName + ' ' + bVal + ' 人</text>' +
+      '<line x1="' + (x0 + wA) + '" y1="' + y2 + '" x2="' + (x0 + wA) + '" y2="' + (y2 + bh) + '" stroke="#33691e" stroke-width="2" stroke-dasharray="4 3"/>' +
+      '<path d="M' + x0 + ',136 H' + (x0 + wB) + '" stroke="#5d4037" stroke-width="2"/>' +
+      '<path d="M' + x0 + ',128 v16 M' + (x0 + wB) + ',128 v16" stroke="#5d4037" stroke-width="2"/>' +
+      '<text x="' + (x0 + wB / 2) + '" y="150" text-anchor="middle" font-size="14" font-weight="bold" fill="#5d4037">100%</text></svg>';
+  }
+
+  function step(note, html, detail) { return { note: note, html: html, detail: detail || "" }; }
+
+  function qBase(o) {
+    o.attempt = o.attempt || 0;
+    o.topic = o.topic || "mix";
+    o.paper = o.paper || "";
+    if (typeof o.answerNum === "number") o.answerNum = tidy(o.answerNum);
+    if (o.accept) o.accept = o.accept.map(function (v) { return typeof v === "number" ? tidy(v) : v; });
+    if (o.fields) o.fields.forEach(function (f) { if (typeof f.answerNum === "number") f.answerNum = tidy(f.answerNum); });
+    if (o.table) o.table.cells.forEach(function (c) { if (typeof c.val === "number") c.val = tidy(c.val); });
+    if (o.answerRatio) o.answerRatio = o.answerRatio.map(function (v) { return typeof v === "number" ? tidy(v) : v; });
+    return o;
+  }
+
+  // ===================== QUESTION BANK =====================
+  var BANK = {};
+
+  function add(id, cfg) { BANK[id] = cfg; }
+
+  // ---- helpers for ratio simplify ----
+  function simplifyRatio(a, b) {
+    var g = gcd(Math.round(a), Math.round(b));
+    return [Math.round(a) / g, Math.round(b) / g];
+  }
+
+  // P1Q1 table 5:2
+  add("p1q1", {
+    paper: "p1", topic: "ratio", title: "比率表",
+    original: function () {
+      var siu = [15, 35, 55, 75, 80, 105], ha = [6, 14, 22, 30, 32, 42];
+      return tableRatioQ("p1q1", "original", 5, 2, "燒賣", "蝦餃", siu, ha,
+        "愛吃燒賣和愛吃蝦餃的人數比是 5 ： 2。請根據這個比，填寫下表的空白。");
+    },
+    generate: function () {
+      var a = rnd(2, 6), b = rnd(1, a - 1), k0 = rnd(2, 5), n = 4, left = [], right = [], i;
+      var g0 = gcd(a, b); a /= g0; b /= g0;
+      for (i = 0; i < n; i++) { var k = k0 + i * rnd(1, 3); left.push(a * k); right.push(b * k); }
+      var names = pick([["蘋果", "橙"], ["男生", "女生"], ["紅波", "藍波"], ["大杯", "小杯"]]);
+      return tableRatioQ("p1q1", "generated", a, b, names[0], names[1], left, right,
+        names[0] + "和" + names[1] + "的數量比是 " + a + " ： " + b + "。請填寫下表的空白。");
+    }
+  });
+
+  function tableRatioQ(skill, src, a, b, n1, n2, left, right, prompt) {
+    var cells = [], i, givenLeft = true;
+    for (i = 0; i < left.length; i++) {
+      // leave the second row blank (like filling 蝦餃 from 燒賣), plus one left blank on later cols
+      cells.push({ r: 0, c: i, given: true, val: left[i], label: n1 });
+      cells.push({ r: 1, c: i, given: false, val: right[i], label: n2 });
+    }
+    return qBase({
+      skill: skill, source: src, topic: "ratio", paper: skill.slice(0, 2),
+      prompt: prompt, kind: "table",
+      table: { rows: [n1, n2], cols: left.length, cells: cells },
+      answerH: n1 + " : " + n2 + " = " + a + " : " + b,
+      steps: [
+        step("先記住比的意義", a + " : " + b + " 表示 " + n1 + " 是 " + a + " 份，" + n2 + " 是 " + b + " 份。"),
+        step("求每一份", "用已知數量 ÷ 對應份數，就得到「一份」的量。", "例如第一欄：" + left[0] + " ÷ " + a + " = " + (left[0] / a) + "，再 × " + b + " = " + right[0] + "。"),
+        step("逐欄檢查", "每一欄都應該合 " + a + " : " + b + "，即左邊 ÷ 右邊 = " + a + " ÷ " + b + "。")
+      ],
+      regen: function () { return BANK[skill].generate(); }
+    });
+  }
+
+  // P1Q2 三成五 = 35%
+  var CHENG = [
+    ["一成", 10], ["二成", 20], ["三成", 30], ["四成", 40], ["五成", 50],
+    ["六成", 60], ["七成", 70], ["八成", 80], ["九成", 90],
+    ["三成五", 35], ["二成五", 25], ["四成五", 45], ["七成五", 75], ["一成五", 15],
+    ["半成", 5], ["一成二", 12], ["兩成半", 25]
+  ];
+  add("p1q2", {
+    paper: "p1", topic: "percent", title: "「成」化百分數",
+    original: function () { return chengQ("三成五", 35, "original"); },
+    generate: function () {
+      var p = pick(CHENG);
+      return chengQ(p[0], p[1], "generated");
+    }
+  });
+  function chengQ(name, pct, src) {
+    var wrong = [];
+    uniquePush(wrong, pct * 10);
+    uniquePush(wrong, pct / 10);
+    uniquePush(wrong, name.indexOf("半成") >= 0 ? 50 : 5);
+    uniquePush(wrong, 100 - pct);
+    uniquePush(wrong, pct + 5);
+    if (name.indexOf("五") >= 0 && name.indexOf("半成") < 0) uniquePush(wrong, 5);
+    return qBase({
+      skill: "p1q2", source: src, topic: "percent", paper: "p1",
+      prompt: "「" + name + "」即是多少？",
+      kind: "mcq", options: makeMcq(pct, wrong, function (x) { return x + "%"; }, [
+        "「成」係十分之一，即 10%。唔好將數字直接當百分數。",
+        "「半成」係 5%，「五成」先至係 50%。",
+        "記錯咗「成」同「％」嘅關係。",
+        "唔好倒轉嚟減。"
+      ]),
+      answerH: pct + "%",
+      steps: [
+        step("記住單位", "一成 = 10%，半成 = 5%。"),
+        step("化成百分數", "「" + name + "」= " + pct + "%。")
+      ],
+      regen: function () { return BANK.p1q2.generate(); }
+    });
+  }
+
+  // P1Q3 pie
+  add("p1q3", {
+    paper: "p1", topic: "fig", title: "看圖百分數（圓圖）",
+    original: function () { return pieQ(40, "original"); },
+    generate: function () { return pieQ(pick([20, 25, 30, 35, 40, 45, 50, 60, 75]), "generated"); }
+  });
+  function pieQ(un, src) {
+    var sh = 100 - un;
+    var wrong = [];
+    uniquePush(wrong, un);
+    uniquePush(wrong, 100);
+    uniquePush(wrong, un / 2);
+    uniquePush(wrong, sh / 2);
+    uniquePush(wrong, 50);
+    return qBase({
+      skill: "p1q3", source: src, topic: "fig", paper: "p1",
+      prompt: "著色部分佔全圖的多少？",
+      figure: svgPie(un),
+      kind: "mcq", options: makeMcq(sh, wrong, function (x) { return x + "%"; }, [
+        "40% 係空白部分，著色部分要用 100% 減去空白。",
+        "全圖係 100%，唔係答案本身。",
+        "要計算著色部分，唔好只睇標示嘅數字。"
+      ]),
+      answerH: sh + "%",
+      steps: [
+        step("睇圖", "空白扇形標示了 " + un + "%，呢部分係<b>無著色</b>。"),
+        step("全圖是 100%", "著色部分 = 100% − " + un + "% = " + sh + "%。")
+      ],
+      regen: function () { return BANK.p1q3.generate(); }
+    });
+  }
+
+  // P1Q4 hexagon 66 2/3%
+  add("p1q4", {
+    paper: "p1", topic: "fig", title: "看圖百分數（六邊形）",
+    original: function () {
+      return hexQ(50, 3, "original");
+    },
+    generate: function () {
+      // two sides each x%, shaded = 100-2x, prefer mixed / terminating
+      var choices = [
+        [50, 3], // 66 2/3
+        [25, 2], // 12.5 each, shaded 75
+        [10, 1], // 10 each, 80
+        [20, 1],
+        [15, 1],
+        [25, 1],
+        [100, 3] // 33 1/3 each, shaded 33 1/3
+      ];
+      return hexQ.apply(null, pick(choices).concat(["generated"]));
+    }
+  });
+  function hexQ(num, den, src) {
+    // each triangle = num/den %
+    var two = 2 * num / den; // %
+    var sh = 100 - two;
+    var shFr = simplifyRatio(Math.round((100 * den - 2 * num)), den);
+    // display shaded as mixed percent if needed
+    function pctMix(n, d) {
+      var w = Math.floor(n / d), r = n % d;
+      if (r === 0) return w + "%";
+      if (w === 0) return fracH(n, d) + "%";
+      return mixedH(w, r, d) + "%";
+    }
+    var ansH = pctMix(shFr[0], shFr[1]);
+    // distractor: 100 - num/den (forgot two triangles), or 2*num/den, or off-by one in mixed
+    var opts = [
+      { html: ansH, correct: true, why: "" },
+      { html: pctMix(simplifyRatio(100 * den - num, den)[0], simplifyRatio(100 * den - num, den)[1]), correct: false, why: "兩側都有一個三角形，要減兩次。" },
+      { html: pctMix(Math.round(two * den), den).indexOf ? (function () {
+          var t = simplifyRatio(2 * num, den);
+          return pctMix(t[0], t[1]);
+        })() : "", correct: false, why: "呢個係兩個白三角形合共嘅百分數，唔係著色部分。" }
+    ];
+    // 66 1/3 vs 66 2/3 style
+    if (shFr[1] === 3) {
+      var altN = shFr[0] === 200 ? 199 : (shFr[0] - 1);
+      if (altN > 0) opts.push({ html: pctMix(altN, 3), correct: false, why: "計算 100% − " + fracH(2 * num, den) + "% 嘅帶分數時，分子差咗 1。" });
+    }
+    opts.push({ html: decStr(Math.round(sh)) + "%", correct: false, why: "如果唔係整數，要用分數或小數準確表示。" });
+    // unique by html
+    var seen = {}, clean = [];
+    opts.forEach(function (o) { if (o.html && !seen[o.html]) { seen[o.html] = 1; clean.push(o); } });
+    while (clean.length < 4) { clean.push({ html: decStr(sh + clean.length) + "%", correct: false, why: "" }); }
+    return qBase({
+      skill: "p1q4", source: src, topic: "fig", paper: "p1",
+      prompt: "著色部分佔全圖的：",
+      figure: svgHex(num, den),
+      kind: "mcq", options: shuffle(clean.slice(0, 4)),
+      answerH: ansH,
+      steps: [
+        step("兩側白色三角形", "每個佔 " + fracH(num, den) + "%，兩個合共 " + fracH(2 * num, den) + "%。"),
+        step("著色 = 全部 − 白色", "100% − " + fracH(2 * num, den) + "% = " + ansH + "。")
+      ],
+      regen: function () { return BANK.p1q4.generate(); }
+    });
+  }
+
+  // P1Q5 triangle corners
+  add("p1q5", {
+    paper: "p1", topic: "fig", title: "看圖百分數（三角形）",
+    original: function () { return cornerQ(20, 24, 24, "original"); },
+    generate: function () {
+      var a = pick([10, 15, 16, 18, 20, 25, 30]);
+      var b = pick([12, 15, 16, 18, 20, 24, 25, 28]);
+      var c = pick([12, 15, 16, 18, 20, 24, 25, 28]);
+      if (a + b + c >= 90) c = 100 - a - b - pick([20, 25, 30, 32, 36, 40]);
+      if (c <= 0) return BANK.p1q5.generate();
+      return cornerQ(a, b, c, "generated");
+    }
+  });
+  function cornerQ(a, b, c, src) {
+    var sh = 100 - a - b - c;
+    var wrong = [];
+    uniquePush(wrong, a + b + c);
+    uniquePush(wrong, 100 - a);
+    uniquePush(wrong, a);
+    uniquePush(wrong, b);
+    uniquePush(wrong, sh + a);
+    uniquePush(wrong, 100 - b - c);
+    return qBase({
+      skill: "p1q5", source: src, topic: "fig", paper: "p1",
+      prompt: "著色部分佔全圖的多少？",
+      figure: svgCornerTri(a, b, c),
+      kind: "mcq", options: makeMcq(sh, wrong, function (x) { return x + "%"; }, [
+        "呢個係三個白色角加起來，著色部分要用 100% 減去佢哋。",
+        "唔好只減其中一個角。",
+        "標示嘅百分數係白色部分。"
+      ]),
+      answerH: sh + "%",
+      steps: [
+        step("白色三個角", a + "% + " + b + "% + " + c + "% = " + (a + b + c) + "%。"),
+        step("著色部分", "100% − " + (a + b + c) + "% = " + sh + "%。")
+      ],
+      regen: function () { return BANK.p1q5.generate(); }
+    });
+  }
+
+  // P1Q6 62.5% grid + reading
+  add("p1q6", {
+    paper: "p1", topic: "fig", title: "看圖百分數（三角網格）",
+    original: function () { return gridQ(4, true, "original"); },
+    generate: function () {
+      // n=2: 3 up / 4 = 75%; n=3: 6/9=66.666 not nice if only up; 
+      // For n=2: 3 upward / 4 total = 75%
+      // n=3: 6 up / 9 = 66.666... mixed 66 2/3
+      // n=4: 10/16=62.5
+      // Also allow shade downward: n=4 down 6/16=37.5; n=2 down 1/4=25
+      var opts = [
+        [2, true], [2, false], [4, true], [4, false]
+      ];
+      return gridQ.apply(null, pick(opts).concat(["generated"]));
+    }
+  });
+  function gridQ(n, shadeUp, src) {
+    var up = n * (n + 1) / 2, down = n * (n - 1) / 2, tot = n * n;
+    var shN = shadeUp ? up : down;
+    var pct = shN / tot * 100; // 62.5 etc
+    var readMap = {
+      62.5: "百分之六十二點五",
+      37.5: "百分之三十七點五",
+      75: "百分之七十五",
+      25: "百分之二十五",
+      50: "百分之五十"
+    };
+    var reading = readMap[pct] || ("百分之" + decStr(pct).replace(".", "點"));
+    var wrongPct = [];
+    uniquePush(wrongPct, (tot - shN) / tot * 100);
+    uniquePush(wrongPct, shN); // forgot /tot *100, e.g. 10
+    uniquePush(wrongPct, up / tot * 100);
+    uniquePush(wrongPct, down / tot * 100);
+    uniquePush(wrongPct, 50);
+    uniquePush(wrongPct, n * 10);
+    var readOpts = [
+      { html: reading, correct: true, why: "" },
+      { html: "百分之" + decStr(pct / 10).replace(".", "點"), correct: false, why: "小數點位置錯咗。" },
+      { html: "百分之" + decStr(pct * 10).replace(".", "點"), correct: false, why: "唔好把 62.5 讀成六百二十五。" },
+      { html: "百分之六點二五", correct: false, why: "62.5 唔係 6.25。" },
+      { html: "六十二點五成", correct: false, why: "讀百分數要用「百分之…」，唔係「成」。" }
+    ];
+    var seen = {}, ro = [];
+    readOpts.forEach(function (o) { if (!seen[o.html]) { seen[o.html] = 1; ro.push(o); } });
+    return qBase({
+      skill: "p1q6", source: src, topic: "fig", paper: "p1",
+      prompt: "寫出著色部分佔全圖的百分數，並選出正確讀法。",
+      figure: svgGridTri(n, shadeUp),
+      hint: "先數清楚：大三角形每邊分成 " + n + " 等份，一共有 " + tot + " 個細三角形。",
+      kind: "num+mcq",
+      unit: "%",
+      answerNum: pct,
+      accept: [pct],
+      options: shuffle(ro.slice(0, 4)),
+      answerH: decStr(pct) + "%　　讀作：" + reading,
+      steps: [
+        step("數格子", "每邊分成 " + n + " 等份，全圖共有 " + n + " × " + n + " = " + tot + " 個同樣大小的小三角形。"),
+        step("著色有幾個？", (shadeUp ? "著色的是<b>全部向上</b>的小三角形，有 " : "著色的是<b>全部向下</b>的小三角形，有 ") + shN + " 個。"),
+        step("化成百分數", fracH(shN, tot) + " = " + decStr(pct) + "%，讀作「" + reading + "」。")
+      ],
+      regen: function () { return BANK.p1q6.generate(); }
+    });
+  }
+
+  // P1Q7 T/F
+  var TF_ITEMS = [
+    { t: "百分數表示「一個數是另一個數的百分之幾」。", a: true },
+    { t: "百分數表示「一個數比另一個數多百分之幾」。", a: false, why: "百分數可以表示「是…的百分之幾」，唔一定係「多咗」幾多。" },
+    { t: "1 就是 100%。", a: true },
+    { t: "1% 等於 0.01。", a: true },
+    { t: "1% 等於 0.1。", a: false, why: "1% = 1 ÷ 100 = 0.01，唔係 0.1。" },
+    { t: "半成等於 50%。", a: false, why: "一成 = 10%，半成 = 5%。五成先至係 50%。" },
+    { t: "七折就是售價是定價的 70%。", a: true },
+    { t: "七折就是便宜了 70%。", a: false, why: "七折即售價係定價嘅 70%，便宜咗嘅係 30%。" },
+    { t: "賠率的分母是成本，不是售價。", a: true },
+    { t: "賺率 = 利潤 ÷ 售價。", a: false, why: "賺率 = 利潤 ÷ <b>成本</b>。" }
+  ];
+  add("p1q7", {
+    paper: "p1", topic: "percent", title: "是非題",
+    original: function () { return tfQ(TF_ITEMS[0], "original"); },
+    generate: function () { return tfQ(pick(TF_ITEMS), "generated"); }
+  });
+  function tfQ(item, src) {
+    return qBase({
+      skill: "p1q7", source: src, topic: "percent", paper: "p1",
+      prompt: item.t, kind: "yn",
+      answerYN: item.a, answerH: item.a ? "是" : "非",
+      steps: [step("判斷", item.a ? "呢句係正確嘅定義／概念。" : (item.why || "呢句唔正確。"))],
+      whyWrong: item.why || "",
+      regen: function () { return BANK.p1q7.generate(); }
+    });
+  }
+
+
+  // P1Q8 three flavors
+  add("p1q8", {
+    paper: "p1", topic: "percent", title: "部分相差佔全部",
+    original: function () { return flavorQ(77, 13, "原味蛋卷", "咖啡味蛋卷", "朱古力味蛋卷", "全部蛋卷", "original"); },
+    generate: function () {
+      var a = pick([60, 65, 70, 72, 75, 77, 80, 84]);
+      var b = pick([8, 10, 12, 13, 15, 16, 18, 20]);
+      if (a + b >= 95) return BANK.p1q8.generate();
+      var names = pick([
+        ["原味", "咖啡味", "朱古力味", "全部蛋卷"],
+        ["紅色", "藍色", "黃色", "全部氣球"],
+        ["汽車", "巴士", "單車", "全部車輛"]
+      ]);
+      return flavorQ(a, b, names[0], names[1], names[2], names[3], "generated");
+    }
+  });
+  function flavorQ(a, b, n1, n2, n3, all, src) {
+    var c = 100 - a - b, diff = a - c;
+    var wrong = [];
+    uniquePush(wrong, a - b);
+    uniquePush(wrong, c);
+    uniquePush(wrong, a + c);
+    uniquePush(wrong, 100 - a);
+    uniquePush(wrong, b);
+    uniquePush(wrong, Math.abs(a - b - c));
+    return qBase({
+      skill: "p1q8", source: src, topic: "percent", paper: "p1",
+      prompt: n1 + "佔 " + a + "%，" + n2 + "佔 " + b + "%，餘下的是" + n3 + "。<br>" + n1 + "比" + n3 + "多佔" + all + "的多少？",
+      kind: "mcq", options: makeMcq(diff, wrong, function (x) { return x + "%"; }, [
+        "唔好將中間嗰款一齊減錯。要先求出第三款，再同第一款比。",
+        "呢個只係第三款本身佔的百分數。",
+        "題目問「多佔全部的多少」，即兩個百分數相減。"
+      ]),
+      answerH: diff + "%",
+      steps: [
+        step("先求第三款", n3 + "佔 100% − " + a + "% − " + b + "% = " + c + "%。"),
+        step("求相差", n1 + "比" + n3 + "多佔 " + a + "% − " + c + "% = " + diff + "%。")
+      ],
+      regen: function () { return BANK.p1q8.generate(); }
+    });
+  }
+
+  // P1Q9 total and ratio, find difference
+  add("p1q9", {
+    paper: "p1", topic: "ratio", title: "按比求相差",
+    original: function () { return ratioDiffQ(184, 3, 5, "朱古力曲奇", "牛油曲奇", "original"); },
+    generate: function () {
+      var a = rnd(2, 5), b = rnd(a + 1, 8), part = rnd(8, 30);
+      return ratioDiffQ((a + b) * part, a, b, pick(["甲", "紅豆包", "小杯"]) + "", pick(["乙", "奶油包", "大杯"]), "generated");
+    }
+  });
+  function ratioDiffQ(total, a, b, n1, n2, src) {
+    var parts = a + b, one = total / parts, x = one * a, y = one * b, diff = Math.abs(y - x);
+    var wrong = [];
+    uniquePush(wrong, one);
+    uniquePush(wrong, x);
+    uniquePush(wrong, y);
+    uniquePush(wrong, total / Math.abs(b - a));
+    uniquePush(wrong, Math.abs(b - a));
+    uniquePush(wrong, total * Math.abs(b - a) / 100);
+    return qBase({
+      skill: "p1q9", source: src, topic: "ratio", paper: "p1",
+      prompt: n1 + "和" + n2 + "共有 " + total + "，數量比是 " + a + "：" + b + "。" + (b > a ? n2 + "比" + n1 + "多多少？" : n1 + "比" + n2 + "多多少？"),
+      kind: "num", unit: "", answerNum: diff, accept: [diff],
+      answerH: decStr(diff),
+      steps: [
+        step("先求一份", "共 " + parts + " 份，每份 " + total + " ÷ " + parts + " = " + decStr(one) + "。"),
+        step("各有多少", n1 + "：" + a + " × " + decStr(one) + " = " + decStr(x) + "；" + n2 + "：" + b + " × " + decStr(one) + " = " + decStr(y) + "。"),
+        step("相差", decStr(Math.max(x, y)) + " − " + decStr(Math.min(x, y)) + " = " + decStr(diff) + "。")
+      ],
+      regen: function () { return BANK.p1q9.generate(); }
+    });
+  }
+
+  // P1Q10 this year is 125% of last → 多了 25%
+  add("p1q10", {
+    paper: "p1", topic: "percent", title: "是…的 % ＝ 多／少了 %",
+    original: function () { return moreLessPctQ(125, "爸爸今年的薪金是去年的百分之一百二十五，即爸爸今年的薪金比去年", "original"); },
+    generate: function () {
+      var p = pick([75, 80, 85, 90, 110, 120, 125, 130, 140, 150, 200]);
+      var subj = pick(["今年的人數是去年的", "售價是成本的", "姐姐的零用錢是弟弟的", "本星期的產量是上星期的"]);
+      return moreLessPctQ(p, subj + " " + p + "%，即是比原來", "generated");
+    }
+  });
+  function moreLessPctQ(pct, stem, src) {
+    var more = pct >= 100, val = Math.abs(pct - 100);
+    return qBase({
+      skill: "p1q10", source: src, topic: "percent", paper: "p1",
+      prompt: stem + " <b>多還是少</b> 了多少？",
+      kind: "moreless",
+      answerML: more ? "多" : "少",
+      answerNum: val, accept: [val], unit: "%",
+      answerH: (more ? "多" : "少") + "了 " + val + "%",
+      steps: [
+        step("「是…的 100%」表示一樣多", "而家係原來的 " + pct + "%。"),
+        step("比較 100%", pct + "% − 100% = " + (pct - 100) + "%，所以比原來" + (more ? "多" : "少") + "了 " + val + "%。")
+      ],
+      regen: function () { return BANK.p1q10.generate(); }
+    });
+  }
+
+  // P1Q11 A is 20 more than B, A is ?% more than B
+  add("p1q11", {
+    paper: "p1", topic: "percent", title: "多幾多％（基準）",
+    original: function () { return moreThanQ(60, 20, "汽水", "果汁", "罐", "original"); },
+    generate: function () {
+      var b = pick([20, 24, 25, 30, 40, 50, 60, 80]);
+      var pct = pick([20, 25, 30, 40, 50, 60, 75, 100]);
+      var a = b + b * pct / 100;
+      if (!Number.isInteger(a)) return BANK.p1q11.generate();
+      var names = pick([["汽水", "果汁", "罐"], ["蘋果", "梨", "個"], ["男生", "女生", "人"]]);
+      return moreThanQ(a, a - b, names[0], names[1], names[2], "generated");
+    }
+  });
+  function moreThanQ(a, extra, n1, n2, unit, src) {
+    var b = a - extra, pct = extra / b * 100;
+    var wrong = [];
+    uniquePush(wrong, extra);
+    uniquePush(wrong, extra / a * 100);
+    uniquePush(wrong, a / b * 100);
+    uniquePush(wrong, b / a * 100);
+    uniquePush(wrong, extra / (a + b) * 100);
+    return qBase({
+      skill: "p1q11", source: src, topic: "percent", paper: "p1",
+      prompt: "有" + n1 + " " + a + unit + "，" + n1 + "比" + n2 + "多 " + extra + unit + "。" + n1 + "的數量比" + n2 + "多多少？",
+      hint: "「比" + n2 + "多百分之幾」—— 100% 係" + n2 + "嘅數量。",
+      kind: "mcq", options: makeMcq(pct, wrong, function (x) { return decStr(x) + "%"; }, [
+        "20 係多咗嘅罐數，題目問嘅係百分數，要用相差 ÷ 基準。",
+        "基准搞錯咗：應該用" + n2 + "做 100%，唔好用" + n1 + "做分母。",
+        "呢個係「是…的百分之幾」，題目問嘅係「多了百分之幾」。"
+      ]),
+      answerH: decStr(pct) + "%",
+      steps: [
+        step("先求" + n2, n2 + " = " + a + " − " + extra + " = " + b + " " + unit + "。"),
+        step("「多百分之幾」以" + n2 + "為 100%", extra + " ÷ " + b + " = " + decStr(extra / b) + " = " + decStr(pct) + "%。"),
+        step("小心", "如果用 " + extra + " ÷ " + a + "，就係用錯咗基準（會得到 " + decStr(extra / a * 100) + "%）。")
+      ],
+      regen: function () { return BANK.p1q11.generate(); }
+    });
+  }
+
+  // P1Q12 litre / ml remaining %
+  add("p1q12", {
+    paper: "p1", topic: "percent", title: "容量單位與剩餘％",
+    original: function () { return remainPctQ(2.6, 1560, "一桶汽油", "original"); },
+    generate: function () {
+      var litres = pick([1.5, 2, 2.4, 2.5, 3, 3.2, 4, 5]);
+      var totalMl = litres * 1000;
+      var pctLeft = pick([20, 25, 30, 40, 50, 60, 75]);
+      var used = totalMl * (1 - pctLeft / 100);
+      if (!nearly(used, Math.round(used))) used = Math.round(used);
+      return remainPctQ(litres, used, pick(["一瓶飲料", "一桶水", "一罐果汁"]), "generated");
+    }
+  });
+  function remainPctQ(litres, usedMl, name, src) {
+    var total = litres * 1000, left = total - usedMl, pct = left / total * 100;
+    var wrong = [];
+    uniquePush(wrong, usedMl / total * 100);
+    uniquePush(wrong, left / usedMl * 100);
+    uniquePush(wrong, left / litres);
+    uniquePush(wrong, 100 - litres * 10);
+    return qBase({
+      skill: "p1q12", source: src, topic: "percent", paper: "p1",
+      prompt: name + "容量是 " + decStr(litres) + " 升，用了 " + decStr(usedMl) + " 毫升後，餘下的容量佔原有的多少？",
+      hint: "1 升 = 1000 毫升。先統一單位。",
+      kind: "mcq", options: makeMcq(pct, wrong, function (x) { return decStr(x) + "%"; }, [
+        "呢個係「用了」佔原有的百分數，題目問「餘下」。",
+        "單位要統一先可以相除。"
+      ]),
+      answerH: decStr(pct) + "%",
+      steps: [
+        step("統一單位", decStr(litres) + " 升 = " + decStr(total) + " 毫升。"),
+        step("求餘下", decStr(total) + " − " + decStr(usedMl) + " = " + decStr(left) + " 毫升。"),
+        step("佔原有", decStr(left) + " ÷ " + decStr(total) + " = " + decStr(pct) + "%。")
+      ],
+      regen: function () { return BANK.p1q12.generate(); }
+    });
+  }
+
+  // P1Q13 mixed to percent 2 1/4 = 225%
+  add("p1q13", {
+    paper: "p1", topic: "percent", title: "帶分數化百分數",
+    original: function () { return mixedToPctQ(2, 1, 4, "original", [250, 240, 225, 220]); },
+    generate: function () {
+      var choices = [
+        [1, 1, 2, 150], [1, 1, 4, 125], [1, 3, 4, 175], [2, 1, 2, 250],
+        [3, 1, 4, 325], [1, 1, 5, 120], [2, 3, 5, 260], [3, 1, 2, 350],
+        [8, 1, 20, 805], [4, 1, 5, 420], [0, 3, 4, 75]
+      ];
+      var c = pick(choices);
+      return mixedToPctQ(c[0], c[1], c[2], "generated", null);
+    }
+  });
+  function mixedToPctQ(w, n, d, src, fixedOpts) {
+    var val = (w + n / d) * 100;
+    var expr = (w ? mixedH(w, n, d) : fracH(n, d));
+    var wrong = [];
+    uniquePush(wrong, w + n / d); // forgot *100 → 2.25
+    uniquePush(wrong, (w * 100) + n); // 201?
+    uniquePush(wrong, w * 100 + (n / d) * 10);
+    uniquePush(wrong, (w + n) * 100 / d);
+    uniquePush(wrong, val + 25);
+    uniquePush(wrong, val - 5);
+    uniquePush(wrong, w * 100 + n * 10);
+    var opts;
+    if (fixedOpts) {
+      opts = fixedOpts.map(function (x) { return { html: x + "%", correct: nearly(x, val), why: nearly(x, val) ? "" : "把帶分數化成假分數再 × 100%。" }; });
+    } else {
+      opts = makeMcq(val, wrong, function (x) { return decStr(x) + "%"; }, [
+        "化咗成小數之後，仲要 × 100 先至係百分數。例如 2.25 = 225%。",
+        "先把帶分數化成假分數，再乘 100%。"
+      ]);
+    }
+    return qBase({
+      skill: "p1q13", source: src, topic: "percent", paper: "p1",
+      prompt: "把 " + expr + " 化為百分數。",
+      expr: expr,
+      kind: "mcq", options: opts,
+      answerH: decStr(val) + "%",
+      steps: [
+        step("化成假分數或小數", expr + " = " + fracH(w * d + n, d) + " = " + decStr(w + n / d) + "。"),
+        step("乘 100%", decStr(w + n / d) + " × 100% = " + decStr(val) + "%。")
+      ],
+      regen: function () { return BANK.p1q13.generate(); }
+    });
+  }
+
+  // P1Q14 perimeter 80, 5:3, L W diff
+  add("p1q14", {
+    paper: "p1", topic: "ratio", title: "周長與比（長、闊、相差）",
+    original: function () { return rectDimsQ(80, 5, 3, "original"); },
+    generate: function () {
+      var a = rnd(3, 7), b = rnd(2, a - 1), one = pick([3, 4, 5, 6, 8, 10]);
+      var sum = (a + b) * one, P = 2 * sum;
+      return rectDimsQ(P, a, b, "generated");
+    }
+  });
+  function rectDimsQ(P, a, b, src) {
+    var sum = P / 2, one = sum / (a + b), L = one * a, W = one * b, diff = L - W;
+    return qBase({
+      skill: "p1q14", source: src, topic: "ratio", paper: "p1",
+      prompt: "長方形的周長是 " + P + " cm，長和闊的比是 " + a + ":" + b + "。求這個長方形的<b>長、闊同相差</b>。",
+      kind: "multi",
+      fields: [
+        { label: "長", unit: "cm", answerNum: L },
+        { label: "闊", unit: "cm", answerNum: W },
+        { label: "相差", unit: "cm", answerNum: diff }
+      ],
+      answerH: "長 " + decStr(L) + " cm，闊 " + decStr(W) + " cm，相差 " + decStr(diff) + " cm",
+      steps: [
+        step("周長公式", "2 ×（長 + 闊）= " + P + "，所以長 + 闊 = " + decStr(sum) + " cm。"),
+        step("按比分配", "共 " + (a + b) + " 份，每份 " + decStr(sum) + " ÷ " + (a + b) + " = " + decStr(one) + " cm。"),
+        step("長、闊、相差", "長 = " + a + " × " + decStr(one) + " = " + decStr(L) + " cm；闊 = " + b + " × " + decStr(one) + " = " + decStr(W) + " cm；相差 = " + decStr(diff) + " cm。"),
+        step("小心", "唔好用周長 " + P + " 直接去分份（那樣會把長闊都計大一倍）。")
+      ],
+      regen: function () { return BANK.p1q14.generate(); }
+    });
+  }
+
+  // P1Q15 0.65:1.3 = 1:2
+  add("p1q15", {
+    paper: "p1", topic: "ratio", title: "小數比化最簡整數比",
+    original: function () { return decRatioQ(0.65, 1.3, "original"); },
+    generate: function () {
+      var pairs = [[0.4, 0.6], [0.25, 0.75], [0.8, 1.2], [1.5, 2.5], [0.36, 0.48], [0.6, 1.8], [0.12, 0.18], [2.4, 3.6], [0.5, 2], [0.75, 0.25]];
+      var p = pick(pairs);
+      return decRatioQ(p[0], p[1], "generated");
+    }
+  });
+  function decRatioQ(x, y, src) {
+    // multiply to integers
+    function toIntPair(a, b) {
+      var s = decStr(a) + ":" + decStr(b), mul = 1;
+      var da = (decStr(a).split(".")[1] || "").length;
+      var db = (decStr(b).split(".")[1] || "").length;
+      mul = Math.pow(10, Math.max(da, db));
+      var A = Math.round(a * mul), B = Math.round(b * mul);
+      var g = gcd(A, B);
+      return [A / g, B / g];
+    }
+    var r = toIntPair(x, y);
+    return qBase({
+      skill: "p1q15", source: src, topic: "ratio", paper: "p1",
+      prompt: "把 " + decStr(x) + " : " + decStr(y) + " 化為最簡單整數比。",
+      expr: decStr(x) + " : " + decStr(y),
+      kind: "ratio", answerRatio: r,
+      answerH: r[0] + " : " + r[1],
+      steps: [
+        step("先變成整數比", "兩邊乘 10、100… 直到兩邊都係整數。"),
+        step("再約簡", "除以最大公因數，得到 " + r[0] + " : " + r[1] + "。")
+      ],
+      regen: function () { return BANK.p1q15.generate(); }
+    });
+  }
+
+  // P1Q16 and P1Q17 fraction ratios
+  add("p1q16", {
+    paper: "p1", topic: "ratio", title: "分數比化最簡整數比",
+    original: function () { return fracRatioQ(2, 3, 5, 6, "p1q16", "original"); },
+    generate: function () {
+      var pairs = [[1, 2, 2, 3], [2, 5, 3, 4], [3, 4, 5, 6], [1, 3, 1, 2], [3, 8, 1, 2], [2, 7, 3, 5], [4, 9, 2, 3], [5, 12, 5, 8]];
+      var p = pick(pairs);
+      return fracRatioQ(p[0], p[1], p[2], p[3], "p1q16", "generated");
+    }
+  });
+  add("p1q17", {
+    paper: "p1", topic: "ratio", title: "分數比化最簡整數比",
+    original: function () { return fracRatioQ(4, 5, 7, 8, "p1q17", "original"); },
+    generate: function () {
+      var pairs = [[3, 5, 4, 7], [2, 3, 5, 8], [5, 6, 7, 9], [4, 7, 5, 8], [1, 4, 2, 5], [5, 8, 3, 4], [3, 7, 5, 9]];
+      var p = pick(pairs);
+      return fracRatioQ(p[0], p[1], p[2], p[3], "p1q17", "generated");
+    }
+  });
+  function fracRatioQ(a, b, c, d, skill, src) {
+    // a/b : c/d = a*d : b*c, then simplify
+    var L = a * d, R = b * c, g = gcd(L, R);
+    L /= g; R /= g;
+    return qBase({
+      skill: skill, source: src, topic: "ratio", paper: skill.slice(0, 2),
+      prompt: "把 " + fracH(a, b) + " : " + fracH(c, d) + " 化為最簡單整數比。",
+      expr: fracH(a, b) + " <span class='op'>:</span> " + fracH(c, d),
+      kind: "ratio", answerRatio: [L, R],
+      answerH: L + " : " + R,
+      steps: [
+        step("分數比，兩邊同乘兩個分母的最小公倍數（或交叉相乘）", fracH(a, b) + " : " + fracH(c, d) + " = " + (a * d) + " : " + (b * c) + "。", "方法：兩邊同乘 " + b + " × " + d + "。"),
+        step("約簡", (g > 1 ? "再除以 " + g + "，得到 " : "已經是最簡：") + L + " : " + R + "。")
+      ],
+      regen: function () { return BANK[skill].generate(); }
+    });
+  }
+
+  // P1Q18 (1-75%)÷(1+1/4)=0.2
+  add("p1q18", {
+    paper: "p1", topic: "calc", title: "四則混合（括號與百分數）",
+    original: function () {
+      return calcQ("p1q18", "original",
+        '<span class="par">(</span>1 <span class="op">−</span> 75%<span class="par">)</span> <span class="op">÷</span> <span class="par">(</span>1 <span class="op">+</span> ' + fracH(1, 4) + '<span class="par">)</span>',
+        0.2, [
+          step("先算括號", "1 − 75% = 1 − 0.75 = 0.25。"),
+          step("另一個括號", "1 + " + fracH(1, 4) + " = 1.25。"),
+          step("相除", "0.25 ÷ 1.25 = 0.2。")
+        ], [0.25, 1.25, 0.25 + 1.25, 2, 0.02, 0.8]);
+    },
+    generate: function () {
+      var pts = pick([50, 60, 75, 80, 20, 25]);
+      var den = pick([2, 4, 5]);
+      var left = 1 - pts / 100, right = 1 + 1 / den, ans = left / right;
+      if (!isNice(ans)) return BANK.p1q18.generate();
+      var expr = '<span class="par">(</span>1 <span class="op">−</span> ' + pts + '%<span class="par">)</span> <span class="op">÷</span> <span class="par">(</span>1 <span class="op">+</span> ' + fracH(1, den) + '<span class="par">)</span>';
+      return calcQ("p1q18", "generated", expr, ans, [
+        step("先算括號", "1 − " + pts + "% = " + decStr(left) + "；1 + " + fracH(1, den) + " = " + decStr(right) + "。"),
+        step("相除", decStr(left) + " ÷ " + decStr(right) + " = " + decStr(ans) + "。")
+      ], [left, right, left + right, 1 - pts + 1 / den]);
+    }
+  });
+
+  function isNice(x) {
+    if (!isFinite(x)) return false;
+    var s = decStr(Math.round(x * 10000) / 10000);
+    var dec = (s.split(".")[1] || "").length;
+    return dec <= 3;
+  }
+
+  function calcQ(skill, src, expr, ans, steps, distractors) {
+    var accept = [ans];
+    // also accept close fraction if terminating
+    return qBase({
+      skill: skill, source: src, topic: "calc", paper: skill.slice(0, 2),
+      prompt: "計算下列算式（以小數表示答案）。",
+      expr: expr, kind: "num", unit: "", answerNum: ans, accept: accept,
+      answerH: decStr(ans),
+      steps: steps,
+      errors: (distractors || []).map(function (d) { return { v: d, why: "運算次序或百分數化法可能錯咗。記住：先括號，百分數要先 ÷ 100，再按乘除加減。" }; }),
+      regen: function () { return BANK[skill].generate(); }
+    });
+  }
+
+  // P1Q19 6 3/5 + 1/8 ÷ 12.5% = 7.6
+  add("p1q19", {
+    paper: "p1", topic: "calc", title: "四則混合（先除後加）",
+    original: function () {
+      return calcQ("p1q19", "original",
+        mixedH(6, 3, 5) + ' <span class="op">+</span> ' + fracH(1, 8) + ' <span class="op">÷</span> 12.5%',
+        7.6, [
+          step("先做除法（乘除先於加減）", "12.5% = 0.125 = " + fracH(1, 8) + "。"),
+          step("計算除法", fracH(1, 8) + " ÷ 12.5% = " + fracH(1, 8) + " ÷ " + fracH(1, 8) + " = 1。"),
+          step("再加法", mixedH(6, 3, 5) + " + 1 = 6.6 + 1 = 7.6。"),
+          step("小心", "如果由左到右先加再除，就會得到錯答案。12.5% 一定要先化成小數或分數。")
+        ], [6.61, 6.6, 52.8, 0.76, 8.6, 1]);
+    },
+    generate: function () {
+      // w n/d + a/b ÷ (a/b)  where (a/b) is written as percent
+      var b = pick([2, 4, 5, 8, 10]);
+      var a = 1;
+      var pct = a / b * 100; // 50, 25, 20, 12.5, 10
+      if (!isNice(pct)) return BANK.p1q19.generate();
+      var w = rnd(3, 9), frN = pick([1, 2, 3]), frD = pick([2, 4, 5]);
+      if (frN >= frD) return BANK.p1q19.generate();
+      var left = w + frN / frD, ans = left + 1;
+      if (!isNice(ans)) return BANK.p1q19.generate();
+      var expr = mixedH(w, frN, frD) + ' <span class="op">+</span> ' + fracH(a, b) + ' <span class="op">÷</span> ' + decStr(pct) + "%";
+      return calcQ("p1q19", "generated", expr, ans, [
+        step("先把百分數化成分數", decStr(pct) + "% = " + fracH(a, b) + "。"),
+        step("先除法", fracH(a, b) + " ÷ " + fracH(a, b) + " = 1。"),
+        step("再加法", mixedH(w, frN, frD) + " + 1 = " + decStr(ans) + "。")
+      ], [left, left + pct, ans / 10]);
+    }
+  });
+
+  // P1Q20 / P3Q1 perimeter 36, 5:4, width 8
+  add("p1q20", {
+    paper: "p1", topic: "ratio", title: "周長與比（求闊）",
+    original: function () { return rectWidthQ(36, 5, 4, "original", "p1q20"); },
+    generate: function () {
+      var a = rnd(4, 7), b = rnd(2, a - 1), one = pick([2, 3, 4, 5, 6]);
+      return rectWidthQ(2 * (a + b) * one, a, b, "generated", "p1q20");
+    }
+  });
+  add("p3q1", {
+    paper: "p3", topic: "ratio", title: "周長與比（求闊）",
+    original: function () { var q = BANK.p1q20.original(); q.skill = "p3q1"; q.paper = "p3"; q.regen = function () { return BANK.p3q1.generate(); }; return q; },
+    generate: function () { var q = BANK.p1q20.generate(); q.skill = "p3q1"; q.paper = "p3"; return q; }
+  });
+  function rectWidthQ(P, a, b, src, skill) {
+    var sum = P / 2, one = sum / (a + b), W = one * b, L = one * a;
+    var trap = P * b / (a + b); // forgot /2  → 16 when P=36, 5:4
+    return qBase({
+      skill: skill, source: src, topic: "ratio", paper: skill.slice(0, 2),
+      prompt: "用 " + P + " cm 長的膠帶圍成一個長方形，長和闊的比是 " + a + ":" + b + "，它的闊是多少？",
+      kind: "mcq",
+      options: makeMcq(W, [trap, L, sum, one, P / a, P / 2 / a], function (x) { return decStr(x) + " cm"; }, [
+        "周長係 2 ×（長+闊）。如果用 " + P + " 直接按 " + a + ":" + b + " 來分，闊會變成 " + decStr(trap) + " cm，那就大了一倍。",
+        "呢個係長，唔係闊。",
+        "呢個係長 + 闊。"
+      ]),
+      answerH: decStr(W) + " cm",
+      steps: [
+        step("先求長 + 闊", "周長 " + P + " = 2 ×（長 + 闊），所以長 + 闊 = " + decStr(sum) + " cm。"),
+        step("按比求闊", "共 " + (a + b) + " 份，每份 " + decStr(one) + " cm，闊佔 " + b + " 份 = " + decStr(W) + " cm。")
+      ],
+      regen: function () { return BANK[skill].generate(); }
+    });
+  }
+
+
+  // ========== 練習二 ==========
+  add("p2q1", {
+    paper: "p2", topic: "percent", title: "百分數化小數",
+    original: function () {
+      var pcts = [1, 45, 180, 7.5, 0.25, 10.5];
+      var decs = [0.01, 0.45, 1.8, 0.075, 0.0025, 0.105];
+      return pctTableQ(pcts, decs, "original");
+    },
+    generate: function () {
+      var pool = [0.5, 2, 5, 8, 12, 15, 25, 36, 50, 75, 90, 100, 120, 150, 2.5, 0.5, 0.4, 12.5, 6.5, 200];
+      var pcts = shuffle(pool).slice(0, 5);
+      var decs = pcts.map(function (p) { return p / 100; });
+      return pctTableQ(pcts, decs, "generated");
+    }
+  });
+  function pctTableQ(pcts, decs, src) {
+    var cells = [], i;
+    for (i = 0; i < pcts.length; i++) {
+      cells.push({ r: 0, c: i, given: true, val: pcts[i], suffix: "%" });
+      cells.push({ r: 1, c: i, given: false, val: decs[i] });
+    }
+    return qBase({
+      skill: "p2q1", source: src, topic: "percent", paper: "p2",
+      prompt: "把下列百分數化為小數。",
+      kind: "table",
+      table: { rows: ["百分數", "小數"], cols: pcts.length, cells: cells, fmtGiven: function (c) { return decStr(c.val) + (c.suffix || ""); } },
+      answerH: decs.map(decStr).join("，"),
+      steps: [
+        step("方法", "百分數化小數：把百分數的數字 ÷ 100（即小數點向左移兩位）。"),
+        step("例子", "1% = 0.01；180% = 1.8；0.25% = 0.0025（注意已經有小數點，再向左移兩位）。")
+      ],
+      regen: function () { return BANK.p2q1.generate(); }
+    });
+  }
+
+  add("p2q2", {
+    paper: "p2", topic: "calc", title: "加減混合百分數",
+    original: function () {
+      return calcQ("p2q2", "original", '3 <span class="op">−</span> 65% <span class="op">+</span> 130%', 3.65, [
+        step("先把百分數化小數", "65% = 0.65，130% = 1.3。"),
+        step("由左到右加減", "3 − 0.65 + 1.3 = 2.35 + 1.3 = 3.65。")
+      ], [3 - 65 + 130, 3 - 0.65 + 130, 1.95, 0.365, 365, 2.35]);
+    },
+    generate: function () {
+      var a = rnd(2, 8);
+      var p = pick([20, 25, 40, 50, 60, 65, 75, 80]);
+      var q = pick([110, 120, 125, 130, 140, 150, 200]);
+      var ans = a - p / 100 + q / 100;
+      if (!isNice(ans)) return BANK.p2q2.generate();
+      return calcQ("p2q2", "generated", a + ' <span class="op">−</span> ' + p + '% <span class="op">+</span> ' + q + '%', ans, [
+        step("先化小數", p + "% = " + decStr(p / 100) + "，" + q + "% = " + decStr(q / 100) + "。"),
+        step("由左到右", a + " − " + decStr(p / 100) + " + " + decStr(q / 100) + " = " + decStr(ans) + "。")
+      ], [a - p + q, a - p / 100 + q, ans * 100]);
+    }
+  });
+
+  add("p2q3", {
+    paper: "p2", topic: "calc", title: "括號乘法（分數答案）",
+    original: function () {
+      return fracMcqQ("p2q3", "original",
+        '<span class="par">(</span>0.6 <span class="op">+</span> 4%<span class="par">)</span> <span class="op">×</span> ' + fracH(5, 6),
+        8, 15, [
+          step("先算括號", "0.6 + 4% = 0.6 + 0.04 = 0.64 = " + fracH(16, 25) + "，或 0.64 = " + fracH(64, 100) + "。"),
+          step("再乘", "0.64 × " + fracH(5, 6) + " = " + fracH(64, 100) + " × " + fracH(5, 6) + " = " + fracH(320, 600) + " = " + fracH(8, 15) + "。")
+        ],
+        [{ n: 5, d: 6, why: "漏咗先算括號入面的 0.6 + 4%。" }, { n: 16, d: 25, why: "只計咗括號，未乘 " + fracH(5, 6) + "。" }, { n: 3, d: 5, why: "運算有誤。" }]
+      );
+    },
+    generate: function () {
+      // (x + y%) * a/b  with nice fraction
+      var choices = [
+        { x: 0.5, y: 10, a: 2, b: 3, n: 2, d: 5 }, // 0.6 * 2/3 = 0.4 = 2/5
+        { x: 0.2, y: 5, a: 4, b: 5, n: 1, d: 5 }, // 0.25*4/5=0.2=1/5
+        { x: 0.4, y: 10, a: 5, b: 6, n: 5, d: 12 }, // 0.5*5/6=5/12
+        { x: 0.25, y: 25, a: 2, b: 5, n: 1, d: 5 }, // 0.5*2/5=0.2=1/5
+        { x: 0.8, y: 20, a: 3, b: 4, n: 3, d: 4 } // 1 * 3/4 = 3/4
+      ];
+      var c = pick(choices);
+      var expr = '<span class="par">(</span>' + decStr(c.x) + ' <span class="op">+</span> ' + c.y + '%<span class="par">)</span> <span class="op">×</span> ' + fracH(c.a, c.b);
+      return fracMcqQ("p2q3", "generated", expr, c.n, c.d, [
+        step("先算括號", decStr(c.x) + " + " + c.y + "% = " + decStr(c.x + c.y / 100) + "。"),
+        step("再乘", decStr(c.x + c.y / 100) + " × " + fracH(c.a, c.b) + " = " + fracH(c.n, c.d) + "。")
+      ], [{ n: c.a, d: c.b, why: "漏咗先算括號。" }, { n: Math.round((c.x + c.y / 100) * 100), d: 100, why: "只計咗括號。" }]);
+    }
+  });
+  function fracMcqQ(skill, src, expr, n, d, steps, dfr) {
+    var g = gcd(n, d); n /= g; d /= g;
+    var opts = [{ html: fracH(n, d), correct: true, why: "" }];
+    (dfr || []).forEach(function (f) {
+      var g2 = gcd(f.n, f.d); var nn = f.n / g2, dd = f.d / g2;
+      if (nn === n && dd === d) return;
+      opts.push({ html: fracH(nn, dd), correct: false, why: f.why || "" });
+    });
+    while (opts.length < 4) {
+      var bump = { n: n + opts.length, d: d };
+      opts.push({ html: fracH(bump.n, bump.d), correct: false, why: "" });
+    }
+    return qBase({
+      skill: skill, source: src, topic: "calc", paper: "p2",
+      prompt: "計算下列算式。",
+      expr: expr, kind: "mcq", options: shuffle(opts.slice(0, 4)),
+      answerH: fracH(n, d),
+      steps: steps,
+      regen: function () { return BANK[skill].generate(); }
+    });
+  }
+
+  add("p2q4", {
+    paper: "p2", topic: "calc", title: "括號除以百分數",
+    original: function () {
+      return calcQ("p2q4", "original",
+        '<span class="par">(</span>' + fracH(9, 10) + ' <span class="op">+</span> 2.5<span class="par">)</span> <span class="op">÷</span> 17%',
+        20, [
+          step("先算括號", fracH(9, 10) + " + 2.5 = 0.9 + 2.5 = 3.4。"),
+          step("百分數化小數", "17% = 0.17。"),
+          step("相除", "3.4 ÷ 0.17 = 20。")
+        ], [3.4, 0.17, 2, 200, 0.2, 5.9]);
+    },
+    generate: function () {
+      var choices = [
+        { a: 4, b: 5, c: 1.2, p: 16, ans: 12.5 }, // 2/0.16=12.5
+        { a: 1, b: 2, c: 1.5, p: 20, ans: 10 }, // 2/0.2=10
+        { a: 3, b: 4, c: 1.25, p: 10, ans: 20 }, // 2/0.1=20
+        { a: 1, b: 5, c: 1.8, p: 25, ans: 8 }, // 2/0.25=8
+        { a: 2, b: 5, c: 2.6, p: 15, ans: 20 } // 3/0.15=20
+      ];
+      var c = pick(choices);
+      var expr = '<span class="par">(</span>' + fracH(c.a, c.b) + ' <span class="op">+</span> ' + decStr(c.c) + '<span class="par">)</span> <span class="op">÷</span> ' + c.p + "%";
+      return calcQ("p2q4", "generated", expr, c.ans, [
+        step("先算括號", fracH(c.a, c.b) + " + " + decStr(c.c) + " = " + decStr(c.a / c.b + c.c) + "。"),
+        step("再除以百分數", c.p + "% = " + decStr(c.p / 100) + "，所以 " + decStr(c.a / c.b + c.c) + " ÷ " + decStr(c.p / 100) + " = " + decStr(c.ans) + "。")
+      ], [c.a / c.b + c.c, c.p / 100, c.ans * 10, c.ans / 10]);
+    }
+  });
+
+  add("p2q5", {
+    paper: "p2", topic: "discount", title: "已知折扣和實付，求定價",
+    original: function () { return listFromPayQ(7, 315, "英文字典", "original"); },
+    generate: function () {
+      var zhe = pick([5, 6, 7, 8, 9]);
+      var list = pick([200, 240, 250, 300, 320, 360, 400, 450, 500, 560, 600]);
+      var pay = list * zhe / 10;
+      if (!isNice(pay)) return BANK.p2q5.generate();
+      return listFromPayQ(zhe, pay, pick(["故事書", "球鞋", "書包", "玩具"]), "generated");
+    }
+  });
+  function listFromPayQ(zhe, pay, item, src) {
+    var list = pay / (zhe / 10);
+    var wrong = [];
+    uniquePush(wrong, pay * zhe / 10);
+    uniquePush(wrong, pay * (10 - zhe) / 10);
+    uniquePush(wrong, pay / ((10 - zhe) / 10));
+    uniquePush(wrong, pay);
+    return qBase({
+      skill: "p2q5", source: src, topic: "discount", paper: "p2",
+      prompt: item + "以" + zheCN(zhe) + "折出售，付了 " + decStr(pay) + " 元。它的定價是多少元？",
+      kind: "num", unit: "元", answerNum: list, accept: [list],
+      answerH: decStr(list) + " 元",
+      steps: [
+        step("「" + zheCN(zhe) + "折」的意思", "售價 = 定價 × " + zhe + "0%，即定價 × " + decStr(zhe / 10) + "。"),
+        step("求定價", "定價 = 售價 ÷ " + decStr(zhe / 10) + " = " + decStr(pay) + " ÷ " + decStr(zhe / 10) + " = " + decStr(list) + " 元。")
+      ],
+      regen: function () { return BANK.p2q5.generate(); }
+    });
+  }
+  function zheCN(z) {
+    return ["", "一", "二", "三", "四", "五", "六", "七", "八", "九"][z] || String(z);
+  }
+
+  add("p2q6", {
+    paper: "p2", topic: "discount", title: "已知成本和賠率，求賠了多少",
+    original: function () { return lossAmtQ(250, 54, "一套泳衣", "original"); },
+    generate: function () {
+      var cost = pick([100, 120, 150, 200, 240, 250, 300, 400, 500]);
+      var rate = pick([10, 15, 20, 25, 30, 40, 50, 54, 60]);
+      if (!isNice(cost * rate / 100)) return BANK.p2q6.generate();
+      return lossAmtQ(cost, rate, pick(["一件外套", "一個花瓶", "一部收音機"]), "generated");
+    }
+  });
+  function lossAmtQ(cost, rate, item, src) {
+    var loss = cost * rate / 100;
+    return qBase({
+      skill: "p2q6", source: src, topic: "discount", paper: "p2",
+      prompt: item + "的成本是 " + cost + " 元，以 " + rate + "% 的賠率售出，賠了多少元？",
+      kind: "num", unit: "元", answerNum: loss, accept: [loss],
+      answerH: decStr(loss) + " 元",
+      steps: [
+        step("賠率的意思", "賠了的錢 = 成本 × 賠率。"),
+        step("計算", decStr(cost) + " × " + rate + "% = " + decStr(cost) + " × " + decStr(rate / 100) + " = " + decStr(loss) + " 元。")
+      ],
+      regen: function () { return BANK.p2q6.generate(); }
+    });
+  }
+
+  add("p2q7", {
+    paper: "p2", topic: "discount", title: "折扣便宜了多少",
+    original: function () { return savedQ(560, 9, "玩具熊", "original"); },
+    generate: function () {
+      var list = pick([80, 100, 120, 150, 200, 240, 300, 400, 450, 500, 560, 800]);
+      var zhe = pick([6, 7, 8, 9]);
+      return savedQ(list, zhe, pick(["書包", "球鞋", "故事書", "水壺"]), "generated");
+    }
+  });
+  function savedQ(list, zhe, item, src) {
+    var saved = list * (10 - zhe) / 10, sell = list * zhe / 10;
+    var wrong = [];
+    uniquePush(wrong, sell);
+    uniquePush(wrong, list * zhe);
+    uniquePush(wrong, list / 10);
+    return qBase({
+      skill: "p2q7", source: src, topic: "discount", paper: "p2",
+      prompt: item + "定價 " + list + " 元，現以" + zheCN(zhe) + "折出售，便宜了多少元？",
+      kind: "mcq", options: makeMcq(saved, wrong, function (x) { return decStr(x) + " 元"; }, [
+        "呢個係售價（打折後要付嘅錢），題目問「便宜了」多少，即定價 ×（10 − " + zhe + "）成。",
+        "九折即便宜一成，唔係便宜九成。"
+      ]),
+      answerH: decStr(saved) + " 元",
+      steps: [
+        step(zheCN(zhe) + "折的意思", "售價是定價的 " + zhe + "0%，所以便宜了 " + (10 - zhe) + " 成。"),
+        step("計算", list + " × " + (10 - zhe) + "0% = " + decStr(saved) + " 元。")
+      ],
+      regen: function () { return BANK.p2q7.generate(); }
+    });
+  }
+
+  add("p2q8", {
+    paper: "p2", topic: "fig", title: "線段圖：是…的％",
+    original: function () { return segIsQ(48, 60, "田賽", "徑賽", "original"); },
+    generate: function () {
+      var b = pick([40, 50, 60, 80, 100, 120]);
+      var pct = pick([40, 50, 60, 75, 80, 90, 120, 125, 150]);
+      var a = b * pct / 100;
+      if (!Number.isInteger(a)) return BANK.p2q8.generate();
+      return segIsQ(a, b, pick(["甲組", "男生", "田賽"]), pick(["乙組", "女生", "徑賽"]), "generated");
+    }
+  });
+  function segIsQ(a, b, n1, n2, src) {
+    var pct = a / b * 100;
+    var wrong = [];
+    uniquePush(wrong, b / a * 100);
+    uniquePush(wrong, Math.abs(b - a) / b * 100);
+    uniquePush(wrong, Math.abs(b - a) / a * 100);
+    uniquePush(wrong, a);
+    uniquePush(wrong, Math.abs(b - a));
+    return qBase({
+      skill: "p2q8", source: src, topic: "fig", paper: "p2",
+      prompt: "如圖，參加" + n1 + "的人數是參加" + n2 + "的多少？",
+      figure: svgSegIs(n1, a, n2, b),
+      hint: "「是" + n2 + "的？%」—— 線段圖把" + n2 + "當作 100%。",
+      kind: "mcq", options: makeMcq(pct, wrong, function (x) { return decStr(x) + "%"; }, [
+        "基準搞反咗：應該用" + n1 + " ÷ " + n2 + "，唔好倒轉。",
+        "呢題問「是…的百分之幾」，唔係「少了百分之幾」。",
+        "題目問百分數，唔係人數差。"
+      ]),
+      answerH: decStr(pct) + "%",
+      steps: [
+        step("找出 100% 是誰", "「是" + n2 + "的？%」即以" + n2 + "（" + b + " 人）為 100%。"),
+        step("計算", n1 + " ÷ " + n2 + " = " + a + " ÷ " + b + " = " + decStr(pct) + "%。")
+      ],
+      regen: function () { return BANK.p2q8.generate(); }
+    });
+  }
+
+  add("p2q9", {
+    paper: "p2", topic: "fig", title: "線段圖：少了％",
+    original: function () { return segLessQ(48, 60, "田賽", "徑賽", "original"); },
+    generate: function () {
+      var b = pick([40, 50, 60, 80, 100, 120]);
+      var less = pick([10, 20, 25, 30, 40, 50]);
+      var a = b * (1 - less / 100);
+      if (!Number.isInteger(a)) return BANK.p2q9.generate();
+      return segLessQ(a, b, pick(["甲組", "男生", "田賽"]), pick(["乙組", "女生", "徑賽"]), "generated");
+    }
+  });
+  function segLessQ(a, b, n1, n2, src) {
+    var diff = b - a, pct = diff / b * 100;
+    var wrong = [];
+    uniquePush(wrong, diff);
+    uniquePush(wrong, diff / a * 100);
+    uniquePush(wrong, a / b * 100);
+    uniquePush(wrong, b / a * 100);
+    return qBase({
+      skill: "p2q9", source: src, topic: "fig", paper: "p2",
+      prompt: "如圖，參加" + n1 + "的人數比參加" + n2 + "的少多少？",
+      figure: svgSegLess(n1, a, n2, b),
+      hint: "「比" + n2 + "少？%」—— 100% 仍然係" + n2 + "。相差嘅人數要除以" + n2 + "。",
+      kind: "mcq", options: makeMcq(pct, wrong, function (x) { return decStr(x) + "%"; }, [
+        "12 係相差嘅人數，題目問百分數，要用相差 ÷ 基準（" + n2 + "）。",
+        "基准用錯咗，應該用" + n2 + "做 100%，唔好用" + n1 + "做分母。",
+        "呢個係「是…的百分之幾」，題目問「少了百分之幾」。"
+      ]),
+      answerH: decStr(pct) + "%",
+      steps: [
+        step("相差人數", b + " − " + a + " = " + decStr(diff) + " 人。"),
+        step("以" + n2 + "為 100%", decStr(diff) + " ÷ " + b + " = " + decStr(pct) + "%。")
+      ],
+      regen: function () { return BANK.p2q9.generate(); }
+    });
+  }
+
+  add("p2q10", {
+    paper: "p2", topic: "discount", title: "已知售價和賠額，求成本",
+    original: function () { return costFromLossQ(1900, 250, "一套紀念鈔票", "original"); },
+    generate: function () {
+      var cost = pick([800, 1000, 1200, 1500, 1800, 2000, 2150, 2400, 3000]);
+      var loss = pick([80, 100, 150, 200, 250, 300, 400, 500]);
+      if (loss >= cost) return BANK.p2q10.generate();
+      return costFromLossQ(cost - loss, loss, pick(["一部相機", "一輛模型車", "一套郵票"]), "generated");
+    }
+  });
+  function costFromLossQ(sell, loss, item, src) {
+    var cost = sell + loss;
+    return qBase({
+      skill: "p2q10", source: src, topic: "discount", paper: "p2",
+      prompt: "以 " + sell + " 元賣出" + item + "，賠了 " + loss + " 元。買入時用了多少元？",
+      kind: "num", unit: "元", answerNum: cost, accept: [cost],
+      answerH: decStr(cost) + " 元",
+      steps: [
+        step("關係", "成本 = 售價 + 賠了的錢。"),
+        step("計算", sell + " + " + loss + " = " + cost + " 元。"),
+        step("小心", "唔好做成 " + sell + " − " + loss + "（咁樣係當佢賺咗）。")
+      ],
+      regen: function () { return BANK.p2q10.generate(); }
+    });
+  }
+
+  add("p2q11", {
+    paper: "p2", topic: "ratio", title: "周長與比（求面積）",
+    original: function () { return rectAreaQ(50, 3, 2, "original"); },
+    generate: function () {
+      var a = rnd(3, 6), b = rnd(2, a - 1), one = pick([4, 5, 6, 8, 10]);
+      return rectAreaQ(2 * (a + b) * one, a, b, "generated");
+    }
+  });
+  function rectAreaQ(P, a, b, src) {
+    var sum = P / 2, one = sum / (a + b), L = one * a, W = one * b, area = L * W;
+    return qBase({
+      skill: "p2q11", source: src, topic: "ratio", paper: "p2",
+      prompt: "長方形的周長是 " + P + " cm，長和闊的比是 " + a + " : " + b + "。長方形的面積是多少？",
+      kind: "num", unit: "cm²", answerNum: area, accept: [area],
+      answerH: decStr(area) + " cm²",
+      steps: [
+        step("先求長 + 闊", P + " ÷ 2 = " + decStr(sum) + " cm。"),
+        step("按比求長闊", "每份 " + decStr(one) + " cm，長 = " + decStr(L) + " cm，闊 = " + decStr(W) + " cm。"),
+        step("面積", decStr(L) + " × " + decStr(W) + " = " + decStr(area) + " cm²。")
+      ],
+      regen: function () { return BANK.p2q11.generate(); }
+    });
+  }
+
+  add("p2q12", {
+    paper: "p2", topic: "discount", title: "求利潤",
+    original: function () { return profitAmtQ(20, 35, "一輛玩具車", "original"); },
+    generate: function () {
+      var cost = pick([10, 15, 20, 24, 25, 30, 40, 50, 80, 100]);
+      var profit = pick([5, 8, 10, 12, 15, 16, 20, 25, 30]);
+      return profitAmtQ(cost, cost + profit, pick(["一個水杯", "一枝筆", "一本練習"]), "generated");
+    }
+  });
+  function profitAmtQ(cost, sell, item, src) {
+    var p = sell - cost;
+    return qBase({
+      skill: "p2q12", source: src, topic: "discount", paper: "p2",
+      prompt: item + "的成本是 " + cost + " 元，現以 " + sell + " 元售出。利潤是多少元？",
+      kind: "num", unit: "元", answerNum: p, accept: [p],
+      answerH: decStr(p) + " 元",
+      steps: [
+        step("利潤", "利潤 = 售價 − 成本 = " + sell + " − " + cost + " = " + p + " 元。")
+      ],
+      regen: function () { return BANK.p2q12.generate(); }
+    });
+  }
+
+  add("p2q13", {
+    paper: "p2", topic: "percent", title: "男比女多％",
+    original: function () { return boysMoreQ(180, 108, "海灘內", "男泳客", "女泳客", "original"); },
+    generate: function () {
+      var f = pick([20, 24, 30, 40, 50, 60, 72, 80]);
+      var pct = pick([20, 25, 40, 50, 60, 75, 100]);
+      var m = f * (1 + pct / 100);
+      if (!Number.isInteger(m)) return BANK.p2q13.generate();
+      return boysMoreQ(m + f, m, "活動中", "男生", "女生", "generated");
+    }
+  });
+  function boysMoreQ(total, male, place, n1, n2, src) {
+    var female = total - male, diff = male - female, pct = diff / female * 100;
+    var wrong = [];
+    uniquePush(wrong, diff / total * 100);
+    uniquePush(wrong, diff / male * 100);
+    uniquePush(wrong, female / male * 100);
+    uniquePush(wrong, diff);
+    return qBase({
+      skill: "p2q13", source: src, topic: "percent", paper: "p2",
+      prompt: place + "有 " + total + " 人，其中 " + male + " 人是" + n1 + "。" + n1 + "人數比" + n2 + "人數多多少？",
+      hint: "「比" + n2 + "多百分之幾」—— 100% 係" + n2 + "嘅人數。",
+      kind: "mcq", options: makeMcq(pct, wrong, function (x) { return decStr(x) + "%"; }, [
+        "用總人數做分母，就變成「多佔全部的百分之幾」，唔係「比女生多百分之幾」。",
+        "基准要用" + n2 + "，唔好用" + n1 + "。"
+      ]),
+      answerH: decStr(pct) + "%",
+      steps: [
+        step("先求" + n2, n2 + " = " + total + " − " + male + " = " + female + " 人。"),
+        step("相差", male + " − " + female + " = " + diff + " 人。"),
+        step("以" + n2 + "為 100%", diff + " ÷ " + female + " = " + decStr(pct) + "%。")
+      ],
+      regen: function () { return BANK.p2q13.generate(); }
+    });
+  }
+
+
+  // ========== 複習三 ==========
+  add("p3q2", {
+    paper: "p3", topic: "percent", title: "部分相差佔全部",
+    original: function () { var q = BANK.p1q8.original(); q.skill = "p3q2"; q.paper = "p3"; q.regen = function () { return BANK.p3q2.generate(); }; return q; },
+    generate: function () { var q = BANK.p1q8.generate(); q.skill = "p3q2"; q.paper = "p3"; return q; }
+  });
+  add("p3q3", {
+    paper: "p3", topic: "ratio", title: "分數比化最簡整數比",
+    original: function () {
+      var q = fracRatioQ(4, 5, 7, 8, "p3q3", "original");
+      return q;
+    },
+    generate: function () { var q = BANK.p1q17.generate(); q.skill = "p3q3"; q.paper = "p3"; q.regen = function () { return BANK.p3q3.generate(); }; return q; }
+  });
+
+  add("p3q4", {
+    paper: "p3", topic: "ratio", title: "求兩量的比",
+    original: function () { return twoRatioQ(43, 20, "小說", "漫畫書", "original"); },
+    generate: function () {
+      var a = rnd(8, 30), b = rnd(8, 30);
+      return twoRatioQ(a + b, a, pick(["紅球", "蘋果", "鉛筆"]), pick(["藍球", "橙", "原子筆"]), "generated");
+    }
+  });
+  function twoRatioQ(total, a, n1, n2, src) {
+    var b = total - a, r = simplifyRatio(a, b);
+    return qBase({
+      skill: "p3q4", source: src, topic: "ratio", paper: "p3",
+      prompt: "共有 " + total + "，其中" + n1 + "佔 " + a + "，餘下的是" + n2 + "。" + n1 + "和" + n2 + "的比是多少？",
+      kind: "ratio", answerRatio: r,
+      answerH: r[0] + " : " + r[1],
+      steps: [
+        step("先求" + n2, total + " − " + a + " = " + b + "。"),
+        step("寫比並約簡", a + " : " + b + (gNote(a, b, r)) + " = " + r[0] + " : " + r[1] + "。")
+      ],
+      regen: function () { return BANK.p3q4.generate(); }
+    });
+  }
+  function gNote(a, b, r) {
+    var g = gcd(a, b);
+    return g > 1 ? "（同除以 " + g + "）" : "";
+  }
+
+  add("p3q5", {
+    paper: "p3", topic: "discount", title: "折扣便宜了多少（小數）",
+    original: function () { return savedQ3(142, 7, "跳舞鞋", "original"); },
+    generate: function () {
+      var list = pick([86, 98, 126, 135, 142, 156, 168, 184, 198]);
+      var zhe = pick([6, 7, 8, 9]);
+      var saved = list * (10 - zhe) / 10;
+      if (!isNice(saved)) return BANK.p3q5.generate();
+      return savedQ3(list, zhe, pick(["球鞋", "書包", "水壺"]), "generated");
+    }
+  });
+  function savedQ3(list, zhe, item, src) {
+    var saved = list * (10 - zhe) / 10;
+    return qBase({
+      skill: "p3q5", source: src, topic: "discount", paper: "p3",
+      prompt: item + "定價 " + list + " 元，現以" + zheCN(zhe) + "折出售。售價比定價便宜了多少元？",
+      kind: "num", unit: "元", answerNum: saved, accept: [saved],
+      answerH: decStr(saved) + " 元",
+      steps: [
+        step(zheCN(zhe) + "折即便宜 " + (10 - zhe) + " 成", list + " × " + (10 - zhe) + "0% = " + decStr(saved) + " 元。")
+      ],
+      regen: function () { return BANK.p3q5.generate(); }
+    });
+  }
+
+  add("p3q6", {
+    paper: "p3", topic: "percent", title: "銷量少了％",
+    original: function () { return lessSalesQ(50, 32, "朱古力糖", "果汁糖", "original"); },
+    generate: function () {
+      var a = pick([40, 50, 60, 75, 80, 100]);
+      var pct = pick([20, 25, 30, 36, 40, 50, 60]);
+      var b = a * (1 - pct / 100);
+      if (!isNice(b)) return BANK.p3q6.generate();
+      return lessSalesQ(a, b, pick(["蘋果", "麵包", "鉛筆"]), pick(["橙", "蛋糕", "原子筆"]), "generated");
+    }
+  });
+  function lessSalesQ(a, b, n1, n2, src) {
+    var pct = (a - b) / a * 100;
+    var wrong = [];
+    uniquePush(wrong, (a - b) / b * 100);
+    uniquePush(wrong, a - b);
+    uniquePush(wrong, b / a * 100);
+    uniquePush(wrong, (a - b) / (a + b) * 100);
+    return qBase({
+      skill: "p3q6", source: src, topic: "percent", paper: "p3",
+      prompt: "售出" + n1 + " " + a + " 和" + n2 + " " + decStr(b) + "。" + n2 + "的銷量比" + n1 + "的銷量少多少？",
+      hint: "「比" + n1 + "少百分之幾」—— 100% 係" + n1 + "。",
+      kind: "mcq", options: makeMcq(pct, wrong, function (x) { return decStr(x) + "%"; }, [
+        "基准用錯：應該用" + n1 + "做 100%，唔好用" + n2 + "做分母。",
+        "題目問百分數，唔係件數差。"
+      ]),
+      answerH: decStr(pct) + "%",
+      steps: [
+        step("相差", a + " − " + decStr(b) + " = " + decStr(a - b) + "。"),
+        step("以" + n1 + "為 100%", decStr(a - b) + " ÷ " + a + " = " + decStr(pct) + "%。")
+      ],
+      regen: function () { return BANK.p3q6.generate(); }
+    });
+  }
+
+  add("p3q7", {
+    paper: "p3", topic: "percent", title: "多 25%，求數量",
+    original: function () { return moreFindQ(280, 25, "叔叔有郵票", "爸爸", "枚", "original"); },
+    generate: function () {
+      var base = pick([80, 120, 160, 200, 240, 280, 300, 400]);
+      var pct = pick([10, 20, 25, 30, 40, 50, 60]);
+      if (!isNice(base * (1 + pct / 100))) return BANK.p3q7.generate();
+      return moreFindQ(base, pct, "甲有", "乙", "個", "generated");
+    }
+  });
+  function moreFindQ(base, pct, stem, who, unit, src) {
+    var ans = base * (1 + pct / 100);
+    return qBase({
+      skill: "p3q7", source: src, topic: "percent", paper: "p3",
+      prompt: stem + " " + base + " " + unit + "，" + who + "擁有的數量比前者多 " + pct + "%。" + who + "有多少" + unit + "？",
+      kind: "num", unit: unit, answerNum: ans, accept: [ans],
+      answerH: decStr(ans) + " " + unit,
+      steps: [
+        step("「多 " + pct + "%」即是原來的 " + (100 + pct) + "%", who + " = " + base + " × " + (100 + pct) + "% = " + base + " × " + decStr(1 + pct / 100) + " = " + decStr(ans) + "。")
+      ],
+      regen: function () { return BANK.p3q7.generate(); }
+    });
+  }
+
+  add("p3q8", {
+    paper: "p3", topic: "percent", title: "已知部分和％，求全部",
+    original: function () { return partIsPctQ(2880, 24, "藍色毛巾", "毛巾", "條", "original"); },
+    generate: function () {
+      var whole = pick([200, 250, 400, 500, 800, 1000, 1200, 2000, 5000, 8000, 12000]);
+      var pct = pick([8, 10, 12, 15, 20, 24, 25, 30, 40, 50]);
+      var part = whole * pct / 100;
+      if (!isNice(part)) return BANK.p3q8.generate();
+      return partIsPctQ(part, pct, "甲", "全部", "個", "generated");
+    }
+  });
+  function partIsPctQ(part, pct, n1, all, unit, src) {
+    var whole = part / (pct / 100);
+    return qBase({
+      skill: "p3q8", source: src, topic: "percent", paper: "p3",
+      prompt: "生產了" + n1 + " " + decStr(part) + " " + unit + "，是" + all + "的 " + pct + "%。" + all + "共有多少" + unit + "？",
+      kind: "num", unit: unit, answerNum: whole, accept: [whole],
+      answerH: decStr(whole) + " " + unit,
+      steps: [
+        step("單位「1」", all + "是 100%，" + n1 + "是 " + pct + "%。"),
+        step("計算", all + " = " + decStr(part) + " ÷ " + pct + "% = " + decStr(part) + " ÷ " + decStr(pct / 100) + " = " + decStr(whole) + "。")
+      ],
+      regen: function () { return BANK.p3q8.generate(); }
+    });
+  }
+
+  add("p3q9", {
+    paper: "p3", topic: "percent", title: "兩部分相差，求全部",
+    original: function () { return twoPctDiffWholeQ(45, 20, 30, "肉類罐頭", "湯類罐頭", "罐", "original"); },
+    generate: function () {
+      var p = pick([40, 45, 50, 60, 70]), q = pick([10, 15, 20, 25, 30]);
+      if (p <= q) return BANK.p3q9.generate();
+      var whole = pick([80, 100, 120, 160, 200, 240]);
+      var diff = whole * (p - q) / 100;
+      if (!isNice(diff)) return BANK.p3q9.generate();
+      return twoPctDiffWholeQ(p, q, diff, "甲", "乙", "個", "generated");
+    }
+  });
+  function twoPctDiffWholeQ(p, q, diff, n1, n2, unit, src) {
+    var whole = diff / ((p - q) / 100);
+    return qBase({
+      skill: "p3q9", source: src, topic: "percent", paper: "p3",
+      prompt: n1 + "佔 " + p + "%，" + n2 + "佔 " + q + "%。已知" + n1 + "比" + n2 + "多 " + decStr(diff) + " " + unit + "。一共有多少" + unit + "？",
+      kind: "num", unit: unit, answerNum: whole, accept: [whole],
+      answerH: decStr(whole) + " " + unit,
+      steps: [
+        step("相差對應的百分數", p + "% − " + q + "% = " + (p - q) + "%，對應 " + decStr(diff) + " " + unit + "。"),
+        step("求全部", "全部 = " + decStr(diff) + " ÷ " + (p - q) + "% = " + decStr(diff) + " ÷ " + decStr((p - q) / 100) + " = " + decStr(whole) + "。")
+      ],
+      regen: function () { return BANK.p3q9.generate(); }
+    });
+  }
+
+  add("p3q10", {
+    paper: "p3", topic: "percent", title: "少 10%，求數量",
+    original: function () { return lessFindQ(200, 10, "姐姐上星期消費了", "本星期", "元", "original"); },
+    generate: function () {
+      var base = pick([80, 100, 150, 200, 240, 300, 400, 500]);
+      var pct = pick([10, 15, 20, 25, 30, 40, 50]);
+      if (!isNice(base * (1 - pct / 100))) return BANK.p3q10.generate();
+      return lessFindQ(base, pct, "上星期用了", "本星期", "元", "generated");
+    }
+  });
+  function lessFindQ(base, pct, stem, who, unit, src) {
+    var ans = base * (1 - pct / 100);
+    return qBase({
+      skill: "p3q10", source: src, topic: "percent", paper: "p3",
+      prompt: stem + " " + base + " " + unit + "，" + who + "比之前少 " + pct + "%。" + who + "是多少" + unit + "？",
+      kind: "num", unit: unit, answerNum: ans, accept: [ans],
+      answerH: decStr(ans) + " " + unit,
+      steps: [
+        step("「少 " + pct + "%」即是原來的 " + (100 - pct) + "%", ans + " = " + base + " × " + (100 - pct) + "% = " + base + " × " + decStr(1 - pct / 100) + " = " + decStr(ans) + "。"),
+        step("小心", "唔好直接做 " + base + " − " + pct + "（百分數同錢嘅單位唔能直接減）。")
+      ],
+      regen: function () { return BANK.p3q10.generate(); }
+    });
+  }
+
+  add("p3q11", {
+    paper: "p3", topic: "discount", title: "求賠率（成本、售價）",
+    original: function () { return lossRateQ(2400, 1800, "一張沙發", "original", "p3q11"); },
+    generate: function () {
+      var cost = pick([200, 400, 500, 800, 1000, 1200, 1500, 2000, 2400, 3000]);
+      var rate = pick([10, 15, 20, 25, 30, 40, 50]);
+      var sell = cost * (1 - rate / 100);
+      if (!isNice(sell)) return BANK.p3q11.generate();
+      return lossRateQ(cost, sell, "一件貨品", "generated", "p3q11");
+    }
+  });
+  function lossRateQ(cost, sell, item, src, skill) {
+    var loss = cost - sell, rate = loss / cost * 100;
+    var wrong = [];
+    uniquePush(wrong, sell / cost * 100); // 75
+    uniquePush(wrong, loss / sell * 100);
+    uniquePush(wrong, 100 - rate);
+    uniquePush(wrong, loss);
+    return qBase({
+      skill: skill, source: src, topic: "discount", paper: skill.slice(0, 2),
+      prompt: item + "的成本是 " + cost + " 元，現以 " + sell + " 元售出，賠率是多少？",
+      hint: "賠率 = 賠了的錢 ÷ <b>成本</b>。唔好用售價做分母，亦唔好把「售價佔成本」當成賠率。",
+      kind: "mcq", options: makeMcq(rate, wrong, function (x) { return decStr(x) + "%"; }, [
+        "呢個係售價佔成本的百分數，唔係賠率。賠率要用（成本 − 售價）÷ 成本。",
+        "分母用錯咗，賠率嘅分母係成本，唔係售價。"
+      ]),
+      answerH: decStr(rate) + "%",
+      steps: [
+        step("先求賠了多少", cost + " − " + sell + " = " + decStr(loss) + " 元。"),
+        step("賠率", decStr(loss) + " ÷ " + cost + " = " + decStr(rate) + "%。")
+      ],
+      regen: function () { return BANK[skill].generate(); }
+    });
+  }
+
+  add("p3q12", {
+    paper: "p3", topic: "discount", title: "求賠率（先給售價）",
+    original: function () { return lossRateQ(380, 304, "一對鞋", "original", "p3q12"); },
+    generate: function () {
+      var cost = pick([200, 250, 300, 350, 380, 400, 500, 800]);
+      var rate = pick([10, 15, 20, 25, 30, 40]);
+      var sell = cost * (1 - rate / 100);
+      if (!isNice(sell)) return BANK.p3q12.generate();
+      return lossRateQ(cost, sell, "一件貨品", "generated", "p3q12");
+    }
+  });
+
+  add("p3q13", {
+    paper: "p3", topic: "discount", title: "求幾折",
+    original: function () { return zheQ(150, 105, "熱水瓶", "original"); },
+    generate: function () {
+      var list = pick([80, 100, 120, 150, 160, 200, 240, 250, 300]);
+      var zhe = pick([5, 6, 7, 8, 9]);
+      var sell = list * zhe / 10;
+      if (!isNice(sell)) return BANK.p3q13.generate();
+      return zheQ(list, sell, pick(["水壺", "書包", "字典"]), "generated");
+    }
+  });
+  function zheQ(list, sell, item, src) {
+    var zhe = Math.round(sell / list * 10);
+    var opts = [5, 6, 7, 8, 9].map(function (z) {
+      return { html: zheCN(z) + "折", correct: z === zhe, why: z === zhe ? "" : "幾折 = 售價 ÷ 定價 × 10。例如 0.7 就係七折。" };
+    });
+    return qBase({
+      skill: "p3q13", source: src, topic: "discount", paper: "p3",
+      prompt: item + "定價 " + list + " 元，現以 " + decStr(sell) + " 元出售，即該" + item + "以幾折出售？",
+      kind: "mcq", options: shuffle(opts),
+      answerH: zheCN(zhe) + "折",
+      acceptAlso: [zhe, String(zhe) + "折", zheCN(zhe), zheCN(zhe) + "折"],
+      steps: [
+        step("求折扣", "售價 ÷ 定價 = " + decStr(sell) + " ÷ " + list + " = " + decStr(sell / list) + "，即" + zheCN(zhe) + "折。")
+      ],
+      regen: function () { return BANK.p3q13.generate(); }
+    });
+  }
+
+  // ========== 複習四 ==========
+  add("p4q1", {
+    paper: "p4", topic: "percent", title: "兩項支出相差，求原有",
+    original: function () { return walletQ(36, 23, 32.5, "廣告彩", "畫筆", "original"); },
+    generate: function () {
+      var p = pick([20, 24, 30, 36, 40, 45]), q = pick([10, 12, 15, 18, 20, 23, 25]);
+      if (p <= q) return BANK.p4q1.generate();
+      var whole = pick([100, 150, 200, 250, 300, 400, 500]);
+      var diff = whole * (p - q) / 100;
+      if (!isNice(diff)) return BANK.p4q1.generate();
+      return walletQ(p, q, diff, "甲商品", "乙商品", "generated");
+    }
+  });
+  function walletQ(p, q, diff, n1, n2, src) {
+    var whole = diff / ((p - q) / 100);
+    return qBase({
+      skill: "p4q1", source: src, topic: "percent", paper: "p4",
+      prompt: "買" + n1 + "用去錢包內款項的 " + p + "%，買" + n2 + "用去 " + q + "%。如果買" + n1 + "的款項比買" + n2 + "的多 " + decStr(diff) + " 元，錢包原有多少元？",
+      kind: "num", unit: "元", answerNum: whole, accept: [whole],
+      answerH: decStr(whole) + " 元",
+      steps: [
+        step("相差對應的百分數", p + "% − " + q + "% = " + (p - q) + "%，對應 " + decStr(diff) + " 元。"),
+        step("求原有", decStr(diff) + " ÷ " + (p - q) + "% = " + decStr(diff) + " ÷ " + decStr((p - q) / 100) + " = " + decStr(whole) + " 元。")
+      ],
+      regen: function () { return BANK.p4q1.generate(); }
+    });
+  }
+
+  add("p4q2", {
+    paper: "p4", topic: "percent", title: "甲是乙的％",
+    original: function () { return isPctOfQ(2275, 1750, "中文圖書", "英文圖書", "original"); },
+    generate: function () {
+      var b = pick([200, 250, 400, 500, 800, 1000, 1200, 1500, 1750, 2000]);
+      var pct = pick([40, 50, 60, 75, 80, 120, 125, 130, 140, 150, 200]);
+      var a = b * pct / 100;
+      if (!isNice(a)) return BANK.p4q2.generate();
+      return isPctOfQ(a, b, "甲", "乙", "generated");
+    }
+  });
+  function isPctOfQ(a, b, n1, n2, src) {
+    var pct = a / b * 100;
+    var wrong = [];
+    uniquePush(wrong, Math.abs(a - b) / b * 100);
+    uniquePush(wrong, b / a * 100);
+    uniquePush(wrong, Math.abs(a - b) / a * 100);
+    uniquePush(wrong, 100 - Math.abs(a - b) / b * 100);
+    return qBase({
+      skill: "p4q2", source: src, topic: "percent", paper: "p4",
+      prompt: "有" + n2 + " " + decStr(b) + "，" + n1 + " " + decStr(a) + "。" + n1 + "的數量是" + n2 + "的多少？",
+      hint: "「是" + n2 + "的？%」—— 用 " + n1 + " ÷ " + n2 + "。",
+      kind: "mcq", options: makeMcq(pct, wrong, function (x) { return decStr(x) + "%"; }, [
+        "呢個係「多了／少了百分之幾」，題目問「是…的百分之幾」。",
+        "除數同被除數反轉咗。"
+      ]),
+      answerH: decStr(pct) + "%",
+      steps: [
+        step("「是" + n2 + "的？%」", decStr(a) + " ÷ " + decStr(b) + " = " + decStr(pct) + "%。")
+      ],
+      regen: function () { return BANK.p4q2.generate(); }
+    });
+  }
+
+  add("p4q3", {
+    paper: "p4", topic: "percent", title: "求一個數的百分之幾",
+    original: function () { return pctOfCountQ(125, 8, "一箱橙", "壞的橙", "個", "original"); },
+    generate: function () {
+      var total = pick([50, 80, 100, 120, 125, 150, 200, 250]);
+      var pct = pick([4, 5, 8, 10, 12, 15, 20, 25]);
+      if (!isNice(total * pct / 100)) return BANK.p4q3.generate();
+      return pctOfCountQ(total, pct, "一箱水果", "壞的", "個", "generated");
+    }
+  });
+  function pctOfCountQ(total, pct, stem, who, unit, src) {
+    var ans = total * pct / 100;
+    return qBase({
+      skill: "p4q3", source: src, topic: "percent", paper: "p4",
+      prompt: stem + "有 " + total + " " + unit + "，" + who + "佔 " + pct + "%。" + who + "有多少" + unit + "？",
+      kind: "num", unit: unit, answerNum: ans, accept: [ans],
+      answerH: decStr(ans) + " " + unit,
+      steps: [
+        step("求一個數的百分之幾", total + " × " + pct + "% = " + total + " × " + decStr(pct / 100) + " = " + decStr(ans) + "。")
+      ],
+      regen: function () { return BANK.p4q3.generate(); }
+    });
+  }
+
+  add("p4q4", {
+    paper: "p4", topic: "percent", title: "兩部分合計，求全部",
+    original: function () { return twoPartsWholeQ(12, 20, 16, "紅色卡紙", "黃色卡紙", "張", "original"); },
+    generate: function () {
+      var p = pick([10, 12, 15, 20, 25]), q = pick([15, 20, 25, 30, 35]);
+      var whole = pick([40, 50, 60, 80, 100, 120, 200]);
+      var part = whole * (p + q) / 100;
+      if (!isNice(part)) return BANK.p4q4.generate();
+      return twoPartsWholeQ(p, q, part, "甲", "乙", "個", "generated");
+    }
+  });
+  function twoPartsWholeQ(p, q, part, n1, n2, unit, src) {
+    var whole = part / ((p + q) / 100);
+    return qBase({
+      skill: "p4q4", source: src, topic: "percent", paper: "p4",
+      prompt: n1 + "佔 " + p + "%，" + n2 + "佔 " + q + "%，兩種合共 " + decStr(part) + " " + unit + "。原有多少" + unit + "？",
+      kind: "num", unit: unit, answerNum: whole, accept: [whole],
+      answerH: decStr(whole) + " " + unit,
+      steps: [
+        step("兩種合共的百分數", p + "% + " + q + "% = " + (p + q) + "%，對應 " + decStr(part) + " " + unit + "。"),
+        step("求全部", decStr(part) + " ÷ " + (p + q) + "% = " + decStr(part) + " ÷ " + decStr((p + q) / 100) + " = " + decStr(whole) + "。"),
+        step("小心", "唔好只用其中一個百分數去除。")
+      ],
+      regen: function () { return BANK.p4q4.generate(); }
+    });
+  }
+
+  add("p4q5", {
+    paper: "p4", topic: "ratio", title: "按比配製（升／毫升）",
+    original: function () { return mixQ(1, 5, 200, "柚子蜜", "水", "original"); },
+    generate: function () {
+      var a = 1, b = pick([3, 4, 5, 6, 8]);
+      var honey = pick([100, 150, 200, 250, 300, 400]);
+      return mixQ(a, b, honey, pick(["糖漿", "果汁", "蜂蜜"]), "水", "generated");
+    }
+  });
+  function mixQ(a, b, honeyMl, n1, n2, src) {
+    var waterMl = honeyMl / a * b;
+    var waterL = waterMl / 1000;
+    return qBase({
+      skill: "p4q5", source: src, topic: "ratio", paper: "p4",
+      prompt: "把" + n1 + "和" + n2 + "按 " + a + ":" + b + " 沖調。現有" + n1 + " " + honeyMl + " 毫升，需要用" + n2 + "多少？",
+      hint: "1 升 = 1000 毫升。可以用毫升或升作答。",
+      kind: "numunit",
+      answerNum: waterMl,
+      units: [
+        { name: "毫升", factor: 1 },
+        { name: "升", factor: 1000 }
+      ],
+      answerH: decStr(waterMl) + " 毫升（或 " + decStr(waterL) + " 升）",
+      steps: [
+        step("按比求" + n2, n1 + " : " + n2 + " = " + a + " : " + b + "，所以" + n2 + " = " + honeyMl + " ÷ " + a + " × " + b + " = " + decStr(waterMl) + " 毫升。"),
+        step("單位換算", decStr(waterMl) + " 毫升 = " + decStr(waterL) + " 升。兩種寫法都正確。")
+      ],
+      regen: function () { return BANK.p4q5.generate(); }
+    });
+  }
+
+  add("p4q6", {
+    paper: "p4", topic: "percent", title: "五成與半成",
+    original: function () { return twoChengQ("original"); },
+    generate: function () {
+      // similar pair questions: X成 and 半成 / N成五
+      var pairs = [
+        ["五成", 50, "半成", 5],
+        ["一成", 10, "半成", 5],
+        ["三成五", 35, "半成", 5],
+        ["兩成", 20, "兩成半", 25],
+        ["七成", 70, "七成五", 75],
+        ["四成", 40, "半成", 5]
+      ];
+      var p = pick(pairs);
+      return twoChengNamed(p[0], p[1], p[2], p[3], "generated");
+    }
+  });
+  function twoChengQ(src) { return twoChengNamed("五成", 50, "半成", 5, src); }
+  function twoChengNamed(n1, v1, n2, v2, src) {
+    return qBase({
+      skill: "p4q6", source: src, topic: "percent", paper: "p4",
+      prompt: "把「成」化成百分數：",
+      kind: "multi",
+      fields: [
+        { label: "「" + n1 + "」=", unit: "%", answerNum: v1 },
+        { label: "「" + n2 + "」=", unit: "%", answerNum: v2 }
+      ],
+      answerH: n1 + " = " + v1 + "%，" + n2 + " = " + v2 + "%",
+      steps: [
+        step("記住", "一成 = 10%，半成 = 5%，五成 = 50%。「半成」唔等於「一半／五成」。")
+      ],
+      regen: function () { return BANK.p4q6.generate(); }
+    });
+  }
+
+  add("p4q7", {
+    paper: "p4", topic: "calc", title: "四則混合（先除後減）",
+    original: function () {
+      return calcQ("p4q7", "original",
+        '5.8 <span class="op">−</span> 60% <span class="op">÷</span> ' + mixedH(1, 1, 2),
+        5.4, [
+          step("先做除法", "60% = 0.6，" + mixedH(1, 1, 2) + " = 1.5。"),
+          step("相除", "0.6 ÷ 1.5 = 0.4。"),
+          step("再減法", "5.8 − 0.4 = 5.4。"),
+          step("小心", "唔可以由左到右先減再除。")
+        ], [5.2, 3.4666, 5.8 - 0.6 - 1.5, 0.4, 4.8, 3.8]);
+    },
+    generate: function () {
+      var choices = [
+        { a: 4.8, p: 40, w: 1, n: 1, d: 3, ans: 4.5 }, // 0.4/4/3=0.3, 4.8-0.3=4.5
+        { a: 6.5, p: 50, w: 2, n: 0, d: 1, ans: 6.25 }, // 0.5/2=0.25
+        { a: 3.6, p: 80, w: 1, n: 3, d: 5, ans: 3.1 }, // 0.8/1.6=0.5, 3.6-0.5=3.1
+        { a: 7.2, p: 90, w: 1, n: 1, d: 2, ans: 6.6 }, // 0.9/1.5=0.6
+        { a: 5, p: 25, w: 1, n: 1, d: 4, ans: 4.8 } // 0.25/1.25=0.2
+      ];
+      var c = pick(choices);
+      var denH = c.n ? mixedH(c.w, c.n, c.d) : String(c.w);
+      var div = (c.w + c.n / c.d);
+      var expr = decStr(c.a) + ' <span class="op">−</span> ' + c.p + '% <span class="op">÷</span> ' + denH;
+      return calcQ("p4q7", "generated", expr, c.ans, [
+        step("先除", c.p + "% = " + decStr(c.p / 100) + "，分母 = " + decStr(div) + "，相除得 " + decStr(c.p / 100 / div) + "。"),
+        step("再減", decStr(c.a) + " − " + decStr(c.p / 100 / div) + " = " + decStr(c.ans) + "。")
+      ], [c.a - c.p / 100, (c.a - c.p / 100) / div]);
+    }
+  });
+
+  add("p4q8", {
+    paper: "p4", topic: "ratio", title: "分數比化最簡整數比",
+    original: function () { return fracRatioQ(5, 8, 3, 4, "p4q8", "original"); },
+    generate: function () {
+      var pairs = [[2, 5, 3, 4], [3, 8, 1, 4], [5, 6, 2, 3], [7, 10, 3, 5], [1, 6, 1, 4], [4, 9, 2, 5]];
+      var p = pick(pairs);
+      return fracRatioQ(p[0], p[1], p[2], p[3], "p4q8", "generated");
+    }
+  });
+
+  add("p4q9", {
+    paper: "p4", topic: "percent", title: "帶分數化百分數",
+    original: function () { return mixedToPctQ(8, 1, 20, "original", null); },
+    generate: function () { var q = BANK.p1q13.generate(); q.skill = "p4q9"; q.paper = "p4"; q.regen = function () { return BANK.p4q9.generate(); }; return q; }
+  });
+
+  add("p4q10", {
+    paper: "p4", topic: "percent", title: "百分之一化小數",
+    original: function () { return quarterPctQ(1, 4, "original"); },
+    generate: function () {
+      var pairs = [[1, 2], [1, 4], [1, 5], [3, 4], [1, 8], [3, 5], [2, 5], [1, 10]];
+      var p = pick(pairs);
+      return quarterPctQ(p[0], p[1], "generated");
+    }
+  });
+  function quarterPctQ(n, d, src) {
+    var ans = (n / d) / 100;
+    var wrong = [];
+    uniquePush(wrong, n / d);
+    uniquePush(wrong, n / d / 10);
+    uniquePush(wrong, (n / d) * 100);
+    uniquePush(wrong, n / (d * 10));
+    return qBase({
+      skill: "p4q10", source: src, topic: "percent", paper: "p4",
+      prompt: "把 " + fracH(n, d) + "% 化為小數。",
+      expr: fracH(n, d) + "%",
+      hint: "注意：這裏的分數後面有「%」，要先算分數，再除以 100。",
+      kind: "mcq", options: makeMcq(ans, wrong, function (x) { return decStr(x); }, [
+        "漏咗百分號：只係把 " + fracH(n, d) + " 化成小數，未有 ÷ 100。",
+        "小數點只移咗一位，百分數要移兩位。",
+        "把分數乘錯咗 100。"
+      ]),
+      answerH: decStr(ans),
+      steps: [
+        step("先算分數", fracH(n, d) + " = " + decStr(n / d) + "。"),
+        step("再除以 100（因為有 %）", decStr(n / d) + "% = " + decStr(n / d) + " ÷ 100 = " + decStr(ans) + "。")
+      ],
+      regen: function () { return BANK.p4q10.generate(); }
+    });
+  }
+
+  add("p4q11", {
+    paper: "p4", topic: "discount", title: "求賺率",
+    original: function () { return profitRateQ(275, 165, "一束鮮花", "original"); },
+    generate: function () {
+      var cost = pick([100, 120, 150, 200, 250, 275, 300, 400, 500]);
+      var rate = pick([10, 20, 25, 30, 40, 50, 60, 80]);
+      var profit = cost * rate / 100;
+      if (!isNice(profit)) return BANK.p4q11.generate();
+      return profitRateQ(cost, profit, "一件貨品", "generated");
+    }
+  });
+  function profitRateQ(cost, profit, item, src) {
+    var rate = profit / cost * 100;
+    var sell = cost + profit;
+    var wrong = [];
+    uniquePush(wrong, profit / sell * 100);
+    uniquePush(wrong, 50);
+    uniquePush(wrong, sell / cost * 100);
+    uniquePush(wrong, profit);
+    return qBase({
+      skill: "p4q11", source: src, topic: "discount", paper: "p4",
+      prompt: item + "的成本是 " + cost + " 元，賺了 " + profit + " 元，賺率是多少？",
+      hint: "賺率 = 利潤 ÷ <b>成本</b>。",
+      kind: "mcq", options: makeMcq(rate, wrong, function (x) { return decStr(x) + "%"; }, [
+        "賺率嘅分母係成本，唔係售價（成本 + 利潤）。",
+        "題目問百分數（賺率），唔係賺咗幾多錢。"
+      ]),
+      answerH: decStr(rate) + "%",
+      steps: [
+        step("賺率公式", "賺率 = 利潤 ÷ 成本 = " + profit + " ÷ " + cost + " = " + decStr(rate) + "%。")
+      ],
+      regen: function () { return BANK.p4q11.generate(); }
+    });
+  }
+
+  add("p4q12", {
+    paper: "p4", topic: "discount", title: "求賠率（小心售價佔成本）",
+    original: function () { return lossRateQ(1500, 1275, "一幅油畫", "original", "p4q12"); },
+    generate: function () {
+      var cost = pick([400, 500, 800, 1000, 1200, 1500, 2000]);
+      var rate = pick([10, 15, 20, 25, 30, 40]);
+      var sell = cost * (1 - rate / 100);
+      if (!isNice(sell)) return BANK.p4q12.generate();
+      return lossRateQ(cost, sell, "一件貨品", "generated", "p4q12");
+    }
+  });
+
+
+  // ========== groups ==========
+  var PAPERS = {
+    p1: { name: "練習一", icon: "1️⃣", skills: ["p1q1","p1q2","p1q3","p1q4","p1q5","p1q6","p1q7","p1q8","p1q9","p1q10","p1q11","p1q12","p1q13","p1q14","p1q15","p1q16","p1q17","p1q18","p1q19","p1q20"], extra: 8 },
+    p2: { name: "練習二", icon: "2️⃣", skills: ["p2q1","p2q2","p2q3","p2q4","p2q5","p2q6","p2q7","p2q8","p2q9","p2q10","p2q11","p2q12","p2q13"], extra: 6 },
+    p3: { name: "複習三", icon: "3️⃣", skills: ["p3q1","p3q2","p3q3","p3q4","p3q5","p3q6","p3q7","p3q8","p3q9","p3q10","p3q11","p3q12","p3q13"], extra: 6 },
+    p4: { name: "複習四", icon: "4️⃣", skills: ["p4q1","p4q2","p4q3","p4q4","p4q5","p4q6","p4q7","p4q8","p4q9","p4q10","p4q11","p4q12"], extra: 6 }
+  };
+  var MIX_SKILLS = [
+    "p1q1","p1q2","p1q3","p1q4","p1q5","p1q6","p1q7","p1q8","p1q9","p1q10","p1q11","p1q12","p1q13","p1q14","p1q15","p1q16","p1q17","p1q18","p1q19","p1q20",
+    "p2q1","p2q2","p2q3","p2q4","p2q5","p2q6","p2q7","p2q8","p2q9","p2q10","p2q11","p2q12","p2q13",
+    "p3q4","p3q5","p3q6","p3q7","p3q8","p3q9","p3q10","p3q11","p3q12","p3q13",
+    "p4q1","p4q2","p4q3","p4q4","p4q5","p4q6","p4q7","p4q8","p4q9","p4q10","p4q11","p4q12"
+  ];
+  var TOPICS = {
+    ratio: { name: "比率", icon: "⚖️", skills: ["p1q1","p1q9","p1q14","p1q15","p1q16","p1q17","p1q20","p2q11","p3q4","p4q5","p4q8"] },
+    fig: { name: "看圖百分數", icon: "🎨", skills: ["p1q3","p1q4","p1q5","p1q6","p2q8","p2q9"] },
+    percent: { name: "百分數應用", icon: "📊", skills: ["p1q2","p1q8","p1q10","p1q11","p1q12","p1q13","p2q1","p2q13","p3q6","p3q7","p3q8","p3q9","p3q10","p4q1","p4q2","p4q3","p4q4","p4q6","p4q10"] },
+    discount: { name: "折扣賺賠", icon: "💰", skills: ["p2q5","p2q6","p2q7","p2q10","p2q12","p3q5","p3q11","p3q12","p3q13","p4q11","p4q12"] },
+    calc: { name: "四則計算", icon: "➗", skills: ["p1q18","p1q19","p2q2","p2q3","p2q4","p4q7"] }
+  };
+
+  function makeOriginal(id) {
+    var q = BANK[id].original();
+    q.skill = q.skill || id;
+    q.label = (PAPERS[q.paper] ? PAPERS[q.paper].name : "") + (BANK[id].title ? " · " + BANK[id].title : "");
+    return q;
+  }
+  function makeGenerated(id) {
+    var tries = 0, q, origKey = "";
+    try { var o = BANK[id].original(); origKey = JSON.stringify({ p: o.prompt, e: o.expr, a: o.answerH }); } catch (e) { origKey = ""; }
+    do {
+      q = BANK[id].generate();
+      tries++;
+    } while (tries < 8 && origKey && JSON.stringify({ p: q.prompt, e: q.expr, a: q.answerH }) === origKey);
+    q.skill = q.skill || id;
+    q.source = "generated";
+    q.label = (BANK[id].title || "同類題") + "（新數字）";
+    return q;
+  }
+
+  function buildRound(groupKey) {
+    var list = [], i, id;
+    if (PAPERS[groupKey]) {
+      var p = PAPERS[groupKey];
+      for (i = 0; i < p.skills.length; i++) list.push(makeOriginal(p.skills[i]));
+      var extras = shuffle(p.skills.slice()).slice(0, p.extra);
+      for (i = 0; i < extras.length; i++) list.push(makeGenerated(extras[i]));
+      return list;
+    }
+    if (groupKey === "mix") {
+      var ids = shuffle(MIX_SKILLS.slice());
+      for (i = 0; i < ids.length; i++) {
+        list.push(Math.random() < 0.55 ? makeOriginal(ids[i]) : makeGenerated(ids[i]));
+      }
+      return list;
+    }
+    if (TOPICS[groupKey]) {
+      var t = TOPICS[groupKey], count = 12;
+      for (i = 0; i < count; i++) {
+        id = t.skills[i % t.skills.length];
+        if (i < t.skills.length) list.push(makeGenerated(id));
+        else list.push(makeGenerated(pick(t.skills)));
+      }
+      return shuffle(list);
+    }
+    throw new Error("unknown group " + groupKey);
+  }
+
+  function countsFor(groupKey) {
+    if (PAPERS[groupKey]) return { orig: PAPERS[groupKey].skills.length, gen: PAPERS[groupKey].extra };
+    if (groupKey === "mix") return { orig: "約半", gen: "約半", total: MIX_SKILLS.length };
+    if (TOPICS[groupKey]) return { orig: 0, gen: 12 };
+    return {};
+  }
+
+  window.ExamBank = {
+    BANK: BANK, PAPERS: PAPERS, TOPICS: TOPICS, MIX_SKILLS: MIX_SKILLS,
+    buildRound: buildRound, makeOriginal: makeOriginal, makeGenerated: makeGenerated,
+    countsFor: countsFor, parseNum: parseNum, nearly: nearly, decStr: decStr,
+    fracH: fracH, mixedH: mixedH, svgGridTri: svgGridTri
+  };
+})();
+
+(function () {
+  "use strict";
+  var EB = window.ExamBank;
+  var MAX_RETRY = 3;
+  var GOOD = ["🌟 好叻呀！", "🎉 完全正確！", "💯 犀利！", "🚀 勁呀！", "👏 做得好！", "😎 冇難到你！", "🧠 數學小天才！"];
+  var BAD = ["💪 唔緊要，睇吓步驟！", "🙂 差少少！一齊睇吓點計。", "🌱 錯咗先學得識！", "🤗 加油！等陣再試一條類似嘅。"];
+  function $(id) { return document.getElementById(id); }
+  function pick(a) { return a[Math.floor(Math.random() * a.length)]; }
+  function show(id) { ["home", "quiz", "finish"].forEach(function (s) { $(s).classList.toggle("hidden", s !== id); }); window.scrollTo(0, 0); }
+
+  var S = null;
+  var input = { mode: "num", raw: "", act: "n", w: "", n: "", d: "", fields: [], fi: 0, ml: "", unit: "", readChoice: null };
+
+  var TOPIC_LABEL = {
+    ratio: { name: "比率", icon: "⚖️" },
+    fig: { name: "看圖百分數", icon: "🎨" },
+    percent: { name: "百分數", icon: "📊" },
+    discount: { name: "折扣賺賠", icon: "💰" },
+    calc: { name: "四則計算", icon: "➗" },
+    mix: { name: "綜合", icon: "🌈" }
+  };
+
+  // home buttons
+  ["p1", "p2", "p3", "p4"].forEach(function (k) {
+    var g = EB.PAPERS[k], b = document.createElement("button");
+    b.className = "topic paper";
+    b.innerHTML = '<span class="ti">' + g.icon + "</span>" + g.name +
+      '<span class="tc">' + g.skills.length + " 題原題 + " + g.extra + " 題同類新題</span>";
+    b.addEventListener("click", function () { start(k); });
+    $("papers").appendChild(b);
+  });
+  var mixBtn = document.createElement("button");
+  mixBtn.className = "topic mix";
+  mixBtn.innerHTML = '<span class="ti">🌈</span>綜合闖關<span class="tc">全部 ' + EB.MIX_SKILLS.length + " 個獨特題型（原題與新題混合，重複題已合併）</span>";
+  mixBtn.addEventListener("click", function () { start("mix"); });
+  $("papers").appendChild(mixBtn);
+
+  ["ratio", "fig", "percent", "discount", "calc"].forEach(function (k) {
+    var g = EB.TOPICS[k], b = document.createElement("button");
+    b.className = "topic";
+    b.innerHTML = '<span class="ti">' + g.icon + "</span>" + g.name + '<span class="tc">12 題同類新題</span>';
+    b.addEventListener("click", function () { start(k); });
+    $("topics").appendChild(b);
+  });
+
+  function start(groupKey) {
+    var qs;
+    try { qs = EB.buildRound(groupKey); } catch (e) { alert("出題出錯，請再試一次"); console.error(e); return; }
+    qs.forEach(function (q) { q.attempt = 0; });
+    S = { group: groupKey, queue: qs, current: null, done: 0, stars: 0, streak: 0, best: 0, stats: {}, answered: false };
+    show("quiz");
+    next();
+  }
+
+  function stat(topic) { return S.stats[topic] || (S.stats[topic] = { total: 0, first: 0, wrong: 0 }); }
+
+  function updateBar() {
+    var total = S.done + S.queue.length + (S.current ? 1 : 0);
+    $("progTxt").textContent = "第 " + Math.min(S.done + 1, total) + " / " + total + " 題";
+    $("bar").style.width = (total ? Math.round(S.done / total * 100) : 0) + "%";
+    $("stars").textContent = S.stars;
+    $("streak").textContent = S.streak;
+  }
+
+  function next() {
+    S.current = S.queue.shift() || null;
+    if (!S.current) { finish(); return; }
+    var q = S.current;
+    S.answered = false;
+    q.attempt = q.attempt || 0;
+    if (q.attempt === 0) stat(q.topic).total++;
+    var tl = TOPIC_LABEL[q.topic] || { name: "", icon: "📝" };
+    $("tag").textContent = tl.icon + " " + (q.label || tl.name);
+    $("retryTag").classList.toggle("hidden", q.attempt === 0);
+    $("prompt").innerHTML = q.prompt;
+    $("expr").innerHTML = q.expr || "";
+    $("expr").classList.toggle("hidden", !q.expr);
+    $("figure").innerHTML = q.figure || "";
+    $("hint").innerHTML = q.hint || "";
+    $("hint").classList.toggle("hidden", !q.hint);
+    $("feedback").textContent = ""; $("feedback").className = "feedback";
+    $("why").innerHTML = "";
+    $("solution").classList.add("hidden"); $("solution").innerHTML = "";
+    $("showSolBtn").classList.add("hidden");
+    $("nextBtn").classList.add("hidden");
+    $("mcq").classList.add("hidden"); $("yn").classList.add("hidden");
+    $("mlrow").classList.add("hidden"); $("keypad").classList.add("hidden");
+    input = { mode: "num", raw: "", act: "n", w: "", n: "", d: "", fields: [], fi: 0, ml: "", unit: "", readChoice: null };
+    if (q.kind === "mcq") renderMcq(q.options, $("mcq"));
+    else if (q.kind === "yn") renderYN(q);
+    else if (q.kind === "moreless") renderMoreLess(q);
+    else if (q.kind === "num+mcq") renderNumPlusMcq(q);
+    else { $("keypad").classList.remove("hidden"); $("submitBtn").classList.remove("hidden"); setupKeypad(q); }
+    updateBar();
+  }
+
+  function renderMcq(options, box) {
+    box.innerHTML = "";
+    box.classList.remove("hidden");
+    box.classList.toggle("one", options && options.length === 2);
+    (options || []).forEach(function (o) {
+      var b = document.createElement("button");
+      b.className = "opt"; b.innerHTML = o.html;
+      b.addEventListener("click", function () { answerMCQ(o, b, options); });
+      o.btn = b; box.appendChild(b);
+    });
+  }
+
+  function renderYN(q) {
+    var box = $("yn"); box.innerHTML = ""; box.classList.remove("hidden");
+    [["是", true], ["非", false]].forEach(function (pair) {
+      var b = document.createElement("button");
+      b.className = "opt"; b.textContent = pair[0];
+      b.addEventListener("click", function () {
+        if (S.answered) return;
+        Array.prototype.forEach.call(box.querySelectorAll("button"), function (x) { x.disabled = true; });
+        if (pair[1] === q.answerYN) { b.classList.add("right", "pop"); resolve(true, ""); }
+        else { b.classList.add("wrong"); box.querySelectorAll("button")[q.answerYN ? 0 : 1].classList.add("right"); resolve(false, q.whyWrong || ""); }
+      });
+      box.appendChild(b);
+    });
+  }
+
+  function renderMoreLess(q) {
+    var wrap = $("mlrow");
+    wrap.classList.remove("hidden");
+    wrap.innerHTML = '<div class="yn" id="mlbtns"></div>';
+    ["多", "少"].forEach(function (lab) {
+      var b = document.createElement("button");
+      b.className = "mlbtn"; b.textContent = lab;
+      b.addEventListener("click", function () {
+        if (S.answered) return;
+        input.ml = lab;
+        Array.prototype.forEach.call(wrap.querySelectorAll(".mlbtn"), function (x) { x.classList.toggle("act", x === b); });
+      });
+      $("mlbtns").appendChild(b);
+    });
+    $("keypad").classList.remove("hidden");
+    $("submitBtn").classList.remove("hidden");
+    setupKeypad(q);
+    $("ktip").textContent = "👆 先揀「多」或「少」，再輸入百分數。";
+  }
+
+  function renderNumPlusMcq(q) {
+    $("keypad").classList.remove("hidden");
+    $("submitBtn").classList.remove("hidden");
+    setupKeypad(q);
+    var box = $("mcq");
+    box.classList.remove("hidden");
+    box.innerHTML = '<div class="stephead" style="grid-column:1/-1;font-size:1.1rem;color:#4527a0;font-weight:bold">再揀正確讀法：</div>';
+    q.options.forEach(function (o) {
+      var b = document.createElement("button");
+      b.className = "opt"; b.innerHTML = o.html; b.style.minHeight = "64px"; b.style.fontSize = "1.15rem";
+      b.addEventListener("click", function () {
+        if (S.answered) return;
+        input.readChoice = o;
+        q.options.forEach(function (x) { x.btn.classList.toggle("act", x === o); x.btn.style.outline = x === o ? "3px solid #ff7043" : ""; });
+      });
+      o.btn = b; box.appendChild(b);
+    });
+    $("ktip").textContent = "👆 先輸入百分數，再揀讀法，然後提交。";
+  }
+
+  function setupKeypad(q) {
+    var row = $("ansrow"); row.innerHTML = "";
+    $("ktip").textContent = "👆 撳格仔再撳數字。可以用小數點。分數可以用 / 。";
+    if (q.kind === "frac") {
+      input.mode = "frac";
+      row.innerHTML = '<div class="kbox w" data-k="w" data-ph="整數"></div><div class="kfrac"><div class="kbox" data-k="n" data-ph="分子"></div><div class="kline"></div><div class="kbox" data-k="d" data-ph="分母"></div></div>';
+      bindBoxes(row);
+    } else if (q.kind === "ratio") {
+      input.mode = "ratio";
+      input.fields = ["", ""]; input.fi = 0;
+      row.innerHTML = '<div class="kbox" data-i="0" data-ph="前"></div><span class="colon">：</span><div class="kbox" data-i="1" data-ph="後"></div>';
+      bindFields(row);
+    } else if (q.kind === "multi") {
+      input.mode = "multi";
+      input.fields = q.fields.map(function () { return ""; }); input.fi = 0;
+      q.fields.forEach(function (f, i) {
+        var lab = document.createElement("span"); lab.className = "flab"; lab.textContent = f.label;
+        var box = document.createElement("div"); box.className = "kbox"; box.setAttribute("data-i", i); box.setAttribute("data-ph", "？");
+        var unit = document.createElement("span"); unit.className = "unit"; unit.textContent = f.unit || "";
+        row.appendChild(lab); row.appendChild(box); if (f.unit) row.appendChild(unit);
+      });
+      bindFields(row);
+    } else if (q.kind === "table") {
+      input.mode = "table";
+      setupTable(q, row);
+    } else if (q.kind === "numunit") {
+      input.mode = "numunit"; input.raw = ""; input.unit = "";
+      row.innerHTML = '<div class="nbox act" id="nbox" data-ph="輸入數字"></div>';
+      q.units.forEach(function (u) {
+        var b = document.createElement("button");
+        b.className = "unitbtn"; b.textContent = u.name;
+        b.addEventListener("click", function () {
+          if (S.answered) return;
+          input.unit = u.name;
+          Array.prototype.forEach.call(row.querySelectorAll(".unitbtn"), function (x) { x.classList.toggle("act", x === b); });
+        });
+        row.appendChild(b);
+      });
+      $("ktip").textContent = "👆 輸入數字，再揀單位（毫升或升都可以，只要數值啱）。";
+    } else {
+      input.mode = "num"; input.raw = "";
+      var unit = q.unit ? '<span class="unit">' + q.unit + "</span>" : "";
+      row.innerHTML = '<div class="nbox act" id="nbox" data-ph="輸入答案"></div>' + unit;
+    }
+    renderInput();
+  }
+
+  function setupTable(q, row) {
+    var t = q.table, blanks = [];
+    var html = '<table class="rtable"><tr><th></th>';
+    var c, r, cell, key;
+    for (c = 0; c < t.cols; c++) html += "<th>" + (c + 1) + "</th>";
+    html += "</tr>";
+    for (r = 0; r < t.rows.length; r++) {
+      html += "<tr><th>" + t.rows[r] + "</th>";
+      for (c = 0; c < t.cols; c++) {
+        cell = null;
+        t.cells.forEach(function (x) { if (x.r === r && x.c === c) cell = x; });
+        if (!cell) { html += "<td></td>"; continue; }
+        if (cell.given) {
+          var shown = t.fmtGiven ? t.fmtGiven(cell) : EB.decStr(cell.val);
+          html += "<td>" + shown + "</td>";
+        } else {
+          key = blanks.length;
+          blanks.push({ val: cell.val, raw: "" });
+          html += '<td><div class="cell-in" data-i="' + key + '" data-ph="？"></div></td>';
+        }
+      }
+      html += "</tr>";
+    }
+    html += "</table>";
+    row.innerHTML = html;
+    input.fields = blanks.map(function () { return ""; });
+    input.blankVals = blanks.map(function (x) { return x.val; });
+    input.fi = 0;
+    bindFields(row);
+  }
+
+  function bindBoxes(row) {
+    Array.prototype.forEach.call(row.querySelectorAll(".kbox"), function (el) {
+      el.addEventListener("click", function () { if (S && !S.answered) { input.act = el.getAttribute("data-k"); renderInput(); } });
+    });
+  }
+  function bindFields(row) {
+    Array.prototype.forEach.call(row.querySelectorAll("[data-i]"), function (el) {
+      el.addEventListener("click", function () { if (S && !S.answered) { input.fi = +el.getAttribute("data-i"); renderInput(); } });
+    });
+  }
+
+  function keyLayout() {
+    var keys = ["1", "2", "3", "4", "5", "6", "7", "8", "9", ".", "0", "⌫"];
+    var box = $("keys"); box.innerHTML = "";
+    keys.forEach(function (k) {
+      var b = document.createElement("button");
+      b.className = "key" + (k === "⌫" || k === "清除" ? " fn" : "");
+      b.textContent = k;
+      b.addEventListener("click", function () { press(k); });
+      box.appendChild(b);
+    });
+    var clear = document.createElement("button");
+    clear.className = "key fn"; clear.textContent = "清除"; clear.style.gridColumn = "1 / 3";
+    clear.addEventListener("click", function () { press("清除"); });
+    box.appendChild(clear);
+    var slash = document.createElement("button");
+    slash.className = "key fn"; slash.textContent = "/";
+    slash.addEventListener("click", function () { press("/"); });
+    box.appendChild(slash);
+  }
+  keyLayout();
+
+  function press(k) {
+    if (!S || S.answered) return;
+    function edit(s) {
+      if (k === "⌫") return s.slice(0, -1);
+      if (k === "清除") return "";
+      if (s.length >= 10) return s;
+      if (k === "." && s.indexOf(".") >= 0) return s;
+      if (k === "/" && s.indexOf("/") >= 0) return s;
+      return s + k;
+    }
+    if (input.mode === "frac") {
+      if (k === "清除") { input.w = ""; input.n = ""; input.d = ""; }
+      else if (k === ".") return;
+      else if (k === "/") { input.act = input.act === "n" ? "d" : "n"; }
+      else if (k === "⌫") input[input.act] = input[input.act].slice(0, -1);
+      else if (/^[0-9]$/.test(k) && input[input.act].length < 5) input[input.act] = (input[input.act] === "0" ? "" : input[input.act]) + k;
+    } else if (input.mode === "ratio" || input.mode === "multi" || input.mode === "table") {
+      if (k === "清除") input.fields[input.fi] = "";
+      else input.fields[input.fi] = edit(input.fields[input.fi] || "");
+    } else {
+      if (k === "清除") input.raw = "";
+      else input.raw = edit(input.raw || "");
+    }
+    $("feedback").textContent = ""; $("feedback").className = "feedback";
+    renderInput();
+  }
+
+  function renderInput() {
+    if (input.mode === "frac") {
+      Array.prototype.forEach.call(document.querySelectorAll(".kbox"), function (el) {
+        var k = el.getAttribute("data-k");
+        if (!k) return;
+        el.textContent = input[k];
+        el.classList.toggle("act", k === input.act);
+      });
+    } else if (input.mode === "ratio" || input.mode === "multi" || input.mode === "table") {
+      Array.prototype.forEach.call(document.querySelectorAll("[data-i]"), function (el) {
+        var i = +el.getAttribute("data-i");
+        el.textContent = input.fields[i] || "";
+        el.classList.toggle("act", i === input.fi);
+      });
+    } else {
+      var nb = $("nbox");
+      if (nb) { nb.textContent = input.raw || ""; nb.classList.add("act"); }
+    }
+  }
+
+  function answerMCQ(o, btn, options) {
+    if (S.answered) return;
+    options.forEach(function (x) { x.btn.disabled = true; if (x.correct) x.btn.classList.add("right"); });
+    if (o.correct) { btn.classList.add("pop"); resolve(true, ""); }
+    else { btn.classList.add("wrong"); resolve(false, o.why); }
+  }
+
+  $("submitBtn").addEventListener("click", submitKey);
+  function submitKey() {
+    if (!S || S.answered) return;
+    var q = S.current, r = checkAnswer(q), fb = $("feedback");
+    if (r.status === "invalid") { fb.className = "feedback info"; fb.innerHTML = r.msg; return; }
+    resolve(r.status === "correct", r.why || "");
+  }
+
+  function checkAnswer(q) {
+    if (q.kind === "moreless") {
+      if (!input.ml) return { status: "invalid", msg: "請先揀「多」定「少」 🙂" };
+      var v = EB.parseNum(input.raw);
+      if (v == null) return { status: "invalid", msg: "請輸入百分數 ✏️" };
+      var okML = input.ml === q.answerML;
+      var okN = EB.nearly(v, q.answerNum);
+      if (okML && okN) return { status: "correct" };
+      var why = "";
+      if (!okML) why += "「多／少」揀錯咗。";
+      if (!okN) why += "百分數應該係 " + EB.decStr(q.answerNum) + "%。";
+      return { status: "wrong", why: why };
+    }
+    if (q.kind === "num+mcq") {
+      var v2 = EB.parseNum(input.raw);
+      if (v2 == null) return { status: "invalid", msg: "請先輸入百分數 ✏️" };
+      if (!input.readChoice) return { status: "invalid", msg: "請再揀正確讀法 🙂" };
+      var okP = EB.nearly(v2, q.answerNum);
+      var okR = !!input.readChoice.correct;
+      if (okP && okR) return { status: "correct" };
+      var why2 = "";
+      if (!okP) why2 += "百分數唔啱。";
+      if (!okR) why2 += (input.readChoice.why || "讀法唔啱。");
+      return { status: "wrong", why: why2 };
+    }
+    if (q.kind === "ratio") {
+      var a = EB.parseNum(input.fields[0]), b = EB.parseNum(input.fields[1]);
+      if (a == null || b == null) return { status: "invalid", msg: "前後兩個數都要填呀！" };
+      if (EB.nearly(a, q.answerRatio[0]) && EB.nearly(b, q.answerRatio[1])) return { status: "correct" };
+      // allow unsimplified if same ratio? Task often wants 最簡單. Accept equivalent integer ratio and hint if not simplest? I'll accept equivalent and also the simplest.
+      if (b !== 0 && EB.nearly(a / b, q.answerRatio[0] / q.answerRatio[1])) {
+        return { status: "wrong", why: "比嘅值啱咗，但題目要求<b>最簡單整數比</b>，請再約簡成 " + q.answerRatio[0] + " : " + q.answerRatio[1] + "。" };
+      }
+      return { status: "wrong", why: "順序亦都要啱：係 " + q.answerRatio[0] + " : " + q.answerRatio[1] + "。" };
+    }
+    if (q.kind === "multi") {
+      var i, miss = [];
+      for (i = 0; i < q.fields.length; i++) {
+        var fv = EB.parseNum(input.fields[i]);
+        if (fv == null) return { status: "invalid", msg: "請填晒每一格 ✏️" };
+        if (!EB.nearly(fv, q.fields[i].answerNum)) miss.push(q.fields[i].label);
+      }
+      if (!miss.length) return { status: "correct" };
+      return { status: "wrong", why: miss.join("、") + " 未啱。" };
+    }
+    if (q.kind === "table") {
+      var j, bad = 0;
+      for (j = 0; j < input.blankVals.length; j++) {
+        var tv = EB.parseNum(input.fields[j]);
+        if (tv == null) return { status: "invalid", msg: "請填晒所有空白格 ✏️" };
+        if (!EB.nearly(tv, input.blankVals[j])) bad++;
+      }
+      if (!bad) return { status: "correct" };
+      return { status: "wrong", why: "有 " + bad + " 格唔啱。每個對應都要合指定的比，或者百分數要正確除以 100。" };
+    }
+    if (q.kind === "numunit") {
+      var uv = EB.parseNum(input.raw);
+      if (uv == null) return { status: "invalid", msg: "請輸入數字 ✏️" };
+      if (!input.unit) return { status: "invalid", msg: "請揀單位（毫升或升）🙂" };
+      var u = null;
+      q.units.forEach(function (x) { if (x.name === input.unit) u = x; });
+      var ml = uv * (u ? u.factor : 1);
+      if (EB.nearly(ml, q.answerNum)) return { status: "correct" };
+      // also accept if they typed 1000 and chose 毫升, already covered; if they typed 1 meaning litre but chose ml, fail
+      if (EB.nearly(uv, q.answerNum) && u && u.factor === 1) return { status: "correct" };
+      return { status: "wrong", why: "記住 1 升 = 1000 毫升，並按比計出水量。" };
+    }
+    // num / default
+    var nv = EB.parseNum(input.raw);
+    if (nv == null) return { status: "invalid", msg: "請先輸入答案 ✏️" };
+    if (EB.nearly(nv, q.answerNum)) return { status: "correct" };
+    if (q.accept) {
+      for (var k = 0; k < q.accept.length; k++) if (EB.nearly(nv, q.accept[k])) return { status: "correct" };
+    }
+    var whyE = "";
+    (q.errors || []).forEach(function (e) { if (!whyE && EB.nearly(nv, e.v)) whyE = e.why; });
+    return { status: "wrong", why: whyE };
+  }
+
+  function resolve(correct, why) {
+    var q = S.current;
+    S.answered = true;
+    var fb = $("feedback");
+    if (correct) {
+      if (q.attempt === 0) { stat(q.topic).first++; S.stars++; }
+      S.streak++; if (S.streak > S.best) S.best = S.streak;
+      fb.className = "feedback good";
+      fb.innerHTML = pick(GOOD) + (S.streak >= 3 ? " 🔥 連續 " + S.streak + " 題！" : "");
+      $("showSolBtn").classList.remove("hidden");
+      confetti(S.streak >= 5 ? 16 : 8);
+    } else {
+      stat(q.topic).wrong++;
+      S.streak = 0;
+      fb.className = "feedback bad";
+      fb.innerHTML = pick(BAD) + '<div style="margin-top:6px;color:#2e7d32">正確答案：<span style="font-size:1.4em">' + q.answerH + "</span></div>";
+      if (why) $("why").innerHTML = '<div class="why">💡 ' + why + "</div>";
+      renderSolution();
+      if (q.attempt < MAX_RETRY && typeof q.regen === "function") {
+        try { var nq = q.regen(); nq.attempt = q.attempt + 1; S.queue.push(nq); } catch (e) { console.error(e); }
+      }
+    }
+    $("submitBtn").classList.add("hidden");
+    S.done++;
+    $("nextBtn").classList.remove("hidden");
+    $("nextBtn").textContent = S.queue.length ? "下一題 ➡️" : "睇成績 🏆";
+    updateBar();
+  }
+
+  function renderSolution() {
+    var q = S.current, h = "📖 逐步解法";
+    h = "<h3>" + h + "</h3>";
+    (q.steps || []).forEach(function (s) {
+      h += '<div class="step">' + (s.note ? '<div class="snote">▶ ' + s.note + "</div>" : "") +
+        '<div class="shtml">' + s.html + "</div>" +
+        (s.detail ? '<div class="sdetail">' + s.detail + "</div>" : "") + "</div>";
+    });
+    $("solution").innerHTML = h;
+    $("solution").classList.remove("hidden");
+    $("showSolBtn").classList.add("hidden");
+  }
+
+  document.addEventListener("keydown", function (e) {
+    if ($("quiz").classList.contains("hidden")) return;
+    if (e.key === "Enter") {
+      e.preventDefault();
+      if (S.answered) $("nextBtn").click();
+      else if (!$("keypad").classList.contains("hidden")) submitKey();
+      return;
+    }
+    if (S.answered) return;
+    if (/^[0-9.]$/.test(e.key) || e.key === "/") press(e.key);
+    else if (e.key === "Backspace") { e.preventDefault(); press("⌫"); }
+  });
+
+  $("showSolBtn").addEventListener("click", renderSolution);
+  $("nextBtn").addEventListener("click", next);
+  $("homeBtn").addEventListener("click", function () { if (confirm("要返回主頁嗎？今輪進度會冇咗。")) show("home"); });
+  $("againBtn").addEventListener("click", function () { start(S.group); });
+  $("backBtn").addEventListener("click", function () { show("home"); });
+
+  function finish() {
+    show("finish");
+    var firstQs = 0, firstOk = 0, rows = "";
+    Object.keys(S.stats).forEach(function (t) {
+      var s = S.stats[t], lab = TOPIC_LABEL[t] || { icon: "📝", name: t };
+      firstQs += s.total; firstOk += s.first;
+      rows += "<tr><td>" + lab.icon + " " + lab.name + "</td><td>" + s.total + "</td><td>" + s.first + "</td><td>" + s.wrong + "</td><td>" + (s.first === s.total ? "🌟" : s.first / s.total >= 0.6 ? "👍" : "💪") + "</td></tr>";
+    });
+    $("sumTable").innerHTML = "<tr><th>主題</th><th>題數</th><th>一次答啱</th><th>答錯次數</th><th></th></tr>" + rows;
+    var pct = firstQs ? firstOk / firstQs : 0;
+    $("finEmoji").textContent = pct === 1 ? "🏆" : pct >= 0.8 ? "🥇" : pct >= 0.6 ? "🥈" : "💪";
+    $("finTitle").textContent = pct === 1 ? "全部一次答啱！超級犀利！" : pct >= 0.8 ? "好叻呀！差少少就滿分！" : pct >= 0.6 ? "唔錯呀！繼續努力！" : "完成咗！多練幾次一定會進步！";
+    $("finSummary").innerHTML = "⭐ " + S.stars + " / " + firstQs + " 題一次答啱　🔥 最高連續 " + S.best + " 題";
+    confetti(pct >= 0.8 ? 40 : 15);
+  }
+
+  function confetti(n) {
+    var icons = ["🎉", "⭐", "🌟", "🎊", "💯", "🧮", "🌈"];
+    for (var i = 0; i < n; i++) {
+      var s = document.createElement("span");
+      s.className = "confetti";
+      s.textContent = icons[Math.floor(Math.random() * icons.length)];
+      s.style.left = Math.random() * 100 + "vw";
+      s.style.animationDuration = (1.4 + Math.random() * 2) + "s";
+      document.body.appendChild(s);
+      (function (el) { setTimeout(function () { if (el.parentNode) el.parentNode.removeChild(el); }, 4000); })(s);
+    }
+  }
+  window.__app = { start: start, state: function () { return S; } };
+})();
+</script>
+</body>
+</html>

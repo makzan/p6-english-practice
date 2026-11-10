@@ -6,6 +6,7 @@ Small, self-contained interactive English practice pages for primary 6 (pure HTM
 - `unit2-vocabulary/` – English Unit 2 vocabulary spelling practice (Chinese prompt + English speech via Web Speech API; wrong answers are repeated at the end)
 - `math-unit5-percent/` – Math Lesson 5: fractions, decimals & percentages (random questions with exact fraction arithmetic, MCQ + fraction keypad, shaded figures, mixed calculations with step-by-step solutions)
 - `math-percent-word-problems/` – Percentage word problems (supplementary unit 1): choose the correct formula, then compute the answer; dynamic segment diagrams, worked steps
+- `math-exam-revision-1/` – 第一段數學復習：ratios, percentages (shaded figures), discounts, profit/loss, mixed calculations (original exam questions + generated similar items, step-by-step solutions)
 - `unit2-sentence-fill/` – Unit 2 vocabulary sentence fill-in-the-blank (6 choices, near-miss distractors, Chinese tips)
 - `unit-grammar-test-revision/` – P6 Grammar Test Revision: future forms & mixed tenses (MCQ with Chinese rule tips)
 - `unit-vocab-test-revision/` – P6 Vocabulary Test Revision: Unit 1+2 productive vocab sentence fill + study-habit phrases
