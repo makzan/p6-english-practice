@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>倉頡字母配對練習</title>
+<style>
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body {
+    margin: 0; min-height: 100vh; padding: 14px;
+    font-family: "PingFang TC", "Microsoft JhengHei", "Noto Sans TC", "Noto Sans CJK TC", "Arial Rounded MT Bold", sans-serif;
+    background: linear-gradient(135deg, #ffe8cc 0%, #ffd3b6 28%, #c3e7ff 72%, #e8f5e9 100%);
+    background-attachment: fixed; color: #333;
+  }
+  h1 { text-align: center; font-size: clamp(1.35rem, 5vw, 2.15rem); color: #7b1d1d; text-shadow: 2px 2px 0 #fff; margin: 6px 0 2px; }
+  .sub { text-align: center; color: #8d3b2b; margin: 0 0 14px; font-size: 1.05rem; }
+  .card { background: #fff; border-radius: 26px; max-width: 820px; margin: 0 auto; padding: 20px 16px 24px; box-shadow: 0 10px 28px rgba(80,30,20,.2); border: 5px solid #e8b86d; }
+  .hidden { display: none !important; }
+  button { font-family: inherit; cursor: pointer; border: none; }
+  .intro { font-size: 1.08rem; line-height: 1.75; background: #fff6e8; border-radius: 16px; padding: 12px 14px; margin-bottom: 14px; }
+  .intro b { color: #9b1c1c; }
+  .modes { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 12px; }
+  .mode {
+    display: flex; flex-direction: column; align-items: flex-start; text-align: left;
+    border-radius: 20px; padding: 16px 14px; font-weight: bold; color: #3e2723;
+    box-shadow: 0 6px 0 var(--s, #d7ccc8); transition: transform .1s; min-height: 118px;
+    background: var(--bg, #fff3e0);
+  }
+  .mode:active { transform: translateY(4px); box-shadow: 0 2px 0 var(--s, #d7ccc8); }
+  .mode .ico { font-size: 1.85rem; line-height: 1; margin-bottom: 4px; }
+  .mode .ttl { font-size: 1.22rem; line-height: 1.3; }
+  .mode .desc { font-size: .95rem; font-weight: normal; color: #5d4037; margin-top: 4px; line-height: 1.45; }
+  .mode.wide { grid-column: 1 / -1; min-height: 88px; flex-direction: row; align-items: center; gap: 14px; font-size: 1.15rem; }
+  .mode.philo { --bg:#fce4ec; --s:#f48fb1; }
+  .mode.stroke { --bg:#fff8e1; --s:#ffe082; }
+  .mode.body { --bg:#e8f5e9; --s:#a5d6a7; }
+  .mode.shape { --bg:#e3f2fd; --s:#90caf9; }
+  .mode.letter { --bg:#f3e5f5; --s:#ce93d8; }
+  .mode.aux { --bg:#fff3e0; --s:#ffcc80; }
+  .mode.mix { --bg:#e0f7fa; --s:#80deea; }
+  .mode.chartbtn { --bg:#efebe9; --s:#bcaaa4; }
+  .topbar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
+  .pill { background: #fbe9e7; border-radius: 999px; padding: 6px 12px; font-weight: bold; color: #7b1d1d; font-size: 1rem; }
+  .pill.star { background: #fff8e1; color: #f57f17; }
+  .homebtn, .chartpeek { background: #eceff1; border-radius: 999px; padding: 8px 14px; font-size: 1rem; font-weight: bold; color: #455a64; }
+  .chartpeek { background: #efebe9; color: #5d4037; }
+  .bar { flex: 1 1 100%; height: 14px; background: #eee; border-radius: 999px; overflow: hidden; }
+  .bar > div { height: 100%; width: 0; background: linear-gradient(90deg, #ef5350, #ffa726); transition: width .4s; }
+  .tag { display: inline-block; background: #c62828; color: #fff; border-radius: 12px; padding: 4px 12px; font-size: .95rem; }
+  .retry { display: inline-block; background: #ffca28; color: #6d4c00; border-radius: 12px; padding: 4px 10px; font-size: .9rem; margin-left: 6px; }
+  .ask { text-align: center; font-size: 1.2rem; color: #5d4037; margin: 8px 0 4px; font-weight: bold; }
+  .prompt-box {
+    display: flex; align-items: center; justify-content: center;
+    min-height: 150px; margin: 8px auto 12px; padding: 10px;
+    background: #fffdf7; border: 3px dashed #e8b86d; border-radius: 24px; max-width: 420px;
+  }
+  .glyph { display: inline-flex; align-items: center; justify-content: center; line-height: 1; font-weight: 700; color: #212121; }
+  .glyph svg { width: 1em; height: 1em; display: block; }
+  .prompt-glyph { font-size: clamp(4.4rem, 20vw, 7.2rem); }
+  .prompt-letter { font-size: clamp(4.6rem, 22vw, 7.6rem); font-family: "Arial Rounded MT Bold", "Trebuchet MS", sans-serif; font-weight: 800; color: #b71c1c; letter-spacing: .04em; }
+  .prompt-name { font-size: clamp(4.4rem, 20vw, 7.2rem); font-weight: 800; color: #4a148c; }
+  .mcq { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 8px; }
+  .opt {
+    background: #e3f2fd; color: #0d47a1; font-size: clamp(1.25rem, 4.6vw, 1.7rem);
+    font-weight: bold; border-radius: 18px; padding: 18px 10px; min-height: 86px;
+    box-shadow: 0 6px 0 #90caf9; display: flex; align-items: center; justify-content: center; gap: 8px; line-height: 1.2;
+  }
+  .opt:active { transform: translateY(4px); box-shadow: 0 2px 0 #90caf9; }
+  .opt.right { background: #c8e6c9; box-shadow: 0 6px 0 #66bb6a; color: #1b5e20; }
+  .opt.wrong { background: #ffcdd2; box-shadow: 0 6px 0 #e57373; color: #b71c1c; }
+  .opt:disabled { cursor: default; }
+  .opt .kletter { font-family: "Arial Rounded MT Bold", "Trebuchet MS", sans-serif; font-size: 1.15em; }
+  .big { display: block; margin: 14px auto 0; font-size: 1.4rem; font-weight: bold; color: #fff; border-radius: 20px; padding: 14px 30px; min-width: 220px; box-shadow: 0 6px 0 rgba(0,0,0,.2); }
+  .big:active { transform: translateY(4px); box-shadow: 0 2px 0 rgba(0,0,0,.2); }
+  .next { background: #fb8c00; }
+  .again { background: #43a047; }
+  .feedback { text-align: center; font-size: 1.35rem; font-weight: bold; margin-top: 12px; min-height: 1.4em; }
+  .feedback.good { color: #2e7d32; }
+  .feedback.bad { color: #c62828; }
+  .why { background: #fff3e0; border-left: 6px solid #ff9800; border-radius: 12px; padding: 10px 14px; margin: 10px 0 0; font-size: 1.12rem; line-height: 1.7; color: #5d4037; }
+  .why .pair { font-weight: 800; color: #b71c1c; font-size: 1.15em; }
+  .why .ex { display: inline-block; background: #fff; border-radius: 8px; padding: 0 8px; margin-top: 2px; }
+  .overlay { position: fixed; inset: 0; background: rgba(40,20,10,.55); z-index: 40; display: flex; align-items: flex-start; justify-content: center; overflow: auto; padding: 16px 10px 40px; }
+  .chart-card { background: #fff; border-radius: 22px; width: min(980px, 100%); padding: 16px 12px 22px; border: 5px solid #e8b86d; box-shadow: 0 16px 40px rgba(0,0,0,.25); }
+  .chart-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 8px; flex-wrap: wrap; }
+  .chart-head h2 { margin: 0; color: #7b1d1d; font-size: 1.35rem; }
+  .closebtn { background: #c62828; color: #fff; border-radius: 999px; padding: 8px 16px; font-weight: bold; font-size: 1rem; }
+  .legend { font-size: .95rem; color: #6d4c41; margin: 0 0 10px; }
+  .group-title { font-size: 1.15rem; font-weight: 800; margin: 14px 0 8px; padding: 6px 12px; border-radius: 12px; }
+  .group-title.philo { background: #fce4ec; color: #ad1457; }
+  .group-title.stroke { background: #fff8e1; color: #f57f17; }
+  .group-title.body { background: #e8f5e9; color: #2e7d32; }
+  .group-title.shape { background: #e3f2fd; color: #1565c0; }
+  .group-title.special { background: #f5f5f5; color: #546e7a; }
+  .rows { display: grid; grid-template-columns: 1fr; gap: 8px; }
+  @media (min-width: 720px) {
+    .rows.two { grid-template-columns: 1fr 1fr; }
+  }
+  .krow {
+    display: grid; grid-template-columns: 92px 1fr; gap: 8px; align-items: center;
+    border-radius: 14px; padding: 8px 10px; border: 2px solid rgba(0,0,0,.06);
+  }
+  .krow.philo { background: #fce4ec; }
+  .krow.stroke { background: #fffde7; }
+  .krow.body { background: #e8f5e9; }
+  .krow.shape { background: #e3f2fd; }
+  .krow.special { background: #fafafa; }
+  .kmeta { text-align: center; }
+  .kpair { font-weight: 800; font-size: 1.35rem; color: #212121; line-height: 1.15; }
+  .kpair .kl { font-family: "Arial Rounded MT Bold", "Trebuchet MS", sans-serif; color: #b71c1c; margin-right: 4px; }
+  .khint { font-size: .8rem; color: #6d4c41; }
+  .auxs { display: flex; flex-wrap: wrap; gap: 6px 8px; align-items: center; }
+  .auxs .glyph { font-size: 1.85rem; background: #fff; border-radius: 10px; padding: 4px; min-width: 1.6em; min-height: 1.6em; box-shadow: 0 1px 0 rgba(0,0,0,.06); }
+  .aux-empty { color: #90a4ae; font-size: .95rem; }
+  .note { font-size: .95rem; color: #6d4c41; margin-top: 10px; line-height: 1.6; }
+  .bigemoji { font-size: 4rem; text-align: center; animation: bounce 1s infinite; }
+  .row { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+  .row .big { margin: 10px 0 0; }
+  @keyframes bounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+  @keyframes pop { 0% { transform: scale(.85); } 60% { transform: scale(1.05); } 100% { transform: scale(1); } }
+  .pop { animation: pop .3s ease; }
+  @media (max-width: 420px) {
+    .krow { grid-template-columns: 74px 1fr; }
+    .kpair { font-size: 1.2rem; }
+    .auxs .glyph { font-size: 1.55rem; }
+    .mode { min-height: 108px; }
+    .mode.wide { flex-direction: column; align-items: flex-start; gap: 2px; }
+  }
+</style>
+</head>
+<body>
+<h1>📜 倉頡字母配對</h1>
+<div class="sub">第五代倉頡：拆件認字母，字母同中文一齊記！</div>
+
+<div class="card" id="home">
+  <div class="intro">
+    👋 倉頡有 24 個字母。每個字母都有一個中文名，同埋一啲外形相似嘅<b>拆件（輔助字形）</b>。<br>
+    記嘅時候永遠一齊記，例如 <b>A　日</b>、<b>E　水</b>、<b>Q　手</b>。<br>
+    ✅ 答啱就繼續；❌ 答錯會見到短短嘅解釋，之後再出一條相似題俾你再試。
+  </div>
+  <div class="modes" id="modes"></div>
+</div>
+
+<div class="card hidden" id="quiz">
+  <div class="topbar">
+    <button class="homebtn" id="homeBtn" type="button">🏠 返回</button>
+    <span class="pill" id="progTxt">題 1 / 10</span>
+    <span class="pill star">⭐ <span id="stars">0</span></span>
+    <button class="chartpeek" id="peekBtn" type="button">📖 字母表</button>
+    <div class="bar"><div id="bar"></div></div>
+  </div>
+  <div><span class="tag" id="tag"></span><span class="retry hidden" id="retryTag">🔁 再試類似題</span></div>
+  <div class="ask" id="ask"></div>
+  <div class="prompt-box"><div id="prompt" class="prompt-glyph"></div></div>
+  <div class="mcq" id="mcq"></div>
+  <div class="feedback" id="feedback"></div>
+  <div id="why"></div>
+  <button class="big next hidden" id="nextBtn" type="button">下一題 ➡️</button>
+</div>
+
+<div class="card hidden" id="finish">
+  <div class="bigemoji" id="finEmoji">🏆</div>
+  <h2 style="text-align:center;color:#7b1d1d;margin:6px 0" id="finTitle">完成！</h2>
+  <p style="text-align:center;font-size:1.2rem;line-height:1.7" id="finSummary"></p>
+  <div class="row">
+    <button class="big again" id="againBtn" type="button">🔄 再玩一次</button>
+    <button class="big next" id="backBtn" type="button">🏠 返主頁</button>
+    <button class="big" id="finChartBtn" type="button" style="background:#6d4c41">📖 睇字母表</button>
+  </div>
+</div>
+
+<div class="overlay hidden" id="overlay">
+  <div class="chart-card" role="dialog" aria-labelledby="chartTitle">
+    <div class="chart-head">
+      <h2 id="chartTitle">第五代倉頡字母及輔助字形</h2>
+      <button class="closebtn" id="closeChart" type="button">關閉 ✕</button>
+    </div>
+    <p class="legend">粉紅＝哲理類　黃＝筆畫類　綠＝人體類　藍灰＝字形類。字母同中文永遠一齊顯示。X　難 同 Z　符 只供參考，唔會出測驗題。</p>
+    <div id="chart"></div>
+    <p class="note">提示：框內有筆畫嘅大方框多數係 W　田，細嘅空心「口」先係 R　口。提手旁「扌」係 Q　手，唔好當成 D　木嘅「才」。</p>
+  </div>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  function sv(inner) {
+    return '<svg viewBox="0 0 100 100" focusable="false" aria-hidden="true">' + inner + '</svg>';
+  }
+  function p(d, w) {
+    return '<path d="' + d + '" fill="none" stroke="currentColor" stroke-width="' + (w || 8) + '" stroke-linecap="round" stroke-linejoin="round"/>';
+  }
+  function c(x, y, r) {
+    return '<circle cx="' + x + '" cy="' + y + '" r="' + (r || 7) + '" fill="currentColor"/>';
+  }
+  function rect(x, y, w, h, sw) {
+    return p('M ' + x + ' ' + y + ' H ' + (x + w) + ' V ' + (y + h) + ' H ' + x + ' Z', sw);
+  }
+
+  var SH = {
+    riFlat: sv(p('M 12 32 H 88 V 72 H 12 Z', 7) + p('M 12 52 H 88', 7)),
+    door: sv(p('M 28 24 V 86') + p('M 28 24 H 78 V 68') + p('M 18 14 L 28 24')),
+    shortBar: sv(p('M 26 50 H 74', 9)),
+    twoSlash: sv(p('M 26 26 L 42 72') + p('M 58 26 L 74 72')),
+    ha: sv(p('M 22 34 L 40 78') + p('M 78 34 L 60 78')),
+    trunkD: sv(p('M 50 16 V 84') + p('M 26 48 H 74') + p('M 50 68 L 30 84')),
+    sanzhui: sv(c(36, 28, 6) + c(28, 50, 6) + p('M 34 68 L 22 86', 8)),
+    ice: sv(p('M 50 16 L 28 84') + p('M 50 16 L 72 84') + p('M 34 50 H 66') + c(62, 28, 6)),
+    shuiBottom: sv(p('M 50 18 L 28 82') + p('M 50 18 L 72 82') + p('M 32 50 H 68') + c(32, 70, 5) + c(68, 70, 5)),
+    fourDots: sv(c(26, 42, 7) + c(46, 58, 7) + c(66, 42, 7) + c(78, 62, 7)),
+    threeDots: sv(c(32, 32, 8) + c(68, 32, 8) + c(50, 68, 8)),
+    threeDotsB: sv(c(28, 30, 7) + c(50, 46, 7) + c(70, 32, 7)),
+    xiaoTop: sv(c(28, 32, 7) + c(72, 32, 7) + p('M 50 40 V 78')),
+    invXiao: sv(p('M 50 16 L 22 52') + p('M 50 16 L 78 52') + p('M 50 16 V 86')),
+    bamb: sv(p('M 16 44 L 34 18 L 38 68') + p('M 34 18 L 12 40') + p('M 84 44 L 66 18 L 62 68') + p('M 66 18 L 88 40')),
+    pie: sv(p('M 66 18 L 30 84', 9)),
+    na: sv(p('M 24 28 Q 48 40 80 82', 10)),
+    dian: sv(c(48, 42, 9) + p('M 52 50 L 62 66', 7)),
+    bentV: sv(p('M 54 14 Q 62 48 36 86', 9)),
+    slantYi: sv(p('M 22 36 L 80 60', 10)),
+    chang: sv(p('M 20 26 H 80 M 20 26 L 36 84')),
+    yiFan: sv(p('M 20 26 H 80 L 68 84')),
+    gongVar: sv(p('M 24 28 H 76') + p('M 24 72 H 76') + p('M 50 28 V 72') + p('M 50 50 L 28 50')),
+    yu: sv(p('M 30 28 H 78') + p('M 78 28 V 50') + p('M 24 50 H 78') + p('M 50 50 V 78')),
+    jue: sv(p('M 50 14 V 70 Q 50 86 32 88', 9)),
+    hengGou: sv(p('M 18 42 H 74 L 62 64', 9)),
+    fu: sv(p('M 26 28 H 76 L 34 78', 9)),
+    yiGou: sv(p('M 24 36 H 62 Q 80 36 74 58 L 28 86', 8)),
+    yin: sv(p('M 36 12 V 68 Q 36 90 82 80', 9)),
+    ku: sv(p('M 70 20 L 36 46 H 76 Q 78 78 36 82', 8)),
+    boPo: sv(p('M 28 30 Q 20 50 36 58 H 74 Q 80 80 36 86', 8)),
+    corner: sv(p('M 22 32 H 76 V 78', 9)),
+    hat: sv(p('M 16 58 L 50 22 L 84 58', 9)),
+    ruVar: sv(p('M 50 20 L 20 82') + p('M 50 20 L 78 48 L 70 82', 8)),
+    ru: sv(p('M 50 18 L 22 82') + p('M 50 18 L 80 70')),
+    dotSlash: sv(p('M 64 26 L 34 70', 10)),
+    quan: sv(p('M 70 20 Q 22 50 70 84', 9)),
+    kuSmall: sv(p('M 74 18 L 30 50 L 74 84', 9)),
+    xinSide: sv(p('M 58 14 V 86', 8) + c(28, 32, 7) + c(30, 58, 7)),
+    xinBot: sv(c(26, 36, 6) + c(50, 50, 6) + c(74, 36, 6) + p('M 50 18 V 42') + p('M 50 58 Q 46 82 28 86')),
+    yiLike: sv(p('M 24 36 H 72') + p('M 60 18 L 40 82 Q 36 90 54 92') + c(70, 22, 6)),
+    hookP: sv(p('M 36 22 Q 80 20 74 50 T 32 84', 8)),
+    crossP: sv(p('M 50 18 V 82', 8) + p('M 28 50 H 72', 8) + p('M 50 18 L 70 30', 6)),
+    shouSide: sv(p('M 62 16 V 84') + p('M 28 42 L 62 32') + p('M 30 62 L 62 52') + p('M 62 72 L 36 86')),
+    shouTop: sv(p('M 50 16 V 84') + p('M 28 30 H 76') + p('M 26 50 H 76') + p('M 30 68 H 72') + p('M 50 30 L 26 48')),
+    shouTrunk: sv(p('M 54 16 V 84') + p('M 26 36 H 80') + p('M 28 58 H 80') + p('M 54 36 L 28 58')),
+    ko: sv(p('M 22 22 H 78 V 78 H 22', 8)),
+    fang: sv(p('M 22 24 H 78 V 76 H 22 Z', 8)),
+    diao: sv(p('M 78 24 H 28 V 58 H 70 Q 78 58 74 78', 8)),
+    sideHook: sv(p('M 70 18 Q 28 50 70 86', 9)),
+    buLike: sv(p('M 48 16 V 84', 8) + p('M 48 36 L 76 22', 8)),
+    tallShi: sv(p('M 28 16 V 86') + p('M 28 16 H 80') + p('M 28 40 H 74') + p('M 28 62 H 74') + p('M 28 84 H 80')),
+    cao: sv(p('M 30 22 V 78') + p('M 70 22 V 78') + p('M 16 48 H 44') + p('M 56 48 H 84')),
+    zhuo: sv(p('M 26 40 L 42 18') + p('M 74 40 L 58 18') + p('M 16 58 H 84', 9)),
+    gongHead: sv(p('M 26 34 L 40 16') + p('M 74 34 L 60 16') + p('M 16 48 H 84', 8) + p('M 38 48 V 84') + p('M 62 48 V 84')),
+    nian: sv(p('M 30 22 V 82') + p('M 70 22 V 82') + p('M 18 58 H 82')),
+    sa: sv(p('M 22 22 V 82') + p('M 50 22 V 82') + p('M 78 22 V 82') + p('M 16 50 H 84')),
+    bing: sv(p('M 30 22 V 50') + p('M 70 22 V 50') + p('M 18 50 H 82') + p('M 34 50 L 24 78') + p('M 66 50 L 76 78')),
+    chou: sv(p('M 32 22 V 82') + p('M 68 22 V 82') + p('M 18 40 H 82') + p('M 18 68 H 82')),
+    qu: sv(p('M 22 28 V 78 H 78 V 28', 8)),
+    shiU: sv(p('M 42 16 Q 36 64 42 78 Q 70 82 74 68', 9)),
+    che: sv(p('M 22 58 V 82 H 78 V 58') + p('M 50 18 V 82') + p('M 22 58 H 78')),
+    cheTall: sv(p('M 22 62 V 86 H 78 V 62') + p('M 50 12 V 86') + p('M 22 62 H 78')),
+    re: sv(p('M 32 16 V 74 H 80', 9)),
+    lShape: sv(p('M 40 16 V 78 H 82', 9)),
+    vTurn: sv(p('M 46 14 V 80 Q 46 88 28 86', 9)),
+    silk: sv(p('M 36 22 Q 20 38 40 50 Q 70 64 42 84', 8)),
+    box: sv(p('M 18 18 H 82 V 82 H 18 Z', 8)),
+    boxIn: sv(p('M 18 18 H 82 V 82 H 18 Z', 8) + p('M 34 42 H 66 V 66 H 34 Z', 6)),
+    tou: sv(c(50, 22, 7) + p('M 18 42 H 82', 9)),
+    twoDots: sv(c(36, 38, 8) + c(66, 54, 8)),
+    chuo: sv(c(36, 18, 6) + p('M 28 36 H 70 L 50 54') + p('M 18 78 H 86') + p('M 28 54 L 18 78')),
+    xiVar: sv(p('M 22 30 L 50 18 L 78 30 L 68 82 L 32 82 Z', 7) + p('M 38 48 H 62') + c(50, 36, 4) + p('M 42 62 H 58')),
+    yiRed: sv(p('M 24 28 L 76 72') + p('M 76 28 L 24 72') + p('M 50 28 L 36 18', 6)),
+    naKana: sv(p('M 22 36 H 78') + p('M 70 36 V 84') + p('M 70 36 L 28 84'))
+  };
+
+  function han(ch) { return { kind: 'han', ch: ch }; }
+  function shp(name) { return { kind: 'svg', name: name }; }
+
+  function pair(k) { return k.id + '　' + k.name; }
+
+  var KEYS = [
+    /* ===== A–G ===== */
+    { id:'A', name:'日', hint:'', group:'philo',
+      examples:[{ch:'門', code:'AN', note:'門字框用 A　日開頭'}],
+      aux:[
+        { id:'A-ri', g:han('日'), why:'「日」就係 A　日嘅字母本身。例如「門」= AN。' },
+        { id:'A-yue', g:han('曰'), why:'「曰」係「日」躺平／略扁嘅形，同樣屬 A　日。' },
+        { id:'A-flat', g:shp('riFlat'), why:'呢個扁方框中間一橫（冃／⺜）都係 A　日。唔好當成 W　田（田中間有十字）。' }
+      ]
+    },
+    { id:'B', name:'月', hint:'', group:'philo',
+      examples:[{ch:'受', code:'BBE', note:'「爫」同「月」都取 B　月'}],
+      aux:[
+        { id:'B-yue', g:han('月'), why:'「月」就係 B　月嘅字母本身。' },
+        { id:'B-jiong', g:han('冂'), why:'「冂」係「同」一類字嘅外框，屬 B　月。' },
+        { id:'B-mi', g:han('冖'), why:'「冖」係蓋頂形（好似「軍」字頭），屬 B　月。' },
+        { id:'B-door', g:shp('door'), why:'呢個好似「門」嘅外框（⺆）都屬 B　月。' },
+        { id:'B-bar', g:shp('shortBar'), why:'呢條短橫係「月」變矮嘅形，屬 B　月。' },
+        { id:'B-xi', g:han('夕'), why:'「夕」外形似月，屬 B　月。' },
+        { id:'B-zhao', g:han('爫'), why:'「爫」（爪字頭）屬 B　月。例如「受」= BBE。' },
+        { id:'B-duo', g:han('多'), why:'「多」係兩個「夕」疊埋，圖表用紅色標示，屬 B　月。' }
+      ]
+    },
+    { id:'C', name:'金', hint:'', group:'philo',
+      examples:[{ch:'公', code:'CI', note:'「八」字形取 C　金'}],
+      aux:[
+        { id:'C-jin', g:han('金'), why:'「金」就係 C　金嘅字母本身。例如「公」= CI。' },
+        { id:'C-so', g:shp('twoSlash'), why:'呢兩劃短撇（ソ）係「金」下方兩點嘅形，屬 C　金。' },
+        { id:'C-ha', g:shp('ha'), why:'「ハ」係「八」倒轉嘅形，屬 C　金。例如「公」= CI。' },
+        { id:'C-ba', g:han('八'), why:'「八」屬 C　金。例如「公」= CI。' },
+        { id:'C-er', g:han('儿'), why:'「儿」係「八」嘅變形，屬 C　金。' }
+      ]
+    },
+    { id:'D', name:'木', hint:'', group:'philo',
+      examples:[{ch:'床', code:'ID', note:'「床」裏面嘅「木」取 D　木'}],
+      aux:[
+        { id:'D-mu', g:han('木'), why:'「木」就係 D　木嘅字母本身。' },
+        { id:'D-cai', g:han('才'), why:'「才」屬 D　木。注意：提手旁「扌」先係 Q　手，唔好撈亂。' },
+        { id:'D-trunk', g:shp('trunkD'), why:'呢個好似「十／巾」嘅形係「木」嘅主幹，屬 D　木。' }
+      ]
+    },
+    { id:'E', name:'水', hint:'', group:'philo',
+      examples:[{ch:'江', code:'EM', note:'三點水取 E　水'}, {ch:'友', code:'KE', note:'「又」喺五代都取 E　水'}],
+      aux:[
+        { id:'E-san', g:han('氵'), why:'三點水「氵」屬 E　水。例如「江」= EM。' },
+        { id:'E-bing', g:han('氷'), why:'「氷」係「水」加一點嘅形，屬 E　水。' },
+        { id:'E-shui', g:han('水'), why:'「水」就係 E　水嘅字母本身。' },
+        { id:'E-di', g:han('氺'), why:'「氺」（水字底，好似「泰」下面）屬 E　水。' },
+        { id:'E-you', g:han('又'), why:'「又」係五代新增嘅輔助字形，屬 E　水。例如「友」= KE。' }
+      ]
+    },
+    { id:'F', name:'火', hint:'', group:'philo',
+      examples:[{ch:'魚', code:'NWF', note:'四點「灬」取 F　火'}, {ch:'少', code:'FH', note:'「小」取 F　火'}],
+      aux:[
+        { id:'F-huo', g:han('火'), why:'「火」就係 F　火嘅字母本身。' },
+        { id:'F-dots4', g:han('灬'), why:'四點「灬」屬 F　火。例如「魚」= NWF。' },
+        { id:'F-dots3', g:shp('threeDots'), why:'呢三點係「灬／火」減點嘅變體，屬 F　火。' },
+        { id:'F-dots3b', g:shp('threeDotsB'), why:'呢排三點都係火嘅變體，屬 F　火。', quiz:false },
+        { id:'F-xiaoTop', g:shp('xiaoTop'), why:'「⺌」（好似「當」字頭）屬 F　火。' },
+        { id:'F-inv', g:shp('invXiao'), why:'呢個係「小」倒轉／變形（好似「个」），屬 F　火。' },
+        { id:'F-xiao', g:han('小'), why:'「小」屬 F　火。例如「少」= FH。' },
+        { id:'F-xiao2', g:han('小'), why:'呢個都係「小」嘅變形，屬 F　火。', quiz:false }
+      ]
+    },
+    { id:'G', name:'土', hint:'', group:'philo',
+      examples:[{ch:'吉', code:'GR', note:'「士」亦取 G　土'}],
+      aux:[
+        { id:'G-tu', g:han('土'), why:'「土」就係 G　土嘅字母本身。例如「吉」= GR。' },
+        { id:'G-shi', g:han('士'), why:'「士」係「土」把上橫寫長啲，同樣屬 G　土。例如「吉」= GR。' }
+      ]
+    },
+    /* ===== H–N ===== */
+    { id:'H', name:'竹', hint:'斜', group:'stroke',
+      examples:[{ch:'白', code:'HA', note:'撇「丿」取 H　竹'}],
+      aux:[
+        { id:'H-bamb', g:shp('bamb'), why:'呢個竹字頭（⺮）屬 H　竹（斜）。' },
+        { id:'H-pie', g:han('丿'), why:'撇「丿」就係「斜」形，屬 H　竹。例如「白」= HA。' },
+        { id:'H-chang', g:shp('chang'), why:'圖表喺 H　竹都畫咗一個好似「厂」嘅形，係竹嘅衍生。不過成個「厂」字頭（例如「原」= MHAF）通常取 M　一。', quiz:false }
+      ]
+    },
+    { id:'I', name:'戈', hint:'點', group:'stroke',
+      examples:[{ch:'去', code:'GI', note:'「厶」取 I　戈'}, {ch:'床', code:'ID', note:'「广」取 I　戈'}],
+      aux:[
+        { id:'I-dian', g:han('丶'), why:'點「丶」就係「點」形，屬 I　戈。' },
+        { id:'I-yan', g:han('广'), why:'「广」屬 I　戈。例如「床」= ID。' },
+        { id:'I-si', g:han('厶'), why:'「厶」屬 I　戈。例如「去」= GI、「公」= CI。女（紐）行雖然都有一個好似厶嘅絞絲形，但「厶」本身取 I。' }
+      ]
+    },
+    { id:'J', name:'十', hint:'交', group:'stroke',
+      examples:[{ch:'家', code:'JMSO', note:'寶蓋「宀」取 J　十'}, {ch:'安', code:'JV', note:'「宀」取 J　十'}],
+      aux:[
+        { id:'J-mian', g:han('宀'), why:'寶蓋頭「宀」屬 J　十（交）。例如「家」= JMSO、「安」= JV。「十」本身就係呢個字母。' }
+      ]
+    },
+    { id:'K', name:'大', hint:'叉', group:'stroke',
+      examples:[{ch:'有', code:'KB', note:'「ナ」形取 K　大'}, {ch:'父', code:'CK', note:'交叉「乂」取 K　大'}],
+      aux:[
+        { id:'K-yi', g:han('乂'), why:'交叉「乂」就係「叉」形，屬 K　大。例如「父」= CK。' },
+        { id:'K-yi2', g:shp('yiRed'), why:'呢個係「乂」加筆嘅變形，同樣屬 K　大。' },
+        { id:'K-na', g:shp('naKana'), why:'「ナ」（好似「有」嘅上半）屬 K　大。例如「有」= KB。' },
+        { id:'K-ni', g:han('疒'), why:'病字頭「疒」屬 K　大。' }
+      ]
+    },
+    { id:'L', name:'中', hint:'縱', group:'stroke',
+      examples:[{ch:'被', code:'LDHE', note:'衣字旁「衤」取 L　中'}],
+      aux:[
+        { id:'L-shu', g:han('丨'), why:'豎「丨」就係「縱」形，屬 L　中。' },
+        { id:'L-bent', g:shp('bentV'), why:'呢條略為彎咗嘅豎／撇都當「縱」形，屬 L　中。' },
+        { id:'L-yi', g:han('衤'), why:'衣字旁「衤」（寫成 ネ 亦得）屬 L　中。例如「被」= LDHE。' },
+        { id:'L-yu', g:han('聿'), why:'「聿／肀」上下都係豎，屬 L　中。' }
+      ]
+    },
+    { id:'M', name:'一', hint:'橫', group:'stroke',
+      examples:[{ch:'原', code:'MHAF', note:'「厂」字頭取 M　一'}],
+      aux:[
+        { id:'M-yi', g:shp('slantYi'), why:'呢一劃（圖上寫得略斜）就係「橫」，屬 M　一。' },
+        { id:'M-chang', g:shp('chang'), why:'「厂」通常取 M　一。例如「原」= MHAF。圖表入面 H　竹都有一個好似厂嘅形，但編碼時「厂」字頭多數都係 M。' },
+        { id:'M-fan', g:shp('yiFan'), why:'「丆」係反向嘅「厂」，都屬 M　一。' },
+        { id:'M-gong', g:han('工'), why:'「工」屬 M　一。' },
+        { id:'M-gong2', g:shp('gongVar'), why:'呢個係「工」嘅變形，同樣屬 M　一。' },
+        { id:'M-yu', g:shp('yu'), why:'「ユ」係「工」少咗一截嘅形，屬 M　一。' }
+      ]
+    },
+    { id:'N', name:'弓', hint:'鈎', group:'stroke',
+      examples:[{ch:'子', code:'ND', note:'鈎形取 N　弓'}, {ch:'魚', code:'NWF', note:'「魚」由 N　弓開頭'}],
+      aux:[
+        { id:'N-jue', g:han('亅'), why:'豎鈎「亅」屬 N　弓（鈎）。' },
+        { id:'N-hg', g:shp('hengGou'), why:'橫鈎「乛」屬 N　弓。' },
+        { id:'N-fu', g:shp('fu'), why:'「フ」形屬 N　弓。' },
+        { id:'N-yi', g:han('乙'), why:'「乙」屬 N　弓。例如「子」= ND 都由鈎形開頭。' },
+        { id:'N-yin', g:shp('yin'), why:'「乚」呢種向下再鈎嘅形喺圖表屬 N　弓。注意：好似「孔」末筆嗰種豎曲（孔 = NDU）就係 U　山。' },
+        { id:'N-ku', g:shp('ku'), why:'「ク／勹」形屬 N　弓。' },
+        { id:'N-bo', g:shp('boPo'), why:'「ㄅ」形屬 N　弓。' },
+        { id:'N-corner', g:shp('corner'), why:'呢個橫折鈎（轉角再向下）屬 N　弓。' }
+      ]
+    },
+    /* ===== O–R ===== */
+    { id:'O', name:'人', hint:'', group:'body',
+      examples:[{ch:'他', code:'OPD', note:'單人旁取 O　人'}, {ch:'你', code:'ONF', note:'「亻」取 O　人'}],
+      aux:[
+        { id:'O-renSide', g:han('亻'), why:'單人旁「亻」屬 O　人。例如「他」= OPD、「你」= ONF。' },
+        { id:'O-ren', g:han('人'), why:'「人」就係 O　人嘅字母本身。' },
+        { id:'O-hat', g:shp('hat'), why:'「𠆢」（人字頭，好似「今」上面）屬 O　人。' },
+        { id:'O-ruVar', g:shp('ruVar'), why:'呢個係「入」嘅變體，屬 O　人。' },
+        { id:'O-ru', g:han('入'), why:'「入」屬 O　人。' },
+        { id:'O-na', g:shp('na'), why:'捺「乀」屬 O　人。' },
+        { id:'O-ds', g:shp('dotSlash'), why:'呢一點撇都屬 O　人。' },
+        { id:'O-quan', g:shp('quan'), why:'「ㄑ」形屬 O　人。' },
+        { id:'O-ku', g:shp('kuSmall'), why:'呢個「く」係「人」嘅變形，圖表用紅色標示。絞絲／紐形嘅「く」就屬 V　女，所以單睇「く」要睇佢用喺邊。', quiz:false }
+      ]
+    },
+    { id:'P', name:'心', hint:'', group:'body',
+      examples:[{ch:'情', code:'PQMB', note:'豎心旁取 P　心'}, {ch:'比', code:'PP', note:'「匕」形取 P　心'}],
+      aux:[
+        { id:'P-side', g:shp('xinSide'), why:'豎心旁「忄」屬 P　心。例如「情」= PQMB。' },
+        { id:'P-bot', g:shp('xinBot'), why:'「⺗」（心字底）屬 P　心。' },
+        { id:'P-bi', g:han('匕'), why:'「匕」係「心」中間嗰部分嘅形，屬 P　心。例如「比」= PP。' },
+        { id:'P-bi2', g:han('匕'), why:'呢個都係「匕」嘅變形，屬 P　心。', quiz:false },
+        { id:'P-bi3', g:han('匕'), why:'呢個都係「匕」嘅變形，屬 P　心。', quiz:false },
+        { id:'P-qi', g:han('七'), why:'「七」係「匕」嘅變形，屬 P　心。' },
+        { id:'P-qi2', g:han('七'), why:'呢個都係「七」嘅變形，屬 P　心。', quiz:false },
+        { id:'P-yi', g:shp('yiLike'), why:'呢個好似「弋／戈」嘅形係「心」嘅變形，屬 P　心。' },
+        { id:'P-hook', g:shp('hookP'), why:'呢個鈎形係「匕／心」嘅變形，屬 P　心。' },
+        { id:'P-cross', g:shp('crossP'), why:'圖表最右邊呢個十字變體，係「匕／七」再變形，列喺 P　心下面。', quiz:false }
+      ]
+    },
+    { id:'Q', name:'手', hint:'', group:'body',
+      examples:[{ch:'打', code:'QMN', note:'提手旁「扌」取 Q　手'}],
+      aux:[
+        { id:'Q-side', g:han('扌'), why:'提手旁「扌」屬 Q　手。例如「打」= QMN。唔好當成 D　木嘅「才」。' },
+        { id:'Q-top', g:shp('shouTop'), why:'「龵」（手嘅上半，好似三橫加一撇）屬 Q　手。' },
+        { id:'Q-trunk', g:shp('shouTrunk'), why:'呢個係「手」嘅主幹，屬 Q　手。' },
+        { id:'Q-shou', g:han('手'), why:'「手」就係 Q　手嘅字母本身。例如「打」= QMN。' }
+      ]
+    },
+    { id:'R', name:'口', hint:'', group:'body',
+      examples:[{ch:'品', code:'RRR', note:'三個口都取 R　口'}],
+      aux:[]
+    },
+    /* ===== S–Y ===== */
+    { id:'S', name:'尸', hint:'側', group:'shape',
+      examples:[{ch:'區', code:'SRRR', note:'區字框「匚」取 S　尸'}],
+      aux:[
+        { id:'S-ko', g:shp('ko'), why:'「コ」係「尸」嘅上半／側形，屬 S　尸（側）。' },
+        { id:'S-fang', g:han('匚'), why:'「匚」（區字框，向右開口）屬 S　尸。例如「區」= SRRR。' },
+        { id:'S-diao', g:shp('diao'), why:'「刁／𠃌」呢種刀形鈎屬 S　尸。' },
+        { id:'S-hook', g:shp('sideHook'), why:'呢個側鈎屬 S　尸（側）。' },
+        { id:'S-bu', g:shp('buLike'), why:'圖表喺 S　尸畫咗呢個側住嘅卜形，屬於側形輔助字形。' },
+        { id:'S-yi', g:han('已'), why:'「已」呢種側彎形喺圖表列喺 S　尸。成個「已」字會再加山形編碼（尸山）。' },
+        { id:'S-tall', g:shp('tallShi'), why:'呢個長豎、有幾橫嘅形係五代「尸」嘅延伸（好似「非」左邊），屬 S　尸。' }
+      ]
+    },
+    { id:'T', name:'廿', hint:'並', group:'shape',
+      examples:[{ch:'花', code:'TOP', note:'草字頭「艹」取 T　廿'}],
+      aux:[
+        { id:'T-nian', g:han('廿'), why:'「廿」就係 T　廿嘅字母本身。例如「花」= TOP 用草字頭，同樣屬 T。' },
+        { id:'T-cao', g:han('艹'), why:'草字頭「艹」屬 T　廿（並）。例如「花」= TOP。' },
+        { id:'T-zhuo', g:shp('zhuo'), why:'「䒑」（好似「並／首」上面）屬 T　廿。' },
+        { id:'T-gong', g:shp('gongHead'), why:'「共」字頭呢種形屬 T　廿。' },
+        { id:'T-nian2', g:shp('nian'), why:'「廾」屬 T　廿（並）。' },
+        { id:'T-sa', g:han('卅'), why:'「卅」屬 T　廿。' },
+        { id:'T-bing', g:shp('bing'), why:'呢個左右對稱嘅「並」形屬 T　廿。' },
+        { id:'T-chou', g:shp('chou'), why:'呢個平行（好似卄／丑）嘅形屬 T　廿。' }
+      ]
+    },
+    { id:'U', name:'山', hint:'仰', group:'shape',
+      examples:[{ch:'出', code:'UU', note:'兩個山形取 U　山'}, {ch:'孔', code:'NDU', note:'末筆豎曲「乚」取 U　山'}],
+      aux:[
+        { id:'U-shan', g:han('山'), why:'「山」就係 U　山嘅字母本身。例如「出」= UU。' },
+        { id:'U-qu', g:shp('qu'), why:'「凵」（好似「凶」嘅外框）屬 U　山（仰）。' },
+        { id:'U-shi', g:shp('shiU'), why:'呢條豎曲（し／乚）屬 U　山。例如「孔」= NDU。N　弓雖然都有鈎形，但「孔」末筆呢種仰起嘅曲筆取 U。' },
+        { id:'U-che', g:shp('che'), why:'「屮」屬 U　山。' },
+        { id:'U-tall', g:shp('cheTall'), why:'呢個伸長咗嘅「屮」同樣屬 U　山。' }
+      ]
+    },
+    { id:'V', name:'女', hint:'紐', group:'shape',
+      examples:[{ch:'紅', code:'VFM', note:'絞絲旁取 V　女'}],
+      aux:[
+        { id:'V-nv', g:han('女'), why:'「女」就係 V　女嘅字母本身。例如「紅」= VFM 嘅絞絲旁由 V　女開頭。' },
+        { id:'V-ku', g:shp('kuSmall'), why:'呢個「く」係「紐」形，屬 V　女（例如絞絲旁）。O　人亦有一個好似く嘅變形，單睇形狀時要記：紐／絞絲取 V。', quiz:false },
+        { id:'V-si', g:han('厶'), why:'圖表喺 V　女都畫咗一個「厶」形（紐形）。不過單獨嘅「厶」（例如「去」= GI、「公」= CI）取 I　戈。', quiz:false },
+        { id:'V-re', g:shp('re'), why:'「レ」形屬 V　女（紐）。' },
+        { id:'V-l', g:shp('lShape'), why:'呢個豎折（好似 L）屬 V　女（紐）。' },
+        { id:'V-turn', g:shp('vTurn'), why:'呢條向下再轉嘅豎折屬 V　女。' },
+        { id:'V-silk', g:shp('silk'), why:'呢個絞絲類小折係「紐」形，屬 V　女。例如「紅」= VFM。' }
+      ]
+    },
+    { id:'W', name:'田', hint:'方', group:'shape',
+      examples:[{ch:'國', code:'WIRM', note:'大口框取 W　田'}, {ch:'回', code:'WR', note:'外框取 W　田，裏面嘅口取 R　口'}],
+      aux:[
+        { id:'W-box', g:shp('box'), why:'空心大方框「囗」屬 W　田（方）。細嘅「口」先係 R　口。' },
+        { id:'W-boxIn', g:shp('boxIn'), why:'圖表用紅色嘅框表示：框裏面可以有筆畫（好似「國」「回」嘅外框），都屬 W　田。例如「國」= WIRM、「回」= WR。' },
+        { id:'W-mu', g:han('母'), why:'「母／毋」係「田」嘅變形，屬 W　田。' }
+      ]
+    },
+    { id:'Y', name:'卜', hint:'', group:'shape',
+      examples:[{ch:'文', code:'YK', note:'「亠」取 Y　卜'}, {ch:'這', code:'YYMR', note:'走之底「辶」取 Y　卜'}],
+      aux:[
+        { id:'Y-bu', g:han('卜'), why:'「卜」就係 Y　卜嘅字母本身。例如「文」= YK。' },
+        { id:'Y-tou', g:han('亠'), why:'「亠」（點加一橫）屬 Y　卜。例如「文」= YK。' },
+        { id:'Y-dots', g:han('⺀'), why:'呢兩點（⺀）屬 Y　卜。' },
+        { id:'Y-chuo', g:han('辶'), why:'走之底「辶」屬 Y　卜。例如「這」= YYMR。' }
+      ]
+    },
+    { id:'X', name:'難', hint:'', group:'special', quiz:false,
+      aux:[ { id:'X-nan', g:han('難'), quiz:false }, { id:'X-zhong', g:han('重'), quiz:false } ]
+    },
+    { id:'Z', name:'符', hint:'', group:'special', quiz:false,
+      aux:[ { id:'Z-note', g:han('片造'), quiz:false, text:'片造（片語造字）' } ]
+    }
+  ];
+
+  var KEYMAP = {};
+  KEYS.forEach(function (k) { KEYMAP[k.id] = k; });
+
+  var GROUP_META = {
+    philo:  { id:'philo',  title:'哲理類 A–G', sub:'日月金木水火土', cls:'philo' },
+    stroke: { id:'stroke', title:'筆畫類 H–N', sub:'竹戈十大中一弓', cls:'stroke' },
+    body:   { id:'body',   title:'人體類 O–R', sub:'人心手口', cls:'body' },
+    shape:  { id:'shape',  title:'字形類 S–Y', sub:'尸廿山女田卜', cls:'shape' },
+    special:{ id:'special',title:'特殊鍵',     sub:'難　符', cls:'special' }
+  };
+
+  var SIMILAR = {
+    A:['W','R','J','B'], B:['S','R','W','A'], C:['O','F','K','I'],
+    D:['Q','G','J','O'], E:['F','I','N','C'], F:['C','E','O','I'],
+    G:['M','D','J','T'], H:['I','M','O','K'], I:['J','Y','F','H'],
+    J:['I','M','B','G'], K:['C','O','I','H'], L:['N','U','I','H'],
+    M:['H','G','I','J'], N:['U','V','L','E'], O:['C','K','V','Q'],
+    P:['F','O','U','Q'], Q:['D','O','P','L'], R:['W','A','B','S'],
+    S:['B','W','N','R'], T:['G','M','U','J'], U:['N','T','L','P'],
+    V:['O','I','N','U'], W:['R','A','S','B'], Y:['I','J','N','F']
+  };
+
+  var QUIZ_KEYS = KEYS.filter(function (k) { return k.quiz !== false; });
+
+  function keysIn(group) {
+    return QUIZ_KEYS.filter(function (k) { return k.group === group; });
+  }
+  function quizAux(k) {
+    return (k.aux || []).filter(function (a) { return a.quiz !== false && !a.text; });
+  }
+  function allQuizAux() {
+    var out = [];
+    QUIZ_KEYS.forEach(function (k) {
+      quizAux(k).forEach(function (a) { out.push({ key:k, aux:a }); });
+    });
+    return out;
+  }
+
+  function renderGlyph(g, extraClass) {
+    var cls = 'glyph' + (extraClass ? ' ' + extraClass : '');
+    if (!g) return '';
+    if (g.kind === 'han') return '<span class="' + cls + '">' + g.ch + '</span>';
+    if (g.kind === 'svg') return '<span class="' + cls + '">' + (SH[g.name] || '') + '</span>';
+    return '';
+  }
+
+  function shuffle(arr) {
+    var a = arr.slice();
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = a[i]; a[i] = a[j]; a[j] = t;
+    }
+    return a;
+  }
+  function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, function (c) {
+      return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]);
+    });
+  }
+
+  function distractorKeys(correctId, n, poolIds) {
+    var pool = poolIds || QUIZ_KEYS.map(function (k) { return k.id; });
+    var prefer = (SIMILAR[correctId] || []).filter(function (id) {
+      return id !== correctId && pool.indexOf(id) !== -1 && KEYMAP[id];
+    });
+    var rest = shuffle(pool.filter(function (id) {
+      return id !== correctId && prefer.indexOf(id) === -1;
+    }));
+    var ids = prefer.concat(rest).slice(0, n);
+    while (ids.length < n) {
+      var extra = pick(QUIZ_KEYS).id;
+      if (extra !== correctId && ids.indexOf(extra) === -1) ids.push(extra);
+    }
+    return ids.map(function (id) { return KEYMAP[id]; });
+  }
+
+  function letterChoices(correct, lettersOnly, namesOnly, poolIds) {
+    var d = distractorKeys(correct.id, 3, poolIds);
+    var opts = shuffle([correct].concat(d)).map(function (k) {
+      var html;
+      if (lettersOnly) html = '<span class="kletter">' + k.id + '</span>';
+      else if (namesOnly) html = escapeHtml(k.name);
+      else html = '<span class="kletter">' + k.id + '</span>　' + escapeHtml(k.name);
+      return { id:k.id, html:html, correct: k.id === correct.id };
+    });
+    return opts;
+  }
+
+  function letterItem(key, dir, poolIds) {
+    var lettersOnly = dir === 'nameToLetter';
+    var namesOnly = dir === 'letterToName';
+    return {
+      type: 'letter',
+      keyId: key.id,
+      dir: dir,
+      ask: dir === 'nameToLetter'
+        ? '「' + key.name + '」係邊個倉頡字母？'
+        : '字母 ' + key.id + ' 代表乜嘢？',
+      promptKind: dir === 'nameToLetter' ? 'name' : 'letter',
+      promptText: dir === 'nameToLetter' ? key.name : key.id,
+      options: letterChoices(key, lettersOnly, namesOnly, poolIds),
+      why: '記住永遠一齊記：<span class="pair">' + pair(key) + '</span>。'
+        + exampleHtml(key)
+    };
+  }
+
+  function auxItem(key, aux) {
+    return {
+      type: 'aux',
+      keyId: key.id,
+      auxId: aux.id,
+      ask: '呢個拆件屬於邊個倉頡字母？',
+      promptKind: 'glyph',
+      glyph: aux.g,
+      options: letterChoices(key, false, false),
+      why: aux.why + (aux.why.indexOf('例如') >= 0 ? '' : exampleHtml(key))
+    };
+  }
+
+  function exampleHtml(key) {
+    if (!key.examples || !key.examples.length) return '';
+    var e = key.examples[0];
+    return ' <span class="ex">例如「' + e.ch + '」= ' + e.code
+      + (e.note ? '（' + e.note + '）' : '') + '</span>';
+  }
+
+  function similarItem(item) {
+    var key = KEYMAP[item.keyId];
+    if (!key) return item;
+    if (item.type === 'aux') {
+      var others = quizAux(key).filter(function (a) { return a.id !== item.auxId; });
+      if (others.length) return auxItem(key, pick(others));
+      return auxItem(key, (key.aux || []).filter(function (a) { return a.id === item.auxId; })[0] || key.aux[0]);
+    }
+    var dir = item.dir === 'letterToName' ? 'nameToLetter' : 'letterToName';
+    return letterItem(key, dir);
+  }
+
+  function markRetry(item) {
+    var copy = {};
+    Object.keys(item).forEach(function (k) { copy[k] = item[k]; });
+    copy.retry = true;
+    if (copy.type === 'letter') copy.options = letterChoices(KEYMAP[copy.keyId], copy.dir === 'nameToLetter', copy.dir === 'letterToName');
+    if (copy.type === 'aux') copy.options = letterChoices(KEYMAP[copy.keyId], false, false);
+    return copy;
+  }
+
+  /* ----- modes ----- */
+  var MODES = [
+    { id:'philo', kind:'group', group:'philo', ico:'🌸', cls:'philo', title:'哲理類 A–G', desc:'' },
+    { id:'stroke', kind:'group', group:'stroke', ico:'✍️', cls:'stroke', title:'筆畫類 H–N', desc:'' },
+    { id:'body', kind:'group', group:'body', ico:'🙂', cls:'body', title:'人體類 O–R', desc:'' },
+    { id:'shape', kind:'group', group:'shape', ico:'🔲', cls:'shape', title:'字形類 S–Y', desc:'' },
+    { id:'letters', kind:'letters', ico:'🔤', cls:'letter', title:'字母配對', desc:'英文字母 ↔ 中文名，兩邊都會練到。' },
+    { id:'aux', kind:'aux', ico:'🧩', cls:'aux', title:'拆件配對', desc:'睇一個拆件，配對返正確字母。' },
+    { id:'mix', kind:'mix', ico:'🏆', cls:'mix wide', title:'綜合闖關', desc:'字母配對同拆件配對混合挑戰！' },
+    { id:'chart', kind:'chart', ico:'📖', cls:'chartbtn', title:'字母表', desc:'彩色字表，溫習用，唔計分。' }
+  ];
+
+  function buildQueue(modeId) {
+    var items = [];
+    if (modeId === 'letters') {
+      QUIZ_KEYS.forEach(function (k) {
+        items.push(letterItem(k, Math.random() < 0.5 ? 'letterToName' : 'nameToLetter'));
+      });
+      return shuffle(items);
+    }
+    if (modeId === 'aux') {
+      allQuizAux().forEach(function (x) { items.push(auxItem(x.key, x.aux)); });
+      return shuffle(items);
+    }
+    if (modeId === 'mix') {
+      var letters = shuffle(QUIZ_KEYS.slice());
+      var auxs = shuffle(allQuizAux());
+      /* 24 questions: 12 letter (all letters would be 24; take 12) + 12 aux, covering as many keys as possible */
+      var used = {};
+      letters.slice(0, 12).forEach(function (k) {
+        items.push(letterItem(k, Math.random() < 0.5 ? 'letterToName' : 'nameToLetter'));
+        used[k.id] = true;
+      });
+      var auxPicked = [];
+      auxs.forEach(function (x) {
+        if (auxPicked.length >= 12) return;
+        if (!used[x.key.id] || auxPicked.length < 8) {
+          auxPicked.push(x);
+          used[x.key.id] = true;
+        }
+      });
+      while (auxPicked.length < 12 && auxs.length) {
+        var x = auxs[auxPicked.length % auxs.length];
+        var dup = auxPicked.some(function (p) { return p.aux.id === x.aux.id; });
+        if (!dup) auxPicked.push(x);
+        else auxs = auxs.slice(1).concat(auxs[0]);
+      }
+      auxPicked.forEach(function (x) { items.push(auxItem(x.key, x.aux)); });
+      return shuffle(items);
+    }
+    /* group */
+    var ks = keysIn(modeId);
+    var pool = ks.map(function (k) { return k.id; });
+    ks.forEach(function (k) {
+      items.push(letterItem(k, Math.random() < 0.5 ? 'letterToName' : 'nameToLetter', pool));
+    });
+    ks.forEach(function (k) {
+      quizAux(k).forEach(function (a) { items.push(auxItem(k, a)); });
+    });
+    return shuffle(items);
+  }
+
+  function countFor(mode) {
+    if (mode.kind === 'letters') return QUIZ_KEYS.length;
+    if (mode.kind === 'aux') return allQuizAux().length;
+    if (mode.kind === 'mix') return 24;
+    if (mode.kind === 'group') {
+      var ks = keysIn(mode.group);
+      var n = ks.length;
+      ks.forEach(function (k) { n += quizAux(k).length; });
+      return n;
+    }
+    return 0;
+  }
+
+  /* ----- chart ----- */
+  function renderChart() {
+    var order = ['philo','stroke','body','shape','special'];
+    var html = '';
+    order.forEach(function (g) {
+      var meta = GROUP_META[g];
+      var ks = KEYS.filter(function (k) { return k.group === g; });
+      html += '<div class="group-title ' + meta.cls + '">' + meta.title + '　' + meta.sub + '</div>';
+      html += '<div class="rows' + (ks.length > 3 ? ' two' : '') + '">';
+      ks.forEach(function (k) {
+        var hint = k.hint ? '<div class="khint">（' + escapeHtml(k.hint) + '）</div>' : '';
+        var auxHtml;
+        if (k.id === 'Z') {
+          auxHtml = '<span class="aux-empty">片造（片語造字）</span>';
+        } else if (k.id === 'R' || !(k.aux && k.aux.length)) {
+          auxHtml = '<span class="aux-empty">輔助格係空嘅。框內若有筆畫就唔係 R　口。</span>';
+        } else {
+          auxHtml = k.aux.map(function (a) {
+            if (a.text) return '<span class="aux-empty">' + escapeHtml(a.text) + '</span>';
+            return renderGlyph(a.g);
+          }).join('');
+        }
+        html += '<div class="krow ' + meta.cls + '">'
+          + '<div class="kmeta"><div class="kpair"><span class="kl">' + k.id + '</span>' + escapeHtml(k.name) + '</div>' + hint + '</div>'
+          + '<div class="auxs">' + auxHtml + '</div>'
+          + '</div>';
+      });
+      html += '</div>';
+    });
+    $('chart').innerHTML = html;
+  }
+
+  /* ----- UI ----- */
+  var $ = function (id) { return document.getElementById(id); };
+  var state = { mode:null, queue:[], i:0, correct:0, answered:0, firstTry:0, planned:0 };
+
+  var PRAISE = ['🌟 好叻呀！', '🎉 完全正確！', '💯 犀利！', '🚀 勁呀！繼續！', '👏 做得好！', '😎 記得好實！', '✨ 一擊即中！'];
+
+  function show(id) {
+    ['home','quiz','finish'].forEach(function (s) { $(s).classList.toggle('hidden', s !== id); });
+  }
+
+  function paintHome() {
+    var el = $('modes');
+    el.innerHTML = MODES.map(function (m) {
+      var n = countFor(m);
+      var desc = m.desc;
+      if (m.kind === 'group') {
+        var meta = GROUP_META[m.group];
+        desc = meta.sub + '　約 ' + n + ' 題（字母＋拆件）';
+      } else if (m.kind === 'letters') desc = '24 個字母，隨機方向　共 ' + n + ' 題';
+      else if (m.kind === 'aux') desc = '圖表入面嘅拆件都會出現　共 ' + n + ' 題';
+      else if (m.kind === 'mix') desc = '字母配對同拆件配對混合　共 ' + n + ' 題';
+      return '<button type="button" class="mode ' + m.cls + '" data-mode="' + m.id + '">'
+        + '<span class="ico">' + m.ico + '</span>'
+        + '<span class="ttl">' + m.title + '</span>'
+        + '<span class="desc">' + desc + '</span></button>';
+    }).join('');
+    el.querySelectorAll('[data-mode]').forEach(function (btn) {
+      btn.addEventListener('click', function () { startMode(btn.getAttribute('data-mode')); });
+    });
+  }
+
+  function startMode(id) {
+    if (id === 'chart') { openChart(); return; }
+    var q = buildQueue(id);
+    state = { mode:id, queue:q, i:0, correct:0, answered:0, firstTry:0, planned:q.length };
+    show('quiz');
+    renderQuestion();
+  }
+
+  function current() { return state.queue[state.i]; }
+
+  function renderQuestion() {
+    var item = current();
+    if (!item) { showFinish(); return; }
+    $('progTxt').textContent = '題 ' + (state.i + 1) + ' / ' + state.queue.length;
+    $('stars').textContent = String(state.correct);
+    $('bar').style.width = (state.planned ? Math.min(100, (state.answered / state.planned) * 100) : 0) + '%';
+    var mode = MODES.filter(function (m) { return m.id === state.mode; })[0];
+    $('tag').textContent = mode ? mode.title : '練習';
+    $('retryTag').classList.toggle('hidden', !item.retry);
+    $('ask').textContent = item.ask;
+    var box = $('prompt');
+    box.className = 'prompt-glyph';
+    if (item.promptKind === 'letter') {
+      box.className = 'prompt-letter';
+      box.textContent = item.promptText;
+    } else if (item.promptKind === 'name') {
+      box.className = 'prompt-name';
+      box.textContent = item.promptText;
+    } else {
+      box.innerHTML = renderGlyph(item.glyph, 'prompt-glyph');
+    }
+    $('feedback').textContent = '';
+    $('feedback').className = 'feedback';
+    $('why').innerHTML = '';
+    $('nextBtn').classList.add('hidden');
+    var mcq = $('mcq');
+    mcq.innerHTML = '';
+    item.options.forEach(function (opt, idx) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'opt';
+      b.innerHTML = opt.html;
+      b.setAttribute('data-i', String(idx));
+      b.addEventListener('click', function () { choose(idx); });
+      mcq.appendChild(b);
+    });
+  }
+
+  function choose(idx) {
+    var item = current();
+    if (!item || item.locked) return;
+    item.locked = true;
+    var opt = item.options[idx];
+    var btns = $('mcq').querySelectorAll('.opt');
+    btns.forEach(function (b, i) {
+      b.disabled = true;
+      if (item.options[i].correct) b.classList.add('right');
+      if (i === idx && !opt.correct) b.classList.add('wrong');
+    });
+    var key = KEYMAP[item.keyId];
+    state.answered += 1;
+    if (opt.correct) {
+      if (!item.retry) state.firstTry += 1;
+      state.correct += 1;
+      $('stars').textContent = String(state.correct);
+      $('feedback').className = 'feedback good pop';
+      $('feedback').textContent = pick(PRAISE) + ' 答案係 ' + pair(key) + '。';
+    } else {
+      $('feedback').className = 'feedback bad';
+      $('feedback').textContent = '唔係呀，正確係 ' + pair(key) + '。';
+      $('why').innerHTML = '<div class="why">' + item.why + '</div>';
+      var retry = markRetry(similarItem(item));
+      state.queue.push(retry);
+    }
+    $('nextBtn').classList.remove('hidden');
+    $('bar').style.width = (state.planned ? Math.min(100, (state.answered / Math.max(state.queue.length, state.planned)) * 100) : 0) + '%';
+  }
+
+  function nextQ() {
+    state.i += 1;
+    if (state.i >= state.queue.length) showFinish();
+    else renderQuestion();
+  }
+
+  function showFinish() {
+    show('finish');
+    var total = state.answered;
+    var acc = total ? Math.round((state.correct / total) * 100) : 0;
+    var extra = state.queue.length - state.planned;
+    $('finEmoji').textContent = acc >= 90 ? '🏆' : acc >= 70 ? '🎉' : '💪';
+    $('finTitle').textContent = acc >= 90 ? '完成！好叻呀！' : acc >= 70 ? '完成！繼續加油！' : '完成！再練習就會更熟！';
+    $('finSummary').innerHTML = '今次一共答咗 <b>' + total + '</b> 題，答啱 <b>' + state.correct + '</b> 題（' + acc + '%）。'
+      + (state.firstTry ? '<br>其中 <b>' + state.firstTry + '</b> 題係一次就答啱。' : '')
+      + (extra > 0 ? '<br>有 <b>' + extra + '</b> 題係答錯之後再練習嘅相似題。' : '');
+  }
+
+  function openChart() { $('overlay').classList.remove('hidden'); }
+  function closeChart() { $('overlay').classList.add('hidden'); }
+
+  $('homeBtn').addEventListener('click', function () { show('home'); });
+  $('nextBtn').addEventListener('click', nextQ);
+  $('againBtn').addEventListener('click', function () { startMode(state.mode); });
+  $('backBtn').addEventListener('click', function () { show('home'); });
+  $('peekBtn').addEventListener('click', openChart);
+  $('finChartBtn').addEventListener('click', openChart);
+  $('closeChart').addEventListener('click', closeChart);
+  $('overlay').addEventListener('click', function (e) { if (e.target === $('overlay')) closeChart(); });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') closeChart();
+  });
+
+  renderChart();
+  paintHome();
+})();
+</script>
+</body>
+</html>
