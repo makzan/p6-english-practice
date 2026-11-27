@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>Unit 3 詞彙 · P6 English</title>
+<style>
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body {
+    margin: 0; min-height: 100vh; padding: 14px 14px 28px;
+    font-family: "Arial Rounded MT Bold", "Comic Sans MS", "PingFang TC", "Microsoft JhengHei", "Noto Sans TC", sans-serif;
+    background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 35%, #a1c4fd 75%, #c2e9fb 100%);
+    background-attachment: fixed; color: #333;
+    display: flex; flex-direction: column; align-items: center;
+  }
+  h1 { font-size: clamp(1.2rem, 4.5vw, 2rem); text-align: center; margin: 8px 0 4px; color: #0d47a1; text-shadow: 2px 2px 0 #fff; }
+  .sub { text-align: center; color: #1565c0; margin: 0 0 14px; font-size: 1.02rem; }
+  .card {
+    background: #fff; border-radius: 28px; width: 100%; max-width: 720px;
+    padding: 22px 16px 26px; box-shadow: 0 10px 30px rgba(13,71,161,.2);
+    text-align: center; position: relative; border: 5px solid #ffd166;
+  }
+  .hidden { display: none !important; }
+  button { font-family: inherit; cursor: pointer; border: none; }
+  a.homelink { color: #1565c0; font-weight: bold; text-decoration: none; }
+  .intro { font-size: 1.05rem; line-height: 1.7; background: #e3f2fd; border-radius: 16px; padding: 12px 14px; margin-bottom: 14px; text-align: left; }
+  .topics { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .topic {
+    background: #e3f2fd; border-radius: 18px; padding: 14px 10px; font-size: 1.08rem; font-weight: bold;
+    color: #0d47a1; box-shadow: 0 5px 0 #90caf9; text-align: left;
+  }
+  .topic .ti { font-size: 1.8rem; display: block; margin-bottom: 2px; }
+  .topic .desc { font-size: .82rem; font-weight: normal; margin-top: 4px; color: #555; }
+  .topic:active { transform: translateY(3px); box-shadow: 0 2px 0 #90caf9; }
+  .topic.mix { grid-column: 1 / -1; background: #fff8e1; color: #e65100; box-shadow: 0 5px 0 #ffd166; }
+  .topic.mix:active { box-shadow: 0 2px 0 #ffd166; }
+  .topbar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
+  .pill { background: #e3f2fd; border-radius: 999px; padding: 6px 12px; font-weight: bold; color: #0d47a1; font-size: .95rem; }
+  .pill.green { background: #d8f8e1; color: #1b7a3d; }
+  .pill.orange { background: #ffe8cc; color: #b35900; }
+  .pill.star { background: #fff8e1; color: #f57f17; }
+  .homebtn, .backbtn { background: #eceff1; border-radius: 999px; padding: 6px 12px; font-size: 1rem; color: #333; }
+  .bar { flex: 1 1 100%; height: 14px; background: #e0e0e0; border-radius: 999px; overflow: hidden; }
+  .bar > div { height: 100%; width: 0; background: linear-gradient(90deg, #06d6a0, #118ab2); transition: width .35s; }
+  .pos { display: inline-block; background: #ef476f; color: #fff; border-radius: 12px; padding: 4px 12px; font-size: 1rem; margin: 0 4px 8px; }
+  .badge { display: inline-block; background: #ffe082; color: #6d4c00; border-radius: 12px; padding: 3px 10px; font-size: .85rem; font-weight: bold; margin-left: 4px; }
+  .retry-tag { display: inline-block; background: #ffd166; border-radius: 10px; padding: 3px 10px; font-size: .9rem; margin-bottom: 6px; color: #7a5200; }
+  .prompt { font-size: 1.08rem; color: #0d47a1; margin: 8px 0 4px; font-weight: bold; }
+  .chinese { font-size: clamp(1.8rem, 8vw, 3rem); font-weight: bold; color: #073b4c; margin: 6px 0 12px; line-height: 1.3; }
+  .english { font-size: clamp(1.6rem, 7vw, 2.6rem); font-weight: bold; color: #118ab2; margin: 6px 0 8px; word-break: break-word; }
+  .ipa { font-family: "Charis SIL", "Doulos SIL", "Noto Sans", "Segoe UI", "Lucida Grande", "Arial Unicode MS", sans-serif; font-size: 1.15rem; color: #6a1b9a; letter-spacing: .02em; margin: 0 0 8px; }
+  .hint { color: #888; font-size: 1.02rem; margin: 6px 0 12px; }
+  .choices { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 8px; }
+  .choice {
+    background: #e3f2fd; color: #0d47a1; font-size: clamp(1rem, 3.8vw, 1.22rem); font-weight: bold;
+    border-radius: 16px; padding: 14px 10px; min-height: 64px; box-shadow: 0 5px 0 #90caf9;
+  }
+  .choice:active { transform: translateY(3px); box-shadow: 0 2px 0 #90caf9; }
+  .choice.right { background: #c8e6c9; box-shadow: 0 5px 0 #66bb6a; color: #1b5e20; }
+  .choice.wrong { background: #ffcdd2; box-shadow: 0 5px 0 #e57373; color: #b71c1c; }
+  .choice:disabled { cursor: default; }
+  .speak { display: inline-block; margin: 6px 4px; background: #118ab2; color: #fff; font-size: 1.05rem; font-weight: bold; border-radius: 999px; padding: 12px 18px; box-shadow: 0 4px 0 #01579b; }
+  .speak:active { transform: translateY(3px); box-shadow: 0 1px 0 #01579b; }
+  .btn-go { background: #1565c0; color: #fff; font-size: 1.2rem; font-weight: bold; border-radius: 20px; padding: 14px 24px; box-shadow: 0 6px 0 #0d47a1; margin: 6px; min-width: 140px; }
+  .btn-go:active { transform: translateY(4px); box-shadow: 0 2px 0 #0d47a1; }
+  .btn-start { background: #ff8c42; color: #fff; font-size: 1.35rem; font-weight: bold; border-radius: 20px; padding: 16px 28px; box-shadow: 0 6px 0 #e65100; margin: 8px 6px; min-width: 160px; }
+  .btn-start:active { transform: translateY(4px); box-shadow: 0 2px 0 #e65100; }
+  .next { display: inline-block; margin: 14px 6px 0; font-size: 1.3rem; font-weight: bold; color: #fff; background: #fb8c00; border-radius: 20px; padding: 14px 28px; box-shadow: 0 6px 0 #e65100; min-width: 180px; }
+  .next:active { transform: translateY(4px); box-shadow: 0 2px 0 #e65100; }
+  .fb { text-align: center; font-size: 1.2rem; font-weight: bold; margin-top: 10px; min-height: 1.3em; }
+  .fb.good { color: #2e7d32; } .fb.bad { color: #c62828; }
+  .why { background: #fff3e0; border-left: 6px solid #ff9800; border-radius: 10px; padding: 10px 12px; margin: 10px 0; font-size: 1.05rem; line-height: 1.6; text-align: left; }
+  .why b { color: #e65100; }
+  input.spell {
+    font-family: inherit; font-size: 1.45rem; font-weight: bold; width: 100%; max-width: 440px;
+    padding: 14px 16px; border: 4px solid #90caf9; border-radius: 16px; text-align: center;
+    letter-spacing: .4px; margin: 8px auto; display: block; background: #f7fbff;
+  }
+  input.spell:focus { outline: none; border-color: #1565c0; background: #fff; }
+  input.spell.right { border-color: #2e7d32; background: #e8f5e9; }
+  input.spell.wrong { border-color: #c62828; background: #ffebee; }
+  .sizes { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-top: 8px; }
+  .voice-warn { color: #c0392b; font-size: .95rem; margin-top: 8px; }
+  .big-emoji { font-size: 4rem; margin: 6px 0; }
+  @keyframes bounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+  .bounce { animation: bounce 1s infinite; display: inline-block; }
+  .confetti { position: fixed; top: -20px; font-size: 1.6rem; pointer-events: none; animation: fall linear forwards; z-index: 99; }
+  @keyframes fall { to { transform: translateY(110vh) rotate(720deg); opacity: .7; } }
+  @keyframes pop { 0% { transform: scale(.6); opacity: 0; } 80% { transform: scale(1.08); } 100% { transform: scale(1); opacity: 1; } }
+  .answer { font-size: clamp(1.6rem, 7vw, 2.4rem); font-weight: bold; color: #118ab2; margin: 8px 0 4px; word-break: break-word; animation: pop .35s ease; }
+  .list-wrap { text-align: left; max-height: none; }
+  .list-sec { font-size: 1.15rem; color: #0d47a1; margin: 16px 0 8px; }
+  .wrow {
+    display: grid; grid-template-columns: 1fr auto; gap: 6px 10px; align-items: start;
+    border-bottom: 2px solid #e3f2fd; padding: 10px 4px;
+  }
+  .wrow .en { font-weight: bold; color: #0d47a1; font-size: 1.12rem; }
+  .wrow .zh { color: #333; font-size: 1.05rem; }
+  .wrow .meta { color: #6a1b9a; font-size: .95rem; }
+  .wrow .speak { padding: 8px 12px; font-size: .95rem; margin: 0; }
+  ul.retry-list { list-style: none; padding: 0; display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+  ul.retry-list li { background: #fff3cd; border: 2px solid #ffd166; border-radius: 14px; padding: 6px 12px; font-size: 1.05rem; text-align: left; }
+  ul.retry-list li b { color: #118ab2; }
+  .note { font-size: .92rem; color: #555; line-height: 1.5; margin-top: 8px; }
+</style>
+</head>
+<body>
+  <h1>💼 Unit 3 詞彙 🎧</h1>
+  <div class="sub">2026-2027 P6 English · 職業同工作主題</div>
+
+  <div class="card" id="homeScreen">
+    <div class="intro">
+      <b>產出詞彙 42 個：</b>要識串字、讀音同解釋。<br>
+      <b>接受詞彙 8 個：</b>只須辨認意思，唔使識串。
+    </div>
+    <div class="topics" id="topics"></div>
+    <p style="margin:16px 0 0"><a class="homelink" href="../">🏠 返回練習目錄</a></p>
+    <div class="voice-warn hidden" id="voiceWarn">⚠️ 呢個瀏覽器唔支援語音朗讀，可以照樣練習（建議用 Chrome / Safari）。</div>
+  </div>
+
+  <div class="card hidden" id="setupScreen">
+    <div class="topbar">
+      <button type="button" class="backbtn" id="setupBack">← 返回</button>
+      <span class="pill" id="setupTitle">模式</span>
+    </div>
+    <p class="prompt" id="setupDesc"></p>
+    <div class="sizes" id="setupSizes"></div>
+  </div>
+
+  <div class="card hidden" id="listScreen">
+    <div class="topbar">
+      <button type="button" class="backbtn" id="listBack">← 返回</button>
+      <span class="pill">📖 詞表</span>
+      <button type="button" class="speak" id="listStop" style="margin-left:auto">⏹ 停止朗讀</button>
+    </div>
+    <p class="note">按 🔊 聽讀音。接受詞彙已標示「只須辨認」，唔使識串。</p>
+    <div class="list-wrap" id="wordList"></div>
+  </div>
+
+  <div class="card hidden" id="quizScreen">
+    <div class="topbar">
+      <button type="button" class="backbtn" id="quizBack">← 返回</button>
+      <span class="pill" id="modePill"></span>
+      <span class="pill" id="progTxt"></span>
+      <span class="pill green">⭐ <span id="stars">0</span></span>
+      <span class="pill orange">🔁 <span id="retryN">0</span></span>
+      <div class="bar"><div id="bar"></div></div>
+    </div>
+    <div id="retryTag" class="retry-tag hidden">🔁 再試一次！</div>
+    <div id="qArea"></div>
+    <div class="fb" id="fb"></div>
+    <div id="why" class="why hidden"></div>
+    <button type="button" class="next hidden" id="nextBtn">下一題 👉</button>
+  </div>
+
+  <div class="card hidden" id="finishScreen">
+    <div class="big-emoji bounce">🏆</div>
+    <h2 style="color:#0d47a1;margin:6px 0">全部完成！好叻呀！🎉</h2>
+    <p style="font-size:1.2rem" id="summary"></p>
+    <div id="retrySection"></div>
+    <div class="sizes">
+      <button type="button" class="btn-start" id="againBtn">🔄 再玩一次</button>
+      <button type="button" class="btn-go" id="finishHome">🏠 返回模式</button>
+    </div>
+  </div>
+
+<script>
+(function () {
+  "use strict";
+
+  var WORDS = [
+    { n:1,  en:"journalist", pos:"n.", zh:"記者、新聞工作者", ipa:"/ˈdʒɜːnəlɪst/", cat:"job", rec:false },
+    { n:2,  en:"civil servant", pos:"n.", zh:"公務員", ipa:"/ˌsɪvl ˈsɜːvənt/", cat:"job", rec:false },
+    { n:3,  en:"photographer", pos:"n.", zh:"攝影師", ipa:"/fəˈtɒɡrəfə/", cat:"job", rec:false },
+    { n:4,  en:"bank teller", pos:"n.", zh:"銀行櫃員", ipa:"/bæŋk ˈtelə/", cat:"job", rec:false },
+    { n:5,  en:"real estate agent", pos:"n.", zh:"房地產經紀人", ipa:"/ˌrɪəl ɪˈsteɪt ˌeɪdʒənt/", cat:"job", rec:false },
+    { n:6,  en:"insurance agent", pos:"n.", zh:"保險代理人", ipa:"/ɪnˈʃʊərəns ˌeɪdʒənt/", cat:"job", rec:false },
+    { n:7,  en:"merchant", pos:"n.", zh:"商人、商家", ipa:"/ˈmɜːtʃənt/", cat:"job", rec:false },
+    { n:8,  en:"lawyer", pos:"n.", zh:"律師", ipa:"/ˈlɔːjə/", cat:"job", rec:false },
+    { n:9,  en:"judge", pos:"n.", zh:"法官", ipa:"/dʒʌdʒ/", cat:"job", rec:false },
+    { n:10, en:"accountant", pos:"n.", zh:"會計師", ipa:"/əˈkaʊntənt/", cat:"job", rec:false },
+    { n:11, en:"pharmacist", pos:"n.", zh:"藥劑師", ipa:"/ˈfɑːməsɪst/", cat:"job", rec:false },
+    { n:12, en:"manager", pos:"n.", zh:"經理", ipa:"/ˈmænɪdʒə/", cat:"job", rec:false },
+    { n:13, en:"dealer", pos:"n.", zh:"荷官、發牌員", ipa:"/ˈdiːlə/", cat:"job", rec:false,
+      tip:"呢個 dealer 喺工作紙入面係指荷官、發牌員，唔係「經銷商」。" },
+    { n:14, en:"clerk", pos:"n.", zh:"文書職員", ipa:"/klɑːk/", cat:"job", rec:false,
+      tip:"英式讀音係 /klɑːk/。" },
+    { n:15, en:"tour guide", pos:"n.", zh:"導遊", ipa:"/ˈtʊə ɡaɪd/", cat:"job", rec:false },
+    { n:16, en:"security guard", pos:"n.", zh:"保安、警衛", ipa:"/sɪˈkjʊərəti ɡɑːd/", cat:"job", rec:false },
+    { n:17, en:"domestic helper", pos:"n.", zh:"家務助理、家傭", ipa:"/dəˈmestɪk ˈhelpə/", cat:"job", rec:false },
+    { n:18, en:"tutor", pos:"n.", zh:"家庭教師、補習老師", ipa:"/ˈtjuːtə/", cat:"job", rec:false },
+    { n:19, en:"YouTuber", pos:"n.", zh:"YouTube 創作者、影片博主", ipa:"/ˈjuːtjuːbə/", cat:"job", rec:false,
+      tip:"寫成一個字 YouTuber 就可以（大細階唔計）。" },
+    { n:20, en:"robotics engineer", pos:"n.", zh:"機械人工程師", ipa:"/rəʊˈbɒtɪks ˌendʒɪˈnɪə/", cat:"job", rec:false,
+      tip:"香港寫法係「機械人工程師」。" },
+    { n:21, en:"interview", pos:"(v.)/(n.)", zh:"訪問、面試", ipa:"/ˈɪntəvjuː/", cat:"work", rec:false,
+      tip:"可以係動詞或名詞，解「訪問」或「面試」。" },
+    { n:22, en:"earn", pos:"v.", zh:"賺取", ipa:"/ɜːn/", cat:"verb", rec:false },
+    { n:23, en:"content", pos:"n.", zh:"內容", ipa:"/ˈkɒntent/", cat:"work", rec:false,
+      tip:"呢度係名詞「內容」，重音在第一音節。" },
+    { n:24, en:"expense", pos:"n.", zh:"開支、費用", ipa:"/ɪkˈspens/", cat:"work", rec:false },
+    { n:25, en:"document", pos:"n.", zh:"文件", ipa:"/ˈdɒkjʊmənt/", cat:"work", rec:false },
+    { n:26, en:"adventurous", pos:"adj.", zh:"愛冒險的、勇於嘗試的", ipa:"/ədˈventʃərəs/", cat:"adj", rec:false },
+    { n:27, en:"freelance", pos:"adj.", zh:"自由職業的", ipa:"/ˈfriːlɑːns/", cat:"adj", rec:false },
+    { n:28, en:"reliable", pos:"adj.", zh:"可靠的、可信賴的", ipa:"/rɪˈlaɪəbl/", cat:"adj", rec:false },
+    { n:29, en:"skillful / skilful", pos:"adj.", zh:"熟練的、有技巧的", ipa:"/ˈskɪlfʊl/", cat:"adj", rec:false,
+      alts:["skillful","skilful"], speak:"skilful",
+      tip:"skillful（美式）同 skilful（英式）兩個串法都啱。" },
+    { n:30, en:"rewarding", pos:"adj.", zh:"值得做的、有意義的", ipa:"/rɪˈwɔːdɪŋ/", cat:"adj", rec:false },
+    { n:31, en:"creative", pos:"adj.", zh:"有創意的", ipa:"/kriˈeɪtɪv/", cat:"adj", rec:false },
+    { n:32, en:"curious", pos:"adj.", zh:"好奇的", ipa:"/ˈkjʊəriəs/", cat:"adj", rec:false },
+    { n:33, en:"communicative", pos:"adj.", zh:"健談的", ipa:"/kəˈmjuːnɪkətɪv/", cat:"adj", rec:false },
+    { n:34, en:"amateur", pos:"adj.", zh:"業餘愛好的、非職業的", ipa:"/ˈæmətə/", cat:"adj", rec:false },
+    { n:35, en:"reasonable", pos:"adj.", zh:"合理的", ipa:"/ˈriːznəbl/", cat:"adj", rec:false },
+    { n:36, en:"professional", pos:"adj.", zh:"專業的", ipa:"/prəˈfeʃənl/", cat:"adj", rec:false },
+    { n:37, en:"responsible", pos:"adj.", zh:"負責任的", ipa:"/rɪˈspɒnsəbl/", cat:"adj", rec:false },
+    { n:38, en:"satisfying", pos:"adj.", zh:"使人滿足的", ipa:"/ˈsætɪsfaɪɪŋ/", cat:"adj", rec:false },
+    { n:39, en:"shift", pos:"n.", zh:"班次", ipa:"/ʃɪft/", cat:"work", rec:false,
+      tip:"呢度係名詞「班次」，唔係動詞「移動」。" },
+    { n:40, en:"salary", pos:"n.", zh:"薪金、薪酬", ipa:"/ˈsæləri/", cat:"work", rec:false },
+    { n:41, en:"community", pos:"n.", zh:"社區", ipa:"/kəˈmjuːnəti/", cat:"work", rec:false },
+    { n:42, en:"client", pos:"n.", zh:"客戶、委託人", ipa:"/ˈklaɪənt/", cat:"work", rec:false },
+    { n:1,  en:"strenuous", pos:"adj.", zh:"費力的", ipa:"/ˈstrenjuəs/", cat:"adj", rec:true },
+    { n:2,  en:"occupation", pos:"n.", zh:"職業", ipa:"/ˌɒkjuˈpeɪʃn/", cat:"work", rec:true },
+    { n:3,  en:"technical", pos:"adj.", zh:"技術的", ipa:"/ˈteknɪkl/", cat:"adj", rec:true },
+    { n:4,  en:"nine-to-five", pos:"adj. / adv.", zh:"朝九晚五的、朝九晚五地", ipa:"/ˌnaɪn tə ˈfaɪv/", cat:"adj", rec:true,
+      speak:"nine to five" },
+    { n:5,  en:"diploma", pos:"n.", zh:"文憑", ipa:"/dɪˈpləʊmə/", cat:"work", rec:true },
+    { n:6,  en:"slasher", pos:"n.", zh:"斜槓族（身兼多重職業的人）", ipa:"/ˈslæʃə/", cat:"job", rec:true,
+      tip:"香港用法：斜槓族，即係身兼多重職業的人。" },
+    { n:7,  en:"influencer", pos:"n.", zh:"網紅、具影響力的人", ipa:"/ˈɪnfluənsə/", cat:"job", rec:true },
+    { n:8,  en:"qualification", pos:"n.", zh:"資格", ipa:"/ˌkwɒlɪfɪˈkeɪʃn/", cat:"work", rec:true }
+  ];
+
+  var PROD = WORDS.filter(function (w) { return !w.rec; });
+  var REC = WORDS.filter(function (w) { return w.rec; });
+
+  var MODES = {
+    list:  { icon:"📖", name:"詞表 / 參考", desc:"50 個生字：英文、詞性、中文、音標同讀音。接受詞彙會標示「只須辨認」。", setup:false },
+    match: { icon:"🧩", name:"解釋配對", desc:"英譯中、中譯英選擇題。50 個字都可以練（包括只須辨認嘅字）。", setup:true, pool:"all" },
+    spell: { icon:"⌨️", name:"串字", desc:"睇中文、聽讀音，輸入英文。只練 42 個產出詞彙。", setup:true, pool:"prod" },
+    listen:{ icon:"🔊", name:"讀音", desc:"聽英文，再揀意思或串出單字。串字只限產出詞彙。", setup:true, pool:"prod" },
+    mix:   { icon:"🏆", name:"綜合闖關", desc:"混合解釋、串字同聽力。接受詞彙只會出現辨認題，唔會要你串。", setup:true, pool:"all" }
+  };
+
+  var GOOD = ["🌟 好叻呀！", "🎉 完全正確！", "💯 犀利！", "🚀 勁呀！繼續！", "👏 Excellent!", "😎 Well done!"];
+  var BAD = ["💪 唔緊要，等陣再試！", "🙂 慢慢嚟，一定得！", "🔁 呢個字等陣會再出現㗎！", "🌱 錯咗先學得識！"];
+
+  function $(id) { return document.getElementById(id); }
+  function shuffle(arr) {
+    var a = arr.slice();
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = a[i]; a[i] = a[j]; a[j] = t;
+    }
+    return a;
+  }
+  function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+  function show(id) {
+    ["homeScreen","setupScreen","listScreen","quizScreen","finishScreen"].forEach(function (s) {
+      $(s).classList.toggle("hidden", s !== id);
+    });
+  }
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, function (c) {
+      return ({ "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;" })[c];
+    });
+  }
+
+  function norm(s) {
+    return String(s).toLowerCase()
+      .replace(/[’‘‛]/g, "'")
+      .replace(/[‐‑–—−]/g, "-")
+      .replace(/-/g, " ")
+      .replace(/[^a-z0-9'\s]/g, " ")
+      .replace(/\s+/g, " ")
+      .trim();
+  }
+  function accepted(w) {
+    var list = [w.en].concat(w.alts || []);
+    return list;
+  }
+  function spellOk(input, w) {
+    var got = norm(input);
+    if (!got) return false;
+    return accepted(w).some(function (a) { return norm(a) === got; });
+  }
+  function speakOf(w) { return w.speak || accepted(w)[0]; }
+  function labelOf(w) { return w.rec ? "只須辨認" : "產出"; }
+
+  /* ---------- Speech ---------- */
+  var synth = ("speechSynthesis" in window) ? window.speechSynthesis : null;
+  var chosenVoice = null;
+  function pickVoice() {
+    if (!synth) return;
+    var voices = synth.getVoices() || [];
+    if (!voices.length) return;
+    var prefs = [
+      function (v) { return /en-GB/i.test(v.lang) && /google|natural|daniel|serena|kate|female/i.test(v.name); },
+      function (v) { return /en-GB/i.test(v.lang); },
+      function (v) { return /en-US/i.test(v.lang) && /google|natural|samantha/i.test(v.name); },
+      function (v) { return /en-US/i.test(v.lang); },
+      function (v) { return /^en/i.test(v.lang); }
+    ];
+    for (var i = 0; i < prefs.length; i++) {
+      for (var j = 0; j < voices.length; j++) {
+        if (prefs[i](voices[j])) { chosenVoice = voices[j]; return; }
+      }
+    }
+  }
+  if (synth) {
+    pickVoice();
+    if (typeof synth.addEventListener === "function") synth.addEventListener("voiceschanged", pickVoice);
+    else synth.onvoiceschanged = pickVoice;
+  }
+  function speak(text) {
+    if (!synth || !text) return;
+    if (!chosenVoice) pickVoice();
+    synth.cancel();
+    var u = new SpeechSynthesisUtterance(text);
+    if (chosenVoice) { u.voice = chosenVoice; u.lang = chosenVoice.lang; }
+    else { u.lang = "en-GB"; }
+    u.rate = 0.8; u.pitch = 1;
+    setTimeout(function () { synth.speak(u); }, 60);
+  }
+  function stopSpeak() { if (synth) synth.cancel(); }
+
+  /* ---------- Distractors ---------- */
+  function choicesFor(item, field, n) {
+    n = n || 4;
+    var pool = WORDS.filter(function (w) { return w !== item && w[field] !== item[field]; });
+    var sameCat = pool.filter(function (w) { return w.cat === item.cat; });
+    var samePos = pool.filter(function (w) { return w.pos === item.pos && w.cat !== item.cat; });
+    var rest = pool.filter(function (w) { return w.cat !== item.cat && w.pos !== item.pos; });
+    var picked = [];
+    function take(src, k) {
+      shuffle(src).forEach(function (w) {
+        if (picked.length >= k) return;
+        if (picked.indexOf(w) < 0) picked.push(w);
+      });
+    }
+    take(sameCat, n - 1);
+    take(samePos, n - 1);
+    take(rest, n - 1);
+    var opts = shuffle([item].concat(picked.slice(0, n - 1)));
+    return opts;
+  }
+
+  function explain(item, ok, typed) {
+    var parts = [];
+    if (ok) return "";
+    parts.push("正確係 <b>" + escapeHtml(item.en) + "</b> " + escapeHtml(item.pos) + " — " + escapeHtml(item.zh) + "。");
+    parts.push("音標：" + escapeHtml(item.ipa));
+    if (item.tip) parts.push(item.tip);
+    if (typed != null && String(typed).trim()) {
+      parts.push("你寫咗：" + escapeHtml(String(typed).trim()));
+    }
+    if (!item.rec && item.en.indexOf(" ") >= 0) {
+      parts.push("記住要寫晒成個詞組，唔好漏字。");
+    }
+    return parts.join("<br>");
+  }
+
+  /* ---------- Question types ---------- */
+  function typesFor(w, mode) {
+    if (mode === "match") return w.rec ? ["en2zh","zh2en"] : ["en2zh","zh2en"];
+    if (mode === "spell") return ["spell"];
+    if (mode === "listen") return w.rec ? ["listen-zh"] : ["listen-zh","listen-spell"];
+    // mix
+    if (w.rec) return ["en2zh","zh2en","listen-zh"];
+    return ["en2zh","zh2en","spell","listen-zh","listen-spell"];
+  }
+
+  /* ---------- State ---------- */
+  var S = null;
+  var pendingMode = null;
+
+  function poolOf(key) { return key === "prod" ? PROD.slice() : WORDS.slice(); }
+
+  function start(mode, size) {
+    var cfg = MODES[mode];
+    var pool = shuffle(poolOf(cfg.pool));
+    if (size && size < pool.length) pool = pool.slice(0, size);
+    var qs = pool.map(function (w) {
+      var typ = pick(typesFor(w, mode));
+      return { word: w, type: typ, attempt: 0 };
+    });
+    S = {
+      mode: mode, queue: qs, current: null, done: 0, stars: 0,
+      firstTotal: qs.length, missed: {}, retryN: 0
+    };
+    show("quizScreen");
+    $("modePill").textContent = cfg.icon + " " + cfg.name;
+    nextQ();
+  }
+
+  function updateBar() {
+    var total = S.done + S.queue.length + (S.current ? 1 : 0);
+    $("progTxt").textContent = "第 " + Math.min(S.done + 1, Math.max(total, 1)) + " / " + total + " 題";
+    $("bar").style.width = (total ? Math.round(S.done / total * 100) : 0) + "%";
+    $("stars").textContent = S.stars;
+    $("retryN").textContent = S.retryN;
+  }
+
+  function speakBtn(w) {
+    var b = document.createElement("button");
+    b.type = "button"; b.className = "speak"; b.textContent = "🔊 聽讀音";
+    b.addEventListener("click", function () { speak(speakOf(w)); });
+    return b;
+  }
+
+  function nextQ() {
+    stopSpeak();
+    $("fb").textContent = ""; $("fb").className = "fb";
+    $("why").className = "why hidden"; $("why").innerHTML = "";
+    $("nextBtn").classList.add("hidden");
+    if (!S.queue.length) { finish(); return; }
+    S.current = S.queue.shift();
+    $("retryTag").classList.toggle("hidden", S.current.attempt === 0);
+    updateBar();
+    renderQ(S.current);
+  }
+
+  function renderQ(q) {
+    var w = q.word, t = q.type, box = $("qArea");
+    box.innerHTML = "";
+    var pos = document.createElement("span"); pos.className = "pos"; pos.textContent = w.pos;
+    box.appendChild(pos);
+    if (w.rec) {
+      var badge = document.createElement("span"); badge.className = "badge"; badge.textContent = "只須辨認";
+      box.appendChild(badge);
+    }
+    box.appendChild(document.createElement("br"));
+
+    if (t === "en2zh") {
+      var p = document.createElement("div"); p.className = "prompt"; p.textContent = "呢個英文詞係咩意思？";
+      var en = document.createElement("div"); en.className = "english"; en.textContent = w.en;
+      var ipa = document.createElement("div"); ipa.className = "ipa"; ipa.textContent = w.ipa;
+      box.appendChild(p); box.appendChild(en); box.appendChild(ipa);
+      box.appendChild(speakBtn(w));
+      addChoices(box, w, "zh");
+      speak(speakOf(w));
+    } else if (t === "zh2en") {
+      var p2 = document.createElement("div"); p2.className = "prompt"; p2.textContent = "邊個英文詞係呢個意思？";
+      var zh = document.createElement("div"); zh.className = "chinese"; zh.textContent = w.zh;
+      box.appendChild(p2); box.appendChild(zh);
+      addChoices(box, w, "en");
+    } else if (t === "spell") {
+      var p3 = document.createElement("div"); p3.className = "prompt"; p3.textContent = "睇中文、聽讀音，串出英文詞：";
+      var zh3 = document.createElement("div"); zh3.className = "chinese"; zh3.textContent = w.zh;
+      box.appendChild(p3); box.appendChild(zh3);
+      box.appendChild(speakBtn(w));
+      addSpell(box, w, false);
+      speak(speakOf(w));
+    } else if (t === "listen-zh") {
+      var p4 = document.createElement("div"); p4.className = "prompt"; p4.textContent = "聽讀音，揀正確意思：";
+      var h4 = document.createElement("div"); h4.className = "hint"; h4.textContent = "可以再按一次聽。";
+      box.appendChild(p4); box.appendChild(h4);
+      box.appendChild(speakBtn(w));
+      addChoices(box, w, "zh");
+      speak(speakOf(w));
+    } else if (t === "listen-spell") {
+      var p5 = document.createElement("div"); p5.className = "prompt"; p5.textContent = "聽讀音，串出英文詞：";
+      var h5 = document.createElement("div"); h5.className = "hint"; h5.textContent = "呢題唔顯示中文，專心聽啦！";
+      box.appendChild(p5); box.appendChild(h5);
+      box.appendChild(speakBtn(w));
+      addSpell(box, w, true);
+      speak(speakOf(w));
+    }
+  }
+
+  function addChoices(box, w, field) {
+    var wrap = document.createElement("div"); wrap.className = "choices";
+    var opts = choicesFor(w, field, 4);
+    opts.forEach(function (opt) {
+      var b = document.createElement("button");
+      b.type = "button"; b.className = "choice";
+      b.textContent = opt[field];
+      b.addEventListener("click", function () { judgeChoice(w, field, opt, wrap); });
+      wrap.appendChild(b);
+    });
+    box.appendChild(wrap);
+  }
+
+  function addSpell(box, w, fromListen) {
+    var inp = document.createElement("input");
+    inp.type = "text"; inp.className = "spell"; inp.lang = "en";
+    inp.setAttribute("autocomplete","off");
+    inp.setAttribute("autocapitalize","off");
+    inp.setAttribute("autocorrect","off");
+    inp.setAttribute("spellcheck","false");
+    inp.setAttribute("enterkeyhint","done");
+    inp.placeholder = fromListen ? "聽完就打英文…" : "喺呢度串英文…";
+    var go = document.createElement("button");
+    go.type = "button"; go.className = "btn-go"; go.textContent = "提交 ✅";
+    function submit() {
+      if (go.disabled) return;
+      judgeSpell(w, inp, go);
+    }
+    go.addEventListener("click", submit);
+    inp.addEventListener("keydown", function (e) {
+      if (e.key === "Enter") { e.preventDefault(); submit(); }
+    });
+    box.appendChild(inp); box.appendChild(go);
+    setTimeout(function () { try { inp.focus(); } catch (e) {} }, 80);
+  }
+
+  function lockChoices(wrap, w, field, picked) {
+    var buttons = wrap.querySelectorAll(".choice");
+    for (var i = 0; i < buttons.length; i++) {
+      buttons[i].disabled = true;
+      var label = buttons[i].textContent;
+      if (label === w[field]) buttons[i].classList.add("right");
+      else if (picked && label === picked[field] && picked !== w) buttons[i].classList.add("wrong");
+    }
+  }
+
+  function judgeChoice(w, field, picked, wrap) {
+    if (!S || !S.current) return;
+    var ok = picked === w;
+    lockChoices(wrap, w, field, picked);
+    settle(ok, w, null);
+  }
+
+  function judgeSpell(w, inp, go) {
+    if (!S || !S.current) return;
+    var ok = spellOk(inp.value, w);
+    inp.disabled = true; go.disabled = true;
+    inp.classList.add(ok ? "right" : "wrong");
+    settle(ok, w, inp.value);
+  }
+
+  function settle(ok, w, typed) {
+    var q = S.current;
+    $("fb").className = "fb " + (ok ? "good" : "bad");
+    $("fb").textContent = ok ? pick(GOOD) : pick(BAD);
+    if (!ok) {
+      $("why").className = "why";
+      $("why").innerHTML = explain(w, false, typed);
+      S.missed[w.en] = (S.missed[w.en] || 0) + 1;
+      S.retryN += 1;
+      // requeue a similar retry later
+      S.queue.push({ word: w, type: q.type, attempt: q.attempt + 1 });
+    } else {
+      if (q.attempt === 0) S.stars += 1;
+      var brief = document.createElement("div");
+      brief.style.marginTop = "6px";
+      brief.innerHTML = "<span class=\"ipa\">" + escapeHtml(w.en) + " " + escapeHtml(w.ipa) + "</span> · " + escapeHtml(w.zh);
+      $("qArea").appendChild(brief);
+    }
+    S.done += 1;
+    updateBar();
+    $("nextBtn").classList.remove("hidden");
+    $("nextBtn").focus();
+  }
+
+  function finish() {
+    stopSpeak();
+    show("finishScreen");
+    var missedKeys = Object.keys(S.missed);
+    var firstOk = S.firstTotal - missedKeys.length;
+    $("summary").textContent = "一次答啱 " + firstOk + " / " + S.firstTotal + " 題。" + (missedKeys.length ? " 其餘題目已重練到識為止！" : "");
+    var sec = $("retrySection");
+    sec.innerHTML = "";
+    if (missedKeys.length) {
+      var p = document.createElement("p");
+      p.style.cssText = "font-size:1.1rem;font-weight:bold;color:#b35900";
+      p.textContent = "📝 呢啲字要多啲練習：";
+      var ul = document.createElement("ul"); ul.className = "retry-list";
+      missedKeys.forEach(function (k) {
+        var w = WORDS.filter(function (x) { return x.en === k; })[0];
+        if (!w) return;
+        var li = document.createElement("li");
+        li.innerHTML = "<b>" + escapeHtml(w.en) + "</b> " + escapeHtml(w.pos) + "<br>" + escapeHtml(w.zh);
+        li.title = "按一下聽讀音";
+        li.addEventListener("click", function () { speak(speakOf(w)); });
+        ul.appendChild(li);
+      });
+      sec.appendChild(p); sec.appendChild(ul);
+    } else {
+      var p2 = document.createElement("p"); p2.style.fontSize = "1.15rem";
+      p2.textContent = "全部一次過答啱，太厲害啦！🌟";
+      sec.appendChild(p2);
+    }
+    confetti(40);
+  }
+
+  function confetti(n) {
+    var icons = ["🎉","⭐","🌟","🎊","💼","🎧","🌈","💖"];
+    for (var i = 0; i < n; i++) {
+      var s = document.createElement("span");
+      s.className = "confetti";
+      s.textContent = icons[Math.floor(Math.random() * icons.length)];
+      s.style.left = Math.random() * 100 + "vw";
+      s.style.animationDuration = (1.5 + Math.random() * 2) + "s";
+      document.body.appendChild(s);
+      (function (el) { setTimeout(function () { el.remove(); }, 4000); })(s);
+    }
+  }
+
+  /* ---------- Word list ---------- */
+  function renderList() {
+    var box = $("wordList"); box.innerHTML = "";
+    function section(title, arr, rec) {
+      var h = document.createElement("h2"); h.className = "list-sec";
+      h.textContent = title;
+      box.appendChild(h);
+      arr.forEach(function (w) {
+        var row = document.createElement("div"); row.className = "wrow";
+        var left = document.createElement("div");
+        var en = document.createElement("div"); en.className = "en";
+        en.textContent = w.n + ". " + w.en + "  " + w.pos;
+        if (rec) {
+          var b = document.createElement("span"); b.className = "badge"; b.textContent = "只須辨認";
+          en.appendChild(document.createTextNode(" ")); en.appendChild(b);
+        }
+        var meta = document.createElement("div"); meta.className = "meta"; meta.textContent = w.ipa;
+        var zh = document.createElement("div"); zh.className = "zh"; zh.textContent = w.zh;
+        if (w.tip) {
+          var tip = document.createElement("div"); tip.className = "note"; tip.textContent = w.tip;
+          left.appendChild(en); left.appendChild(meta); left.appendChild(zh); left.appendChild(tip);
+        } else {
+          left.appendChild(en); left.appendChild(meta); left.appendChild(zh);
+        }
+        var btn = speakBtn(w);
+        row.appendChild(left); row.appendChild(btn);
+        box.appendChild(row);
+      });
+    }
+    section("產出詞彙 Productive（要識串、讀、解釋）", PROD, false);
+    section("接受詞彙 Receptive（只須辨認意思）", REC, true);
+  }
+
+  /* ---------- Home / setup ---------- */
+  function renderHome() {
+    var box = $("topics"); box.innerHTML = "";
+    Object.keys(MODES).forEach(function (k) {
+      var m = MODES[k];
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "topic" + (k === "mix" ? " mix" : "");
+      b.innerHTML = '<span class="ti">' + m.icon + "</span>" + m.name + '<div class="desc">' + m.desc + "</div>";
+      b.addEventListener("click", function () { chooseMode(k); });
+      box.appendChild(b);
+    });
+  }
+
+  function chooseMode(k) {
+    stopSpeak();
+    if (k === "list") {
+      renderList();
+      show("listScreen");
+      return;
+    }
+    pendingMode = k;
+    var m = MODES[k];
+    var pool = poolOf(m.pool);
+    $("setupTitle").textContent = m.icon + " " + m.name;
+    $("setupDesc").textContent = m.desc + " 而家有 " + pool.length + " 個詞。想一次過練晒，定係先試短關？";
+    var sizes = $("setupSizes"); sizes.innerHTML = "";
+    var opts = [];
+    if (pool.length > 12) opts.push({ n:12, label:"隨機 12 題 🚀" });
+    if (pool.length > 20) opts.push({ n:20, label:"隨機 20 題 💪" });
+    opts.push({ n:pool.length, label:"全部 " + pool.length + " 題 🏆" });
+    opts.forEach(function (o) {
+      var b = document.createElement("button");
+      b.type = "button"; b.className = o.n === pool.length ? "btn-start" : "btn-go";
+      b.textContent = o.label;
+      b.addEventListener("click", function () { start(k, o.n); });
+      sizes.appendChild(b);
+    });
+    show("setupScreen");
+  }
+
+  function goHome() {
+    stopSpeak();
+    S = null; pendingMode = null;
+    show("homeScreen");
+  }
+
+  /* ---------- Events ---------- */
+  if (!synth) $("voiceWarn").classList.remove("hidden");
+  renderHome();
+
+  $("setupBack").addEventListener("click", goHome);
+  $("listBack").addEventListener("click", goHome);
+  $("listStop").addEventListener("click", stopSpeak);
+  $("quizBack").addEventListener("click", function () {
+    if (S && (S.done || S.queue.length) && !confirm("而家離開會中斷呢一局，確定？")) return;
+    goHome();
+  });
+  $("nextBtn").addEventListener("click", nextQ);
+  $("againBtn").addEventListener("click", function () {
+    if (S && S.mode) start(S.mode, S.firstTotal);
+  });
+  $("finishHome").addEventListener("click", goHome);
+
+  // Expose for tests
+  window.__unit3 = {
+    WORDS: WORDS, PROD: PROD, REC: REC,
+    norm: norm, spellOk: spellOk, accepted: accepted,
+    typesFor: typesFor, choicesFor: choicesFor, speakOf: speakOf
+  };
+})();
+</script>
+</body>
+</html>
