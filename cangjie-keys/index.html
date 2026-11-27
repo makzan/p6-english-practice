@@ -55,7 +55,6 @@
     background: #fffdf7; border: 3px dashed #e8b86d; border-radius: 24px; max-width: 420px;
   }
   .glyph { display: inline-flex; align-items: center; justify-content: center; line-height: 1; font-weight: 700; color: #212121; }
-  .glyph svg { width: 1em; height: 1em; display: block; }
   .prompt-glyph { font-size: clamp(4.4rem, 20vw, 7.2rem); }
   .prompt-letter { font-size: clamp(4.6rem, 22vw, 7.6rem); font-family: "Arial Rounded MT Bold", "Trebuchet MS", sans-serif; font-weight: 800; color: #b71c1c; letter-spacing: .04em; }
   .prompt-name { font-size: clamp(4.4rem, 20vw, 7.2rem); font-weight: 800; color: #4a148c; }
@@ -126,11 +125,30 @@
     .mode { min-height: 108px; }
     .mode.wide { flex-direction: column; align-items: flex-start; gap: 2px; }
   }
+
+  .glyph img { display:block; height:1em; width:auto; max-width:100%; object-fit:contain; }
+  .prompt-box { max-width: 520px; min-height: 180px; padding: 14px 12px; }
+  .prompt-glyph img {
+    height: clamp(5.2rem, 24vw, 8.6rem);
+    width: auto; max-width: min(100%, 22rem);
+    object-fit: contain;
+  }
+  .auxs .glyph img { height: 2.15em; width: auto; }
+  .chart-photo-wrap {
+    overflow: auto; -webkit-overflow-scrolling: touch;
+    border-radius: 12px; border: 1px solid #e8d5b5; background: #faf6ef;
+    max-height: calc(100vh - 180px);
+  }
+  .chart-photo { width: 100%; height: auto; display: block; vertical-align: middle; }
+  .chart-card { width: min(1100px, 100%); }
+  @media (max-width: 420px) {
+    .prompt-box { min-height: 150px; }
+  }
 </style>
 </head>
 <body>
 <h1>📜 倉頡字母配對</h1>
-<div class="sub">第五代倉頡：拆件認字母，字母同中文一齊記！</div>
+<div class="sub">第五代倉頡：用圖表原圖拆件嚟認字母，字母同中文一齊記！</div>
 
 <div class="card" id="home">
   <div class="intro">
@@ -175,7 +193,7 @@
       <h2 id="chartTitle">第五代倉頡字母及輔助字形</h2>
       <button class="closebtn" id="closeChart" type="button">關閉 ✕</button>
     </div>
-    <p class="legend">粉紅＝哲理類　黃＝筆畫類　綠＝人體類　藍灰＝字形類。字母同中文永遠一齊顯示。X　難 同 Z　符 只供參考，唔會出測驗題。</p>
+    <p class="legend">以下係練習用嘅原圖字母表（第五代倉頡）。粉紅＝哲理類　黃＝筆畫類　綠＝人體類　藍灰＝字形類。字母同中文永遠一齊記。X　難 同 Z　符 只供參考，唔會出測驗題。</p>
     <div id="chart"></div>
     <p class="note">提示：框內有筆畫嘅大方框多數係 W　田，細嘅空心「口」先係 R　口。提手旁「扌」係 Q　手，唔好當成 D　木嘅「才」。</p>
   </div>
@@ -185,353 +203,1085 @@
 (function () {
   "use strict";
 
-  function sv(inner) {
-    return '<svg viewBox="0 0 100 100" focusable="false" aria-hidden="true">' + inner + '</svg>';
-  }
-  function p(d, w) {
-    return '<path d="' + d + '" fill="none" stroke="currentColor" stroke-width="' + (w || 8) + '" stroke-linecap="round" stroke-linejoin="round"/>';
-  }
-  function c(x, y, r) {
-    return '<circle cx="' + x + '" cy="' + y + '" r="' + (r || 7) + '" fill="currentColor"/>';
-  }
-  function rect(x, y, w, h, sw) {
-    return p('M ' + x + ' ' + y + ' H ' + (x + w) + ' V ' + (y + h) + ' H ' + x + ' Z', sw);
-  }
-
-  var SH = {
-    riFlat: sv(p('M 12 32 H 88 V 72 H 12 Z', 7) + p('M 12 52 H 88', 7)),
-    door: sv(p('M 28 24 V 86') + p('M 28 24 H 78 V 68') + p('M 18 14 L 28 24')),
-    shortBar: sv(p('M 26 50 H 74', 9)),
-    twoSlash: sv(p('M 26 26 L 42 72') + p('M 58 26 L 74 72')),
-    ha: sv(p('M 22 34 L 40 78') + p('M 78 34 L 60 78')),
-    trunkD: sv(p('M 50 16 V 84') + p('M 26 48 H 74') + p('M 50 68 L 30 84')),
-    sanzhui: sv(c(36, 28, 6) + c(28, 50, 6) + p('M 34 68 L 22 86', 8)),
-    ice: sv(p('M 50 16 L 28 84') + p('M 50 16 L 72 84') + p('M 34 50 H 66') + c(62, 28, 6)),
-    shuiBottom: sv(p('M 50 18 L 28 82') + p('M 50 18 L 72 82') + p('M 32 50 H 68') + c(32, 70, 5) + c(68, 70, 5)),
-    fourDots: sv(c(26, 42, 7) + c(46, 58, 7) + c(66, 42, 7) + c(78, 62, 7)),
-    threeDots: sv(c(32, 32, 8) + c(68, 32, 8) + c(50, 68, 8)),
-    threeDotsB: sv(c(28, 30, 7) + c(50, 46, 7) + c(70, 32, 7)),
-    xiaoTop: sv(c(28, 32, 7) + c(72, 32, 7) + p('M 50 40 V 78')),
-    invXiao: sv(p('M 50 16 L 22 52') + p('M 50 16 L 78 52') + p('M 50 16 V 86')),
-    bamb: sv(p('M 16 44 L 34 18 L 38 68') + p('M 34 18 L 12 40') + p('M 84 44 L 66 18 L 62 68') + p('M 66 18 L 88 40')),
-    pie: sv(p('M 66 18 L 30 84', 9)),
-    na: sv(p('M 24 28 Q 48 40 80 82', 10)),
-    dian: sv(c(48, 42, 9) + p('M 52 50 L 62 66', 7)),
-    bentV: sv(p('M 54 14 Q 62 48 36 86', 9)),
-    slantYi: sv(p('M 22 36 L 80 60', 10)),
-    chang: sv(p('M 20 26 H 80 M 20 26 L 36 84')),
-    yiFan: sv(p('M 20 26 H 80 L 68 84')),
-    gongVar: sv(p('M 24 28 H 76') + p('M 24 72 H 76') + p('M 50 28 V 72') + p('M 50 50 L 28 50')),
-    yu: sv(p('M 30 28 H 78') + p('M 78 28 V 50') + p('M 24 50 H 78') + p('M 50 50 V 78')),
-    jue: sv(p('M 50 14 V 70 Q 50 86 32 88', 9)),
-    hengGou: sv(p('M 18 42 H 74 L 62 64', 9)),
-    fu: sv(p('M 26 28 H 76 L 34 78', 9)),
-    yiGou: sv(p('M 24 36 H 62 Q 80 36 74 58 L 28 86', 8)),
-    yin: sv(p('M 36 12 V 68 Q 36 90 82 80', 9)),
-    ku: sv(p('M 70 20 L 36 46 H 76 Q 78 78 36 82', 8)),
-    boPo: sv(p('M 28 30 Q 20 50 36 58 H 74 Q 80 80 36 86', 8)),
-    corner: sv(p('M 22 32 H 76 V 78', 9)),
-    hat: sv(p('M 16 58 L 50 22 L 84 58', 9)),
-    ruVar: sv(p('M 50 20 L 20 82') + p('M 50 20 L 78 48 L 70 82', 8)),
-    ru: sv(p('M 50 18 L 22 82') + p('M 50 18 L 80 70')),
-    dotSlash: sv(p('M 64 26 L 34 70', 10)),
-    quan: sv(p('M 70 20 Q 22 50 70 84', 9)),
-    kuSmall: sv(p('M 74 18 L 30 50 L 74 84', 9)),
-    xinSide: sv(p('M 58 14 V 86', 8) + c(28, 32, 7) + c(30, 58, 7)),
-    xinBot: sv(c(26, 36, 6) + c(50, 50, 6) + c(74, 36, 6) + p('M 50 18 V 42') + p('M 50 58 Q 46 82 28 86')),
-    yiLike: sv(p('M 24 36 H 72') + p('M 60 18 L 40 82 Q 36 90 54 92') + c(70, 22, 6)),
-    hookP: sv(p('M 36 22 Q 80 20 74 50 T 32 84', 8)),
-    crossP: sv(p('M 50 18 V 82', 8) + p('M 28 50 H 72', 8) + p('M 50 18 L 70 30', 6)),
-    shouSide: sv(p('M 62 16 V 84') + p('M 28 42 L 62 32') + p('M 30 62 L 62 52') + p('M 62 72 L 36 86')),
-    shouTop: sv(p('M 50 16 V 84') + p('M 28 30 H 76') + p('M 26 50 H 76') + p('M 30 68 H 72') + p('M 50 30 L 26 48')),
-    shouTrunk: sv(p('M 54 16 V 84') + p('M 26 36 H 80') + p('M 28 58 H 80') + p('M 54 36 L 28 58')),
-    ko: sv(p('M 22 22 H 78 V 78 H 22', 8)),
-    fang: sv(p('M 22 24 H 78 V 76 H 22 Z', 8)),
-    diao: sv(p('M 78 24 H 28 V 58 H 70 Q 78 58 74 78', 8)),
-    sideHook: sv(p('M 70 18 Q 28 50 70 86', 9)),
-    buLike: sv(p('M 48 16 V 84', 8) + p('M 48 36 L 76 22', 8)),
-    tallShi: sv(p('M 28 16 V 86') + p('M 28 16 H 80') + p('M 28 40 H 74') + p('M 28 62 H 74') + p('M 28 84 H 80')),
-    cao: sv(p('M 30 22 V 78') + p('M 70 22 V 78') + p('M 16 48 H 44') + p('M 56 48 H 84')),
-    zhuo: sv(p('M 26 40 L 42 18') + p('M 74 40 L 58 18') + p('M 16 58 H 84', 9)),
-    gongHead: sv(p('M 26 34 L 40 16') + p('M 74 34 L 60 16') + p('M 16 48 H 84', 8) + p('M 38 48 V 84') + p('M 62 48 V 84')),
-    nian: sv(p('M 30 22 V 82') + p('M 70 22 V 82') + p('M 18 58 H 82')),
-    sa: sv(p('M 22 22 V 82') + p('M 50 22 V 82') + p('M 78 22 V 82') + p('M 16 50 H 84')),
-    bing: sv(p('M 30 22 V 50') + p('M 70 22 V 50') + p('M 18 50 H 82') + p('M 34 50 L 24 78') + p('M 66 50 L 76 78')),
-    chou: sv(p('M 32 22 V 82') + p('M 68 22 V 82') + p('M 18 40 H 82') + p('M 18 68 H 82')),
-    qu: sv(p('M 22 28 V 78 H 78 V 28', 8)),
-    shiU: sv(p('M 42 16 Q 36 64 42 78 Q 70 82 74 68', 9)),
-    che: sv(p('M 22 58 V 82 H 78 V 58') + p('M 50 18 V 82') + p('M 22 58 H 78')),
-    cheTall: sv(p('M 22 62 V 86 H 78 V 62') + p('M 50 12 V 86') + p('M 22 62 H 78')),
-    re: sv(p('M 32 16 V 74 H 80', 9)),
-    lShape: sv(p('M 40 16 V 78 H 82', 9)),
-    vTurn: sv(p('M 46 14 V 80 Q 46 88 28 86', 9)),
-    silk: sv(p('M 36 22 Q 20 38 40 50 Q 70 64 42 84', 8)),
-    box: sv(p('M 18 18 H 82 V 82 H 18 Z', 8)),
-    boxIn: sv(p('M 18 18 H 82 V 82 H 18 Z', 8) + p('M 34 42 H 66 V 66 H 34 Z', 6)),
-    tou: sv(c(50, 22, 7) + p('M 18 42 H 82', 9)),
-    twoDots: sv(c(36, 38, 8) + c(66, 54, 8)),
-    chuo: sv(c(36, 18, 6) + p('M 28 36 H 70 L 50 54') + p('M 18 78 H 86') + p('M 28 54 L 18 78')),
-    xiVar: sv(p('M 22 30 L 50 18 L 78 30 L 68 82 L 32 82 Z', 7) + p('M 38 48 H 62') + c(50, 36, 4) + p('M 42 62 H 58')),
-    yiRed: sv(p('M 24 28 L 76 72') + p('M 76 28 L 24 72') + p('M 50 28 L 36 18', 6)),
-    naKana: sv(p('M 22 36 H 78') + p('M 70 36 V 84') + p('M 70 36 L 28 84'))
-  };
-
-  function han(ch) { return { kind: 'han', ch: ch }; }
-  function shp(name) { return { kind: 'svg', name: name }; }
-
   function pair(k) { return k.id + '　' + k.name; }
 
   var KEYS = [
-    /* ===== A–G ===== */
-    { id:'A', name:'日', hint:'', group:'philo',
-      examples:[{ch:'門', code:'AN', note:'門字框用 A　日開頭'}],
-      aux:[
-        { id:'A-ri', g:han('日'), why:'「日」就係 A　日嘅字母本身。例如「門」= AN。' },
-        { id:'A-yue', g:han('曰'), why:'「曰」係「日」躺平／略扁嘅形，同樣屬 A　日。' },
-        { id:'A-flat', g:shp('riFlat'), why:'呢個扁方框中間一橫（冃／⺜）都係 A　日。唔好當成 W　田（田中間有十字）。' }
-      ]
-    },
-    { id:'B', name:'月', hint:'', group:'philo',
-      examples:[{ch:'受', code:'BBE', note:'「爫」同「月」都取 B　月'}],
-      aux:[
-        { id:'B-yue', g:han('月'), why:'「月」就係 B　月嘅字母本身。' },
-        { id:'B-jiong', g:han('冂'), why:'「冂」係「同」一類字嘅外框，屬 B　月。' },
-        { id:'B-mi', g:han('冖'), why:'「冖」係蓋頂形（好似「軍」字頭），屬 B　月。' },
-        { id:'B-door', g:shp('door'), why:'呢個好似「門」嘅外框（⺆）都屬 B　月。' },
-        { id:'B-bar', g:shp('shortBar'), why:'呢條短橫係「月」變矮嘅形，屬 B　月。' },
-        { id:'B-xi', g:han('夕'), why:'「夕」外形似月，屬 B　月。' },
-        { id:'B-zhao', g:han('爫'), why:'「爫」（爪字頭）屬 B　月。例如「受」= BBE。' },
-        { id:'B-duo', g:han('多'), why:'「多」係兩個「夕」疊埋，圖表用紅色標示，屬 B　月。' }
-      ]
-    },
-    { id:'C', name:'金', hint:'', group:'philo',
-      examples:[{ch:'公', code:'CI', note:'「八」字形取 C　金'}],
-      aux:[
-        { id:'C-jin', g:han('金'), why:'「金」就係 C　金嘅字母本身。例如「公」= CI。' },
-        { id:'C-so', g:shp('twoSlash'), why:'呢兩劃短撇（ソ）係「金」下方兩點嘅形，屬 C　金。' },
-        { id:'C-ha', g:shp('ha'), why:'「ハ」係「八」倒轉嘅形，屬 C　金。例如「公」= CI。' },
-        { id:'C-ba', g:han('八'), why:'「八」屬 C　金。例如「公」= CI。' },
-        { id:'C-er', g:han('儿'), why:'「儿」係「八」嘅變形，屬 C　金。' }
-      ]
-    },
-    { id:'D', name:'木', hint:'', group:'philo',
-      examples:[{ch:'床', code:'ID', note:'「床」裏面嘅「木」取 D　木'}],
-      aux:[
-        { id:'D-mu', g:han('木'), why:'「木」就係 D　木嘅字母本身。' },
-        { id:'D-cai', g:han('才'), why:'「才」屬 D　木。注意：提手旁「扌」先係 Q　手，唔好撈亂。' },
-        { id:'D-trunk', g:shp('trunkD'), why:'呢個好似「十／巾」嘅形係「木」嘅主幹，屬 D　木。' }
-      ]
-    },
-    { id:'E', name:'水', hint:'', group:'philo',
-      examples:[{ch:'江', code:'EM', note:'三點水取 E　水'}, {ch:'友', code:'KE', note:'「又」喺五代都取 E　水'}],
-      aux:[
-        { id:'E-san', g:han('氵'), why:'三點水「氵」屬 E　水。例如「江」= EM。' },
-        { id:'E-bing', g:han('氷'), why:'「氷」係「水」加一點嘅形，屬 E　水。' },
-        { id:'E-shui', g:han('水'), why:'「水」就係 E　水嘅字母本身。' },
-        { id:'E-di', g:han('氺'), why:'「氺」（水字底，好似「泰」下面）屬 E　水。' },
-        { id:'E-you', g:han('又'), why:'「又」係五代新增嘅輔助字形，屬 E　水。例如「友」= KE。' }
-      ]
-    },
-    { id:'F', name:'火', hint:'', group:'philo',
-      examples:[{ch:'魚', code:'NWF', note:'四點「灬」取 F　火'}, {ch:'少', code:'FH', note:'「小」取 F　火'}],
-      aux:[
-        { id:'F-huo', g:han('火'), why:'「火」就係 F　火嘅字母本身。' },
-        { id:'F-dots4', g:han('灬'), why:'四點「灬」屬 F　火。例如「魚」= NWF。' },
-        { id:'F-dots3', g:shp('threeDots'), why:'呢三點係「灬／火」減點嘅變體，屬 F　火。' },
-        { id:'F-dots3b', g:shp('threeDotsB'), why:'呢排三點都係火嘅變體，屬 F　火。', quiz:false },
-        { id:'F-xiaoTop', g:shp('xiaoTop'), why:'「⺌」（好似「當」字頭）屬 F　火。' },
-        { id:'F-inv', g:shp('invXiao'), why:'呢個係「小」倒轉／變形（好似「个」），屬 F　火。' },
-        { id:'F-xiao', g:han('小'), why:'「小」屬 F　火。例如「少」= FH。' },
-        { id:'F-xiao2', g:han('小'), why:'呢個都係「小」嘅變形，屬 F　火。', quiz:false }
-      ]
-    },
-    { id:'G', name:'土', hint:'', group:'philo',
-      examples:[{ch:'吉', code:'GR', note:'「士」亦取 G　土'}],
-      aux:[
-        { id:'G-tu', g:han('土'), why:'「土」就係 G　土嘅字母本身。例如「吉」= GR。' },
-        { id:'G-shi', g:han('士'), why:'「士」係「土」把上橫寫長啲，同樣屬 G　土。例如「吉」= GR。' }
-      ]
-    },
-    /* ===== H–N ===== */
-    { id:'H', name:'竹', hint:'斜', group:'stroke',
-      examples:[{ch:'白', code:'HA', note:'撇「丿」取 H　竹'}],
-      aux:[
-        { id:'H-bamb', g:shp('bamb'), why:'呢個竹字頭（⺮）屬 H　竹（斜）。' },
-        { id:'H-pie', g:han('丿'), why:'撇「丿」就係「斜」形，屬 H　竹。例如「白」= HA。' },
-        { id:'H-chang', g:shp('chang'), why:'圖表喺 H　竹都畫咗一個好似「厂」嘅形，係竹嘅衍生。不過成個「厂」字頭（例如「原」= MHAF）通常取 M　一。', quiz:false }
-      ]
-    },
-    { id:'I', name:'戈', hint:'點', group:'stroke',
-      examples:[{ch:'去', code:'GI', note:'「厶」取 I　戈'}, {ch:'床', code:'ID', note:'「广」取 I　戈'}],
-      aux:[
-        { id:'I-dian', g:han('丶'), why:'點「丶」就係「點」形，屬 I　戈。' },
-        { id:'I-yan', g:han('广'), why:'「广」屬 I　戈。例如「床」= ID。' },
-        { id:'I-si', g:han('厶'), why:'「厶」屬 I　戈。例如「去」= GI、「公」= CI。女（紐）行雖然都有一個好似厶嘅絞絲形，但「厶」本身取 I。' }
-      ]
-    },
-    { id:'J', name:'十', hint:'交', group:'stroke',
-      examples:[{ch:'家', code:'JMSO', note:'寶蓋「宀」取 J　十'}, {ch:'安', code:'JV', note:'「宀」取 J　十'}],
-      aux:[
-        { id:'J-mian', g:han('宀'), why:'寶蓋頭「宀」屬 J　十（交）。例如「家」= JMSO、「安」= JV。「十」本身就係呢個字母。' }
-      ]
-    },
-    { id:'K', name:'大', hint:'叉', group:'stroke',
-      examples:[{ch:'有', code:'KB', note:'「ナ」形取 K　大'}, {ch:'父', code:'CK', note:'交叉「乂」取 K　大'}],
-      aux:[
-        { id:'K-yi', g:han('乂'), why:'交叉「乂」就係「叉」形，屬 K　大。例如「父」= CK。' },
-        { id:'K-yi2', g:shp('yiRed'), why:'呢個係「乂」加筆嘅變形，同樣屬 K　大。' },
-        { id:'K-na', g:shp('naKana'), why:'「ナ」（好似「有」嘅上半）屬 K　大。例如「有」= KB。' },
-        { id:'K-ni', g:han('疒'), why:'病字頭「疒」屬 K　大。' }
-      ]
-    },
-    { id:'L', name:'中', hint:'縱', group:'stroke',
-      examples:[{ch:'被', code:'LDHE', note:'衣字旁「衤」取 L　中'}],
-      aux:[
-        { id:'L-shu', g:han('丨'), why:'豎「丨」就係「縱」形，屬 L　中。' },
-        { id:'L-bent', g:shp('bentV'), why:'呢條略為彎咗嘅豎／撇都當「縱」形，屬 L　中。' },
-        { id:'L-yi', g:han('衤'), why:'衣字旁「衤」（寫成 ネ 亦得）屬 L　中。例如「被」= LDHE。' },
-        { id:'L-yu', g:han('聿'), why:'「聿／肀」上下都係豎，屬 L　中。' }
-      ]
-    },
-    { id:'M', name:'一', hint:'橫', group:'stroke',
-      examples:[{ch:'原', code:'MHAF', note:'「厂」字頭取 M　一'}],
-      aux:[
-        { id:'M-yi', g:shp('slantYi'), why:'呢一劃（圖上寫得略斜）就係「橫」，屬 M　一。' },
-        { id:'M-chang', g:shp('chang'), why:'「厂」通常取 M　一。例如「原」= MHAF。圖表入面 H　竹都有一個好似厂嘅形，但編碼時「厂」字頭多數都係 M。' },
-        { id:'M-fan', g:shp('yiFan'), why:'「丆」係反向嘅「厂」，都屬 M　一。' },
-        { id:'M-gong', g:han('工'), why:'「工」屬 M　一。' },
-        { id:'M-gong2', g:shp('gongVar'), why:'呢個係「工」嘅變形，同樣屬 M　一。' },
-        { id:'M-yu', g:shp('yu'), why:'「ユ」係「工」少咗一截嘅形，屬 M　一。' }
-      ]
-    },
-    { id:'N', name:'弓', hint:'鈎', group:'stroke',
-      examples:[{ch:'子', code:'ND', note:'鈎形取 N　弓'}, {ch:'魚', code:'NWF', note:'「魚」由 N　弓開頭'}],
-      aux:[
-        { id:'N-jue', g:han('亅'), why:'豎鈎「亅」屬 N　弓（鈎）。' },
-        { id:'N-hg', g:shp('hengGou'), why:'橫鈎「乛」屬 N　弓。' },
-        { id:'N-fu', g:shp('fu'), why:'「フ」形屬 N　弓。' },
-        { id:'N-yi', g:han('乙'), why:'「乙」屬 N　弓。例如「子」= ND 都由鈎形開頭。' },
-        { id:'N-yin', g:shp('yin'), why:'「乚」呢種向下再鈎嘅形喺圖表屬 N　弓。注意：好似「孔」末筆嗰種豎曲（孔 = NDU）就係 U　山。' },
-        { id:'N-ku', g:shp('ku'), why:'「ク／勹」形屬 N　弓。' },
-        { id:'N-bo', g:shp('boPo'), why:'「ㄅ」形屬 N　弓。' },
-        { id:'N-corner', g:shp('corner'), why:'呢個橫折鈎（轉角再向下）屬 N　弓。' }
-      ]
-    },
-    /* ===== O–R ===== */
-    { id:'O', name:'人', hint:'', group:'body',
-      examples:[{ch:'他', code:'OPD', note:'單人旁取 O　人'}, {ch:'你', code:'ONF', note:'「亻」取 O　人'}],
-      aux:[
-        { id:'O-renSide', g:han('亻'), why:'單人旁「亻」屬 O　人。例如「他」= OPD、「你」= ONF。' },
-        { id:'O-ren', g:han('人'), why:'「人」就係 O　人嘅字母本身。' },
-        { id:'O-hat', g:shp('hat'), why:'「𠆢」（人字頭，好似「今」上面）屬 O　人。' },
-        { id:'O-ruVar', g:shp('ruVar'), why:'呢個係「入」嘅變體，屬 O　人。' },
-        { id:'O-ru', g:han('入'), why:'「入」屬 O　人。' },
-        { id:'O-na', g:shp('na'), why:'捺「乀」屬 O　人。' },
-        { id:'O-ds', g:shp('dotSlash'), why:'呢一點撇都屬 O　人。' },
-        { id:'O-quan', g:shp('quan'), why:'「ㄑ」形屬 O　人。' },
-        { id:'O-ku', g:shp('kuSmall'), why:'呢個「く」係「人」嘅變形，圖表用紅色標示。絞絲／紐形嘅「く」就屬 V　女，所以單睇「く」要睇佢用喺邊。', quiz:false }
-      ]
-    },
-    { id:'P', name:'心', hint:'', group:'body',
-      examples:[{ch:'情', code:'PQMB', note:'豎心旁取 P　心'}, {ch:'比', code:'PP', note:'「匕」形取 P　心'}],
-      aux:[
-        { id:'P-side', g:shp('xinSide'), why:'豎心旁「忄」屬 P　心。例如「情」= PQMB。' },
-        { id:'P-bot', g:shp('xinBot'), why:'「⺗」（心字底）屬 P　心。' },
-        { id:'P-bi', g:han('匕'), why:'「匕」係「心」中間嗰部分嘅形，屬 P　心。例如「比」= PP。' },
-        { id:'P-bi2', g:han('匕'), why:'呢個都係「匕」嘅變形，屬 P　心。', quiz:false },
-        { id:'P-bi3', g:han('匕'), why:'呢個都係「匕」嘅變形，屬 P　心。', quiz:false },
-        { id:'P-qi', g:han('七'), why:'「七」係「匕」嘅變形，屬 P　心。' },
-        { id:'P-qi2', g:han('七'), why:'呢個都係「七」嘅變形，屬 P　心。', quiz:false },
-        { id:'P-yi', g:shp('yiLike'), why:'呢個好似「弋／戈」嘅形係「心」嘅變形，屬 P　心。' },
-        { id:'P-hook', g:shp('hookP'), why:'呢個鈎形係「匕／心」嘅變形，屬 P　心。' },
-        { id:'P-cross', g:shp('crossP'), why:'圖表最右邊呢個十字變體，係「匕／七」再變形，列喺 P　心下面。', quiz:false }
-      ]
-    },
-    { id:'Q', name:'手', hint:'', group:'body',
-      examples:[{ch:'打', code:'QMN', note:'提手旁「扌」取 Q　手'}],
-      aux:[
-        { id:'Q-side', g:han('扌'), why:'提手旁「扌」屬 Q　手。例如「打」= QMN。唔好當成 D　木嘅「才」。' },
-        { id:'Q-top', g:shp('shouTop'), why:'「龵」（手嘅上半，好似三橫加一撇）屬 Q　手。' },
-        { id:'Q-trunk', g:shp('shouTrunk'), why:'呢個係「手」嘅主幹，屬 Q　手。' },
-        { id:'Q-shou', g:han('手'), why:'「手」就係 Q　手嘅字母本身。例如「打」= QMN。' }
-      ]
-    },
-    { id:'R', name:'口', hint:'', group:'body',
-      examples:[{ch:'品', code:'RRR', note:'三個口都取 R　口'}],
-      aux:[]
-    },
-    /* ===== S–Y ===== */
-    { id:'S', name:'尸', hint:'側', group:'shape',
-      examples:[{ch:'區', code:'SRRR', note:'區字框「匚」取 S　尸'}],
-      aux:[
-        { id:'S-ko', g:shp('ko'), why:'「コ」係「尸」嘅上半／側形，屬 S　尸（側）。' },
-        { id:'S-fang', g:han('匚'), why:'「匚」（區字框，向右開口）屬 S　尸。例如「區」= SRRR。' },
-        { id:'S-diao', g:shp('diao'), why:'「刁／𠃌」呢種刀形鈎屬 S　尸。' },
-        { id:'S-hook', g:shp('sideHook'), why:'呢個側鈎屬 S　尸（側）。' },
-        { id:'S-bu', g:shp('buLike'), why:'圖表喺 S　尸畫咗呢個側住嘅卜形，屬於側形輔助字形。' },
-        { id:'S-yi', g:han('已'), why:'「已」呢種側彎形喺圖表列喺 S　尸。成個「已」字會再加山形編碼（尸山）。' },
-        { id:'S-tall', g:shp('tallShi'), why:'呢個長豎、有幾橫嘅形係五代「尸」嘅延伸（好似「非」左邊），屬 S　尸。' }
-      ]
-    },
-    { id:'T', name:'廿', hint:'並', group:'shape',
-      examples:[{ch:'花', code:'TOP', note:'草字頭「艹」取 T　廿'}],
-      aux:[
-        { id:'T-nian', g:han('廿'), why:'「廿」就係 T　廿嘅字母本身。例如「花」= TOP 用草字頭，同樣屬 T。' },
-        { id:'T-cao', g:han('艹'), why:'草字頭「艹」屬 T　廿（並）。例如「花」= TOP。' },
-        { id:'T-zhuo', g:shp('zhuo'), why:'「䒑」（好似「並／首」上面）屬 T　廿。' },
-        { id:'T-gong', g:shp('gongHead'), why:'「共」字頭呢種形屬 T　廿。' },
-        { id:'T-nian2', g:shp('nian'), why:'「廾」屬 T　廿（並）。' },
-        { id:'T-sa', g:han('卅'), why:'「卅」屬 T　廿。' },
-        { id:'T-bing', g:shp('bing'), why:'呢個左右對稱嘅「並」形屬 T　廿。' },
-        { id:'T-chou', g:shp('chou'), why:'呢個平行（好似卄／丑）嘅形屬 T　廿。' }
-      ]
-    },
-    { id:'U', name:'山', hint:'仰', group:'shape',
-      examples:[{ch:'出', code:'UU', note:'兩個山形取 U　山'}, {ch:'孔', code:'NDU', note:'末筆豎曲「乚」取 U　山'}],
-      aux:[
-        { id:'U-shan', g:han('山'), why:'「山」就係 U　山嘅字母本身。例如「出」= UU。' },
-        { id:'U-qu', g:shp('qu'), why:'「凵」（好似「凶」嘅外框）屬 U　山（仰）。' },
-        { id:'U-shi', g:shp('shiU'), why:'呢條豎曲（し／乚）屬 U　山。例如「孔」= NDU。N　弓雖然都有鈎形，但「孔」末筆呢種仰起嘅曲筆取 U。' },
-        { id:'U-che', g:shp('che'), why:'「屮」屬 U　山。' },
-        { id:'U-tall', g:shp('cheTall'), why:'呢個伸長咗嘅「屮」同樣屬 U　山。' }
-      ]
-    },
-    { id:'V', name:'女', hint:'紐', group:'shape',
-      examples:[{ch:'紅', code:'VFM', note:'絞絲旁取 V　女'}],
-      aux:[
-        { id:'V-nv', g:han('女'), why:'「女」就係 V　女嘅字母本身。例如「紅」= VFM 嘅絞絲旁由 V　女開頭。' },
-        { id:'V-ku', g:shp('kuSmall'), why:'呢個「く」係「紐」形，屬 V　女（例如絞絲旁）。O　人亦有一個好似く嘅變形，單睇形狀時要記：紐／絞絲取 V。', quiz:false },
-        { id:'V-si', g:han('厶'), why:'圖表喺 V　女都畫咗一個「厶」形（紐形）。不過單獨嘅「厶」（例如「去」= GI、「公」= CI）取 I　戈。', quiz:false },
-        { id:'V-re', g:shp('re'), why:'「レ」形屬 V　女（紐）。' },
-        { id:'V-l', g:shp('lShape'), why:'呢個豎折（好似 L）屬 V　女（紐）。' },
-        { id:'V-turn', g:shp('vTurn'), why:'呢條向下再轉嘅豎折屬 V　女。' },
-        { id:'V-silk', g:shp('silk'), why:'呢個絞絲類小折係「紐」形，屬 V　女。例如「紅」= VFM。' }
-      ]
-    },
-    { id:'W', name:'田', hint:'方', group:'shape',
-      examples:[{ch:'國', code:'WIRM', note:'大口框取 W　田'}, {ch:'回', code:'WR', note:'外框取 W　田，裏面嘅口取 R　口'}],
-      aux:[
-        { id:'W-box', g:shp('box'), why:'空心大方框「囗」屬 W　田（方）。細嘅「口」先係 R　口。' },
-        { id:'W-boxIn', g:shp('boxIn'), why:'圖表用紅色嘅框表示：框裏面可以有筆畫（好似「國」「回」嘅外框），都屬 W　田。例如「國」= WIRM、「回」= WR。' },
-        { id:'W-mu', g:han('母'), why:'「母／毋」係「田」嘅變形，屬 W　田。' }
-      ]
-    },
-    { id:'Y', name:'卜', hint:'', group:'shape',
-      examples:[{ch:'文', code:'YK', note:'「亠」取 Y　卜'}, {ch:'這', code:'YYMR', note:'走之底「辶」取 Y　卜'}],
-      aux:[
-        { id:'Y-bu', g:han('卜'), why:'「卜」就係 Y　卜嘅字母本身。例如「文」= YK。' },
-        { id:'Y-tou', g:han('亠'), why:'「亠」（點加一橫）屬 Y　卜。例如「文」= YK。' },
-        { id:'Y-dots', g:han('⺀'), why:'呢兩點（⺀）屬 Y　卜。' },
-        { id:'Y-chuo', g:han('辶'), why:'走之底「辶」屬 Y　卜。例如「這」= YYMR。' }
-      ]
-    },
-    { id:'X', name:'難', hint:'', group:'special', quiz:false,
-      aux:[ { id:'X-nan', g:han('難'), quiz:false }, { id:'X-zhong', g:han('重'), quiz:false } ]
-    },
-    { id:'Z', name:'符', hint:'', group:'special', quiz:false,
-      aux:[ { id:'Z-note', g:han('片造'), quiz:false, text:'片造（片語造字）' } ]
-    }
-  ];
+  {
+    "id": "A",
+    "name": "日",
+    "hint": "",
+    "group": "philo",
+    "examples": [
+      {
+        "ch": "門",
+        "code": "AN",
+        "note": "門字框用 A　日開頭"
+      }
+    ],
+    "aux": [
+      {
+        "id": "A-01",
+        "file": "glyphs/A-01.png",
+        "why": "「日」就係 A　日嘅字母本身。例如「門」= AN。"
+      },
+      {
+        "id": "A-02",
+        "file": "glyphs/A-02.png",
+        "why": "「曰」係「日」躺平／略扁嘅形，同樣屬 A　日。"
+      },
+      {
+        "id": "A-03",
+        "file": "glyphs/A-03.png",
+        "why": "呢個扁方框中間一橫（冃／⺜）都係 A　日。唔好當成 W　田（田中間有十字）。"
+      }
+    ]
+  },
+  {
+    "id": "B",
+    "name": "月",
+    "hint": "",
+    "group": "philo",
+    "examples": [
+      {
+        "ch": "受",
+        "code": "BBE",
+        "note": "「爫」同「月」都取 B　月"
+      }
+    ],
+    "aux": [
+      {
+        "id": "B-01",
+        "file": "glyphs/B-01.png",
+        "why": "「月」就係 B　月嘅字母本身。"
+      },
+      {
+        "id": "B-02",
+        "file": "glyphs/B-02.png",
+        "why": "呢個好似「冂／月」嘅外框，屬 B　月。"
+      },
+      {
+        "id": "B-03",
+        "file": "glyphs/B-03.png",
+        "why": "「冖」係蓋頂形（好似「軍」字頭），屬 B　月。"
+      },
+      {
+        "id": "B-04",
+        "file": "glyphs/B-04.png",
+        "why": "呢個好似「門」嘅外框（⺆／冂加鈎），屬 B　月。"
+      },
+      {
+        "id": "B-05",
+        "file": "glyphs/B-05.png",
+        "why": "呢條短橫鈎係「月」變矮嘅形，屬 B　月。"
+      },
+      {
+        "id": "B-06",
+        "file": "glyphs/B-06.png",
+        "why": "呢條帶鈎嘅短橫同樣屬 B　月。"
+      },
+      {
+        "id": "B-07",
+        "file": "glyphs/B-07.png",
+        "why": "「夕」外形似月，屬 B　月。"
+      },
+      {
+        "id": "B-08",
+        "file": "glyphs/B-08.png",
+        "why": "「爫」（爪字頭）屬 B　月。例如「受」= BBE。"
+      },
+      {
+        "id": "B-09",
+        "file": "glyphs/B-09.png",
+        "why": "「多」係兩個「夕」疊埋，圖表用紅色標示，屬 B　月。"
+      }
+    ]
+  },
+  {
+    "id": "C",
+    "name": "金",
+    "hint": "",
+    "group": "philo",
+    "examples": [
+      {
+        "ch": "公",
+        "code": "CI",
+        "note": "「八」字形取 C　金"
+      }
+    ],
+    "aux": [
+      {
+        "id": "C-01",
+        "file": "glyphs/C-01.png",
+        "why": "「金」就係 C　金嘅字母本身。例如「公」= CI。"
+      },
+      {
+        "id": "C-02",
+        "file": "glyphs/C-02.png",
+        "why": "呢兩劃短撇（ソ）係「金」下方兩點嘅形，屬 C　金。"
+      },
+      {
+        "id": "C-03",
+        "file": "glyphs/C-03.png",
+        "why": "「ハ」係「八」倒轉嘅形，屬 C　金。例如「公」= CI。"
+      },
+      {
+        "id": "C-04",
+        "file": "glyphs/C-04.png",
+        "why": "「八」屬 C　金。例如「公」= CI。"
+      },
+      {
+        "id": "C-05",
+        "file": "glyphs/C-05.png",
+        "why": "「儿」係「八」嘅變形，屬 C　金。"
+      }
+    ]
+  },
+  {
+    "id": "D",
+    "name": "木",
+    "hint": "",
+    "group": "philo",
+    "examples": [
+      {
+        "ch": "床",
+        "code": "ID",
+        "note": "「床」裏面嘅「木」取 D　木"
+      }
+    ],
+    "aux": [
+      {
+        "id": "D-01",
+        "file": "glyphs/D-01.png",
+        "why": "「木」就係 D　木嘅字母本身。"
+      },
+      {
+        "id": "D-02",
+        "file": "glyphs/D-02.png",
+        "why": "「才」屬 D　木。注意：提手旁「扌」先係 Q　手，唔好撈亂。"
+      },
+      {
+        "id": "D-03",
+        "file": "glyphs/D-03.png",
+        "why": "呢個好似「十」再加一鈎嘅形係「木」嘅主幹，屬 D　木。"
+      }
+    ]
+  },
+  {
+    "id": "E",
+    "name": "水",
+    "hint": "",
+    "group": "philo",
+    "examples": [
+      {
+        "ch": "江",
+        "code": "EM",
+        "note": "三點水取 E　水"
+      },
+      {
+        "ch": "友",
+        "code": "KE",
+        "note": "「又」喺五代都取 E　水"
+      }
+    ],
+    "aux": [
+      {
+        "id": "E-01",
+        "file": "glyphs/E-01.png",
+        "why": "三點水「氵」屬 E　水。例如「江」= EM。"
+      },
+      {
+        "id": "E-02",
+        "file": "glyphs/E-02.png",
+        "why": "「氷」係「水」加一點嘅形，屬 E　水。"
+      },
+      {
+        "id": "E-03",
+        "file": "glyphs/E-03.png",
+        "why": "「水」就係 E　水嘅字母本身。"
+      },
+      {
+        "id": "E-04",
+        "file": "glyphs/E-04.png",
+        "why": "「氺」（水字底，好似「泰」下面）屬 E　水。"
+      },
+      {
+        "id": "E-05",
+        "file": "glyphs/E-05.png",
+        "why": "「又」係五代新增嘅輔助字形，屬 E　水。例如「友」= KE。"
+      }
+    ]
+  },
+  {
+    "id": "F",
+    "name": "火",
+    "hint": "",
+    "group": "philo",
+    "examples": [
+      {
+        "ch": "魚",
+        "code": "NWF",
+        "note": "四點「灬」取 F　火"
+      },
+      {
+        "ch": "少",
+        "code": "FH",
+        "note": "「小」取 F　火"
+      }
+    ],
+    "aux": [
+      {
+        "id": "F-01",
+        "file": "glyphs/F-01.png",
+        "why": "「火」就係 F　火嘅字母本身。"
+      },
+      {
+        "id": "F-02",
+        "file": "glyphs/F-02.png",
+        "why": "四點「灬」屬 F　火。例如「魚」= NWF。"
+      },
+      {
+        "id": "F-03",
+        "file": "glyphs/F-03.png",
+        "why": "呢三點同樣係「火」嘅點形，屬 F　火。"
+      },
+      {
+        "id": "F-04",
+        "file": "glyphs/F-04.png",
+        "why": "呢個「⺌」（兩點加一撇／豎）屬 F　火。"
+      },
+      {
+        "id": "F-05",
+        "file": "glyphs/F-05.png",
+        "why": "呢個「小」字變體（右邊一劃向上）屬 F　火。"
+      },
+      {
+        "id": "F-06",
+        "file": "glyphs/F-06.png",
+        "why": "呢個倒轉嘅「小」（好似「个」）屬 F　火。"
+      },
+      {
+        "id": "F-07",
+        "file": "glyphs/F-07.png",
+        "why": "「小」屬 F　火。例如「少」= FH。"
+      },
+      {
+        "id": "F-08",
+        "file": "glyphs/F-08.png",
+        "why": "紅色嘅「小」同樣屬 F　火。例如「少」= FH。"
+      }
+    ]
+  },
+  {
+    "id": "G",
+    "name": "土",
+    "hint": "",
+    "group": "philo",
+    "examples": [
+      {
+        "ch": "吉",
+        "code": "GR",
+        "note": "「士」亦取 G　土"
+      }
+    ],
+    "aux": [
+      {
+        "id": "G-01",
+        "file": "glyphs/G-01.png",
+        "why": "「土」就係 G　土嘅字母本身。例如「吉」= GR、「去」= GI。"
+      },
+      {
+        "id": "G-02",
+        "file": "glyphs/G-02.png",
+        "why": "「士」係「土」上下橫對調嘅形，屬 G　土。例如「吉」= GR。"
+      }
+    ]
+  },
+  {
+    "id": "H",
+    "name": "竹",
+    "hint": "斜",
+    "group": "stroke",
+    "examples": [
+      {
+        "ch": "白",
+        "code": "HA",
+        "note": "撇「丿」取 H　竹"
+      }
+    ],
+    "aux": [
+      {
+        "id": "H-01",
+        "file": "glyphs/H-01.png",
+        "why": "「竹／⺮」（竹字頭）就係 H　竹嘅字母本身。例如「白」= HA。"
+      },
+      {
+        "id": "H-02",
+        "file": "glyphs/H-02.png",
+        "why": "撇「丿」屬 H　竹（斜）。記住呢個字母專門管斜嘅筆畫。"
+      },
+      {
+        "id": "H-03",
+        "file": "glyphs/H-03.png",
+        "why": "「厂」屬 H　竹（斜）。"
+      }
+    ]
+  },
+  {
+    "id": "I",
+    "name": "戈",
+    "hint": "點",
+    "group": "stroke",
+    "examples": [
+      {
+        "ch": "去",
+        "code": "GI",
+        "note": "「厶」取 I　戈"
+      },
+      {
+        "ch": "床",
+        "code": "ID",
+        "note": "「广」取 I　戈"
+      }
+    ],
+    "aux": [
+      {
+        "id": "I-01",
+        "file": "glyphs/I-01.png",
+        "why": "點「丶」屬 I　戈（點）。記住呢個字母專門管點。"
+      },
+      {
+        "id": "I-02",
+        "file": "glyphs/I-02.png",
+        "why": "「广」屬 I　戈。例如「床」= ID。"
+      },
+      {
+        "id": "I-03",
+        "file": "glyphs/I-03.png",
+        "why": "「厶」屬 I　戈。例如「公」= CI。"
+      }
+    ]
+  },
+  {
+    "id": "J",
+    "name": "十",
+    "hint": "交",
+    "group": "stroke",
+    "examples": [
+      {
+        "ch": "家",
+        "code": "JMSO",
+        "note": "寶蓋「宀」取 J　十"
+      },
+      {
+        "ch": "安",
+        "code": "JV",
+        "note": "「宀」取 J　十"
+      }
+    ],
+    "aux": [
+      {
+        "id": "J-01",
+        "file": "glyphs/J-01.png",
+        "why": "「宀」（寶蓋頭）屬 J　十（交）。例如「家」= JMSO、「安」= JV。"
+      }
+    ]
+  },
+  {
+    "id": "K",
+    "name": "大",
+    "hint": "叉",
+    "group": "stroke",
+    "examples": [
+      {
+        "ch": "有",
+        "code": "KB",
+        "note": "「ナ」形取 K　大"
+      },
+      {
+        "ch": "父",
+        "code": "CK",
+        "note": "交叉「乂」取 K　大"
+      }
+    ],
+    "aux": [
+      {
+        "id": "K-01",
+        "file": "glyphs/K-01.png",
+        "why": "「乂」屬 K　大（叉）。例如「父」= CK。"
+      },
+      {
+        "id": "K-02",
+        "file": "glyphs/K-02.png",
+        "why": "紅色呢個加咗筆嘅「乂」同樣屬 K　大（叉）。"
+      },
+      {
+        "id": "K-03",
+        "file": "glyphs/K-03.png",
+        "why": "「ナ／𠂇」屬 K　大。例如「有」= KB。"
+      },
+      {
+        "id": "K-04",
+        "file": "glyphs/K-04.png",
+        "why": "病字頭「疒」屬 K　大。"
+      }
+    ]
+  },
+  {
+    "id": "L",
+    "name": "中",
+    "hint": "縱",
+    "group": "stroke",
+    "examples": [
+      {
+        "ch": "被",
+        "code": "LDHE",
+        "note": "衣字旁「衤」取 L　中"
+      }
+    ],
+    "aux": [
+      {
+        "id": "L-01",
+        "file": "glyphs/L-01.png",
+        "why": "豎「丨」屬 L　中（縱）。記住呢個字母專門管直嘅筆畫。"
+      },
+      {
+        "id": "L-02",
+        "file": "glyphs/L-02.png",
+        "why": "呢條略彎嘅豎／撇（紅色）同樣屬 L　中（縱）。"
+      },
+      {
+        "id": "L-03",
+        "file": "glyphs/L-03.png",
+        "why": "「衤」（衣字旁，寫成 ネ）屬 L　中。例如「被」= LDHE。"
+      },
+      {
+        "id": "L-04",
+        "file": "glyphs/L-04.png",
+        "why": "「聿／肀」屬 L　中。"
+      }
+    ]
+  },
+  {
+    "id": "M",
+    "name": "一",
+    "hint": "橫",
+    "group": "stroke",
+    "examples": [
+      {
+        "ch": "原",
+        "code": "MHAF",
+        "note": "「厂」字頭取 M　一"
+      }
+    ],
+    "aux": [
+      {
+        "id": "M-01",
+        "file": "glyphs/M-01.png",
+        "why": "呢條略斜嘅橫屬 M　一（橫）。記住呢個字母專門管橫。"
+      },
+      {
+        "id": "M-02",
+        "file": "glyphs/M-02.png",
+        "why": "「厂」屬 M　一。注意：如果成個「厂」當斜撇睇，有時會同 H　竹撈亂，呢度按圖表屬 M　一。"
+      },
+      {
+        "id": "M-03",
+        "file": "glyphs/M-03.png",
+        "why": "呢個反向嘅「厂」（丆）屬 M　一。"
+      },
+      {
+        "id": "M-04",
+        "file": "glyphs/M-04.png",
+        "why": "「工」屬 M　一。"
+      },
+      {
+        "id": "M-05",
+        "file": "glyphs/M-05.png",
+        "why": "紅色呢個「工」嘅變形同樣屬 M　一。"
+      },
+      {
+        "id": "M-06",
+        "file": "glyphs/M-06.png",
+        "why": "「ユ」屬 M　一。"
+      }
+    ]
+  },
+  {
+    "id": "N",
+    "name": "弓",
+    "hint": "鈎",
+    "group": "stroke",
+    "examples": [
+      {
+        "ch": "子",
+        "code": "ND",
+        "note": "鈎形取 N　弓"
+      },
+      {
+        "ch": "魚",
+        "code": "NWF",
+        "note": "「魚」由 N　弓開頭"
+      }
+    ],
+    "aux": [
+      {
+        "id": "N-01",
+        "file": "glyphs/N-01.png",
+        "why": "豎鈎「亅」屬 N　弓（鈎）。記住呢個字母專門管鈎。例如「子」= ND。"
+      },
+      {
+        "id": "N-02",
+        "file": "glyphs/N-02.png",
+        "why": "橫鈎「乛」（紅色）屬 N　弓（鈎）。"
+      },
+      {
+        "id": "N-03",
+        "file": "glyphs/N-03.png",
+        "why": "「フ」屬 N　弓（鈎）。"
+      },
+      {
+        "id": "N-04",
+        "file": "glyphs/N-04.png",
+        "why": "「乙」屬 N　弓（鈎）。"
+      },
+      {
+        "id": "N-05",
+        "file": "glyphs/N-05.png",
+        "why": "「乚」（呢個帶長橫嘅鈎）屬 N　弓（鈎）。"
+      },
+      {
+        "id": "N-06",
+        "file": "glyphs/N-06.png",
+        "why": "「ク／勹」屬 N　弓（鈎）。"
+      },
+      {
+        "id": "N-07",
+        "file": "glyphs/N-07.png",
+        "why": "「ㄅ」呢個彎鈎屬 N　弓（鈎）。"
+      },
+      {
+        "id": "N-08",
+        "file": "glyphs/N-08.png",
+        "why": "最右邊呢個橫折鈎（¬／𠃍）屬 N　弓（鈎）。"
+      }
+    ]
+  },
+  {
+    "id": "O",
+    "name": "人",
+    "hint": "",
+    "group": "body",
+    "examples": [
+      {
+        "ch": "他",
+        "code": "OPD",
+        "note": "單人旁取 O　人"
+      },
+      {
+        "ch": "你",
+        "code": "ONF",
+        "note": "「亻」取 O　人"
+      }
+    ],
+    "aux": [
+      {
+        "id": "O-01",
+        "file": "glyphs/O-01.png",
+        "why": "單人旁「亻」屬 O　人。例如「他」= OPD。"
+      },
+      {
+        "id": "O-02",
+        "file": "glyphs/O-02.png",
+        "why": "「人」就係 O　人嘅字母本身。"
+      },
+      {
+        "id": "O-03",
+        "file": "glyphs/O-03.png",
+        "why": "「𠆢」（人字頭）屬 O　人。"
+      },
+      {
+        "id": "O-04",
+        "file": "glyphs/O-04.png",
+        "why": "呢個「入」嘅變體屬 O　人。"
+      },
+      {
+        "id": "O-05",
+        "file": "glyphs/O-05.png",
+        "why": "「入」屬 O　人。"
+      },
+      {
+        "id": "O-06",
+        "file": "glyphs/O-06.png",
+        "why": "捺「乀」屬 O　人。"
+      },
+      {
+        "id": "O-07",
+        "file": "glyphs/O-07.png",
+        "why": "呢一點／短撇屬 O　人。"
+      },
+      {
+        "id": "O-08",
+        "file": "glyphs/O-08.png",
+        "why": "紅色呢個「く／ㄑ」屬 O　人。"
+      },
+      {
+        "id": "O-09",
+        "file": "glyphs/O-09.png",
+        "why": "「く／ㄑ」屬 O　人。"
+      }
+    ]
+  },
+  {
+    "id": "P",
+    "name": "心",
+    "hint": "",
+    "group": "body",
+    "examples": [
+      {
+        "ch": "情",
+        "code": "PQMB",
+        "note": "豎心旁取 P　心"
+      },
+      {
+        "ch": "比",
+        "code": "PP",
+        "note": "「匕」形取 P　心"
+      }
+    ],
+    "aux": [
+      {
+        "id": "P-01",
+        "file": "glyphs/P-01.png",
+        "why": "豎心旁「忄」屬 P　心。例如「情」= PQMB。"
+      },
+      {
+        "id": "P-02",
+        "file": "glyphs/P-02.png",
+        "why": "「⺗」（心字底）屬 P　心。"
+      },
+      {
+        "id": "P-03",
+        "file": "glyphs/P-03.png",
+        "why": "「匕」屬 P　心。例如「比」= PP、「他」= OPD。"
+      },
+      {
+        "id": "P-04",
+        "file": "glyphs/P-04.png",
+        "why": "呢個較高嘅紅色「匕」同樣屬 P　心。"
+      },
+      {
+        "id": "P-05",
+        "file": "glyphs/P-05.png",
+        "why": "呢個「匕」同樣屬 P　心。"
+      },
+      {
+        "id": "P-06",
+        "file": "glyphs/P-06.png",
+        "why": "呢個紅色「匕」同樣屬 P　心。"
+      },
+      {
+        "id": "P-07",
+        "file": "glyphs/P-07.png",
+        "why": "呢個帶鈎嘅「匕／七」變形屬 P　心。"
+      },
+      {
+        "id": "P-08",
+        "file": "glyphs/P-08.png",
+        "why": "「七」係「匕」嘅變形，屬 P　心。"
+      },
+      {
+        "id": "P-09",
+        "file": "glyphs/P-09.png",
+        "why": "呢個「七」同樣屬 P　心。"
+      },
+      {
+        "id": "P-10",
+        "file": "glyphs/P-10.png",
+        "why": "呢個較闊嘅紅色「七」屬 P　心。"
+      },
+      {
+        "id": "P-11",
+        "file": "glyphs/P-11.png",
+        "why": "呢個好似「弋／七」加高劃嘅形屬 P　心。"
+      },
+      {
+        "id": "P-12",
+        "file": "glyphs/P-12.png",
+        "why": "呢個好似「乂／戈」嘅形屬 P　心。"
+      },
+      {
+        "id": "P-13",
+        "file": "glyphs/P-13.png",
+        "why": "呢個鈎形（好似「勹」）屬 P　心。"
+      },
+      {
+        "id": "P-14",
+        "file": "glyphs/P-14.png",
+        "why": "最右邊呢個十字變體屬 P　心。"
+      }
+    ]
+  },
+  {
+    "id": "Q",
+    "name": "手",
+    "hint": "",
+    "group": "body",
+    "examples": [
+      {
+        "ch": "打",
+        "code": "QMN",
+        "note": "提手旁「扌」取 Q　手"
+      }
+    ],
+    "aux": [
+      {
+        "id": "Q-01",
+        "file": "glyphs/Q-01.png",
+        "why": "提手旁「扌」屬 Q　手。例如「打」= QMN。注意：左邊只有一豎嘅「才」係 D　木。"
+      },
+      {
+        "id": "Q-02",
+        "file": "glyphs/Q-02.png",
+        "why": "「龵」（手嘅上半）屬 Q　手。"
+      },
+      {
+        "id": "Q-03",
+        "file": "glyphs/Q-03.png",
+        "why": "呢個「手」嘅主幹形屬 Q　手。"
+      },
+      {
+        "id": "Q-04",
+        "file": "glyphs/Q-04.png",
+        "why": "「手」就係 Q　手嘅字母本身。"
+      }
+    ]
+  },
+  {
+    "id": "R",
+    "name": "口",
+    "hint": "",
+    "group": "body",
+    "examples": [
+      {
+        "ch": "品",
+        "code": "RRR",
+        "note": "三個口都取 R　口"
+      }
+    ],
+    "aux": []
+  },
+  {
+    "id": "S",
+    "name": "尸",
+    "hint": "側",
+    "group": "shape",
+    "examples": [
+      {
+        "ch": "區",
+        "code": "SRRR",
+        "note": "區字框「匚」取 S　尸"
+      }
+    ],
+    "aux": [
+      {
+        "id": "S-01",
+        "file": "glyphs/S-01.png",
+        "why": "「コ」屬 S　尸（側）。"
+      },
+      {
+        "id": "S-02",
+        "file": "glyphs/S-02.png",
+        "why": "「匚」屬 S　尸（側）。例如「區」= SRRR。"
+      },
+      {
+        "id": "S-03",
+        "file": "glyphs/S-03.png",
+        "why": "「刁／𠃌」屬 S　尸（側）。"
+      },
+      {
+        "id": "S-04",
+        "file": "glyphs/S-04.png",
+        "why": "呢個紅色側鈎屬 S　尸（側）。"
+      },
+      {
+        "id": "S-05",
+        "file": "glyphs/S-05.png",
+        "why": "呢個好似「卜」但筆畫相連嘅形屬 S　尸（側）。唔好當成 Y　卜。"
+      },
+      {
+        "id": "S-06",
+        "file": "glyphs/S-06.png",
+        "why": "「已／巳」屬 S　尸（側）。"
+      },
+      {
+        "id": "S-07",
+        "file": "glyphs/S-07.png",
+        "why": "呢個長豎嘅「尸／㔾」變形屬 S　尸（側）。"
+      }
+    ]
+  },
+  {
+    "id": "T",
+    "name": "廿",
+    "hint": "並",
+    "group": "shape",
+    "examples": [
+      {
+        "ch": "花",
+        "code": "TOP",
+        "note": "草字頭「艹」取 T　廿"
+      }
+    ],
+    "aux": [
+      {
+        "id": "T-01",
+        "file": "glyphs/T-01.png",
+        "why": "「廿」就係 T　廿嘅字母本身。例如「花」= TOP。"
+      },
+      {
+        "id": "T-02",
+        "file": "glyphs/T-02.png",
+        "why": "草字頭「艹」屬 T　廿（並）。例如「花」= TOP。"
+      },
+      {
+        "id": "T-03",
+        "file": "glyphs/T-03.png",
+        "why": "「䒑」（兩點／並行短劃）屬 T　廿（並）。"
+      },
+      {
+        "id": "T-04",
+        "file": "glyphs/T-04.png",
+        "why": "「龷」（共字頭）屬 T　廿（並）。"
+      },
+      {
+        "id": "T-05",
+        "file": "glyphs/T-05.png",
+        "why": "「廾」屬 T　廿（並）。"
+      },
+      {
+        "id": "T-06",
+        "file": "glyphs/T-06.png",
+        "why": "「卅」屬 T　廿（並）。"
+      },
+      {
+        "id": "T-07",
+        "file": "glyphs/T-07.png",
+        "why": "呢個並行開揚嘅形（丌／並）屬 T　廿（並）。"
+      },
+      {
+        "id": "T-08",
+        "file": "glyphs/T-08.png",
+        "why": "呢個好似「丑／卄」嘅平行形屬 T　廿（並）。"
+      }
+    ]
+  },
+  {
+    "id": "U",
+    "name": "山",
+    "hint": "仰",
+    "group": "shape",
+    "examples": [
+      {
+        "ch": "出",
+        "code": "UU",
+        "note": "兩個山形取 U　山"
+      },
+      {
+        "ch": "孔",
+        "code": "NDU",
+        "note": "末筆豎曲「乚」取 U　山"
+      }
+    ],
+    "aux": [
+      {
+        "id": "U-01",
+        "file": "glyphs/U-01.png",
+        "why": "「山」就係 U　山嘅字母本身。例如「出」= UU。"
+      },
+      {
+        "id": "U-02",
+        "file": "glyphs/U-02.png",
+        "why": "「凵」屬 U　山（仰）。"
+      },
+      {
+        "id": "U-03",
+        "file": "glyphs/U-03.png",
+        "why": "呢個豎曲（乚／𠃊）屬 U　山（仰）。"
+      },
+      {
+        "id": "U-04",
+        "file": "glyphs/U-04.png",
+        "why": "「屮」屬 U　山（仰）。"
+      },
+      {
+        "id": "U-05",
+        "file": "glyphs/U-05.png",
+        "why": "呢個伸長嘅「屮」同樣屬 U　山（仰）。"
+      }
+    ]
+  },
+  {
+    "id": "V",
+    "name": "女",
+    "hint": "紐",
+    "group": "shape",
+    "examples": [
+      {
+        "ch": "紅",
+        "code": "VFM",
+        "note": "絞絲旁取 V　女"
+      }
+    ],
+    "aux": [
+      {
+        "id": "V-01",
+        "file": "glyphs/V-01.png",
+        "why": "「女」就係 V　女嘅字母本身。例如「安」= JV、「紅」= VFM。"
+      },
+      {
+        "id": "V-02",
+        "file": "glyphs/V-02.png",
+        "why": "「く」屬 V　女（紐）。"
+      },
+      {
+        "id": "V-03",
+        "file": "glyphs/V-03.png",
+        "why": "「厶」屬 V　女（紐）。注意：I　戈亦都有「厶」，睇整體配對嚟記。"
+      },
+      {
+        "id": "V-04",
+        "file": "glyphs/V-04.png",
+        "why": "呢個豎折「レ／𠃊」屬 V　女（紐）。"
+      },
+      {
+        "id": "V-05",
+        "file": "glyphs/V-05.png",
+        "why": "呢個帶鈎嘅豎折屬 V　女（紐）。"
+      },
+      {
+        "id": "V-06",
+        "file": "glyphs/V-06.png",
+        "why": "呢個好似「入／ㄑ」嘅形屬 V　女（紐）。"
+      },
+      {
+        "id": "V-07",
+        "file": "glyphs/V-07.png",
+        "why": "最後呢個絞絲類小折屬 V　女（紐）。例如「紅」= VFM。"
+      }
+    ]
+  },
+  {
+    "id": "W",
+    "name": "田",
+    "hint": "方",
+    "group": "shape",
+    "examples": [
+      {
+        "ch": "國",
+        "code": "WIRM",
+        "note": "大口框取 W　田"
+      },
+      {
+        "ch": "回",
+        "code": "WR",
+        "note": "外框取 W　田，裏面嘅口取 R　口"
+      }
+    ],
+    "aux": [
+      {
+        "id": "W-01",
+        "file": "glyphs/W-01.png",
+        "why": "空心大方框「囗」屬 W　田（方）。細嘅「口」先係 R　口。例如「國」= WIRM。"
+      },
+      {
+        "id": "W-02",
+        "file": "glyphs/W-02.png",
+        "why": "圖表用紅色嘅框表示：框裏面可以有筆畫（好似「國」「回」嘅外框），都屬 W　田。例如「回」= WR。"
+      },
+      {
+        "id": "W-03",
+        "file": "glyphs/W-03.png",
+        "why": "「母／毋」係「田」嘅變形，屬 W　田。"
+      }
+    ]
+  },
+  {
+    "id": "Y",
+    "name": "卜",
+    "hint": "",
+    "group": "shape",
+    "examples": [
+      {
+        "ch": "文",
+        "code": "YK",
+        "note": "「亠」取 Y　卜"
+      },
+      {
+        "ch": "這",
+        "code": "YYMR",
+        "note": "走之底「辶」取 Y　卜"
+      }
+    ],
+    "aux": [
+      {
+        "id": "Y-01",
+        "file": "glyphs/Y-01.png",
+        "why": "「卜」就係 Y　卜嘅字母本身。例如「文」= YK。"
+      },
+      {
+        "id": "Y-02",
+        "file": "glyphs/Y-02.png",
+        "why": "「亠」（點加一橫）屬 Y　卜。例如「文」= YK。"
+      },
+      {
+        "id": "Y-03",
+        "file": "glyphs/Y-03.png",
+        "why": "呢兩點（⺀）屬 Y　卜。"
+      },
+      {
+        "id": "Y-04",
+        "file": "glyphs/Y-04.png",
+        "why": "走之底「辶」屬 Y　卜。例如「這」= YYMR。"
+      }
+    ]
+  },
+  {
+    "id": "X",
+    "name": "難",
+    "hint": "",
+    "group": "special",
+    "quiz": false,
+    "aux": [
+      {
+        "id": "X-01",
+        "file": "glyphs/X-01.png",
+        "why": "",
+        "quiz": false
+      },
+      {
+        "id": "X-02",
+        "file": "glyphs/X-02.png",
+        "why": "",
+        "quiz": false
+      }
+    ]
+  },
+  {
+    "id": "Z",
+    "name": "符",
+    "hint": "",
+    "group": "special",
+    "quiz": false,
+    "aux": [
+      {
+        "id": "Z-01",
+        "file": "glyphs/Z-01.png",
+        "why": "",
+        "quiz": false
+      }
+    ]
+  }
+];
 
   var KEYMAP = {};
   KEYS.forEach(function (k) { KEYMAP[k.id] = k; });
@@ -561,7 +1311,7 @@
     return QUIZ_KEYS.filter(function (k) { return k.group === group; });
   }
   function quizAux(k) {
-    return (k.aux || []).filter(function (a) { return a.quiz !== false && !a.text; });
+    return (k.aux || []).filter(function (a) { return a.quiz !== false && a.file; });
   }
   function allQuizAux() {
     var out = [];
@@ -573,10 +1323,8 @@
 
   function renderGlyph(g, extraClass) {
     var cls = 'glyph' + (extraClass ? ' ' + extraClass : '');
-    if (!g) return '';
-    if (g.kind === 'han') return '<span class="' + cls + '">' + g.ch + '</span>';
-    if (g.kind === 'svg') return '<span class="' + cls + '">' + (SH[g.name] || '') + '</span>';
-    return '';
+    if (!g || !g.file) return '';
+    return '<span class="' + cls + '"><img src="' + g.file + '" alt=""></span>';
   }
 
   function shuffle(arr) {
@@ -647,9 +1395,9 @@
       auxId: aux.id,
       ask: '呢個拆件屬於邊個倉頡字母？',
       promptKind: 'glyph',
-      glyph: aux.g,
+      glyph: aux,
       options: letterChoices(key, false, false),
-      why: aux.why + (aux.why.indexOf('例如') >= 0 ? '' : exampleHtml(key))
+      why: (aux.why || '') + ((aux.why && aux.why.indexOf('例如') >= 0) ? '' : exampleHtml(key))
     };
   }
 
@@ -681,7 +1429,6 @@
     return copy;
   }
 
-  /* ----- modes ----- */
   var MODES = [
     { id:'philo', kind:'group', group:'philo', ico:'🌸', cls:'philo', title:'哲理類 A–G', desc:'' },
     { id:'stroke', kind:'group', group:'stroke', ico:'✍️', cls:'stroke', title:'筆畫類 H–N', desc:'' },
@@ -690,7 +1437,7 @@
     { id:'letters', kind:'letters', ico:'🔤', cls:'letter', title:'字母配對', desc:'英文字母 ↔ 中文名，兩邊都會練到。' },
     { id:'aux', kind:'aux', ico:'🧩', cls:'aux', title:'拆件配對', desc:'睇一個拆件，配對返正確字母。' },
     { id:'mix', kind:'mix', ico:'🏆', cls:'mix wide', title:'綜合闖關', desc:'字母配對同拆件配對混合挑戰！' },
-    { id:'chart', kind:'chart', ico:'📖', cls:'chartbtn', title:'字母表', desc:'彩色字表，溫習用，唔計分。' }
+    { id:'chart', kind:'chart', ico:'📖', cls:'chartbtn', title:'字母表', desc:'原圖字母表，溫習用，唔計分。' }
   ];
 
   function buildQueue(modeId) {
@@ -708,7 +1455,6 @@
     if (modeId === 'mix') {
       var letters = shuffle(QUIZ_KEYS.slice());
       var auxs = shuffle(allQuizAux());
-      /* 24 questions: 12 letter (all letters would be 24; take 12) + 12 aux, covering as many keys as possible */
       var used = {};
       letters.slice(0, 12).forEach(function (k) {
         items.push(letterItem(k, Math.random() < 0.5 ? 'letterToName' : 'nameToLetter'));
@@ -731,7 +1477,6 @@
       auxPicked.forEach(function (x) { items.push(auxItem(x.key, x.aux)); });
       return shuffle(items);
     }
-    /* group */
     var ks = keysIn(modeId);
     var pool = ks.map(function (k) { return k.id; });
     ks.forEach(function (k) {
@@ -756,39 +1501,12 @@
     return 0;
   }
 
-  /* ----- chart ----- */
   function renderChart() {
-    var order = ['philo','stroke','body','shape','special'];
-    var html = '';
-    order.forEach(function (g) {
-      var meta = GROUP_META[g];
-      var ks = KEYS.filter(function (k) { return k.group === g; });
-      html += '<div class="group-title ' + meta.cls + '">' + meta.title + '　' + meta.sub + '</div>';
-      html += '<div class="rows' + (ks.length > 3 ? ' two' : '') + '">';
-      ks.forEach(function (k) {
-        var hint = k.hint ? '<div class="khint">（' + escapeHtml(k.hint) + '）</div>' : '';
-        var auxHtml;
-        if (k.id === 'Z') {
-          auxHtml = '<span class="aux-empty">片造（片語造字）</span>';
-        } else if (k.id === 'R' || !(k.aux && k.aux.length)) {
-          auxHtml = '<span class="aux-empty">輔助格係空嘅。框內若有筆畫就唔係 R　口。</span>';
-        } else {
-          auxHtml = k.aux.map(function (a) {
-            if (a.text) return '<span class="aux-empty">' + escapeHtml(a.text) + '</span>';
-            return renderGlyph(a.g);
-          }).join('');
-        }
-        html += '<div class="krow ' + meta.cls + '">'
-          + '<div class="kmeta"><div class="kpair"><span class="kl">' + k.id + '</span>' + escapeHtml(k.name) + '</div>' + hint + '</div>'
-          + '<div class="auxs">' + auxHtml + '</div>'
-          + '</div>';
-      });
-      html += '</div>';
-    });
-    $('chart').innerHTML = html;
+    $('chart').innerHTML = '<div class="chart-photo-wrap">'
+      + '<img class="chart-photo" src="table.jpg" alt="第五代倉頡字母及輔助字形">'
+      + '</div>';
   }
 
-  /* ----- UI ----- */
   var $ = function (id) { return document.getElementById(id); };
   var state = { mode:null, queue:[], i:0, correct:0, answered:0, firstTry:0, planned:0 };
 
@@ -807,7 +1525,7 @@
         var meta = GROUP_META[m.group];
         desc = meta.sub + '　約 ' + n + ' 題（字母＋拆件）';
       } else if (m.kind === 'letters') desc = '24 個字母，隨機方向　共 ' + n + ' 題';
-      else if (m.kind === 'aux') desc = '圖表入面嘅拆件都會出現　共 ' + n + ' 題';
+      else if (m.kind === 'aux') desc = '圖表原圖入面嘅拆件都會出現　共 ' + n + ' 題';
       else if (m.kind === 'mix') desc = '字母配對同拆件配對混合　共 ' + n + ' 題';
       return '<button type="button" class="mode ' + m.cls + '" data-mode="' + m.id + '">'
         + '<span class="ico">' + m.ico + '</span>'
@@ -821,8 +1539,13 @@
 
   function startMode(id) {
     if (id === 'chart') { openChart(); return; }
-    var q = buildQueue(id);
-    state = { mode:id, queue:q, i:0, correct:0, answered:0, firstTry:0, planned:q.length };
+    state.mode = id;
+    state.queue = buildQueue(id);
+    state.i = 0;
+    state.correct = 0;
+    state.answered = 0;
+    state.firstTry = 0;
+    state.planned = state.queue.length;
     show('quiz');
     renderQuestion();
   }
@@ -831,14 +1554,19 @@
 
   function renderQuestion() {
     var item = current();
-    if (!item) { showFinish(); return; }
-    $('progTxt').textContent = '題 ' + (state.i + 1) + ' / ' + state.queue.length;
-    $('stars').textContent = String(state.correct);
-    $('bar').style.width = (state.planned ? Math.min(100, (state.answered / state.planned) * 100) : 0) + '%';
+    var total = state.queue.length;
+    $('progTxt').textContent = '題 ' + (state.i + 1) + ' / ' + total;
+    $('stars').textContent = String(state.firstTry);
+    $('bar').style.width = (total ? Math.round((state.i / total) * 100) : 0) + '%';
     var mode = MODES.filter(function (m) { return m.id === state.mode; })[0];
-    $('tag').textContent = mode ? mode.title : '練習';
+    $('tag').textContent = mode ? mode.title : '';
     $('retryTag').classList.toggle('hidden', !item.retry);
     $('ask').textContent = item.ask;
+    $('feedback').textContent = '';
+    $('feedback').className = 'feedback';
+    $('why').innerHTML = '';
+    $('nextBtn').classList.add('hidden');
+
     var box = $('prompt');
     box.className = 'prompt-glyph';
     if (item.promptKind === 'letter') {
@@ -848,22 +1576,16 @@
       box.className = 'prompt-name';
       box.textContent = item.promptText;
     } else {
+      box.className = 'prompt-glyph';
       box.innerHTML = renderGlyph(item.glyph, 'prompt-glyph');
     }
-    $('feedback').textContent = '';
-    $('feedback').className = 'feedback';
-    $('why').innerHTML = '';
-    $('nextBtn').classList.add('hidden');
+
     var mcq = $('mcq');
-    mcq.innerHTML = '';
-    item.options.forEach(function (opt, idx) {
-      var b = document.createElement('button');
-      b.type = 'button';
-      b.className = 'opt';
-      b.innerHTML = opt.html;
-      b.setAttribute('data-i', String(idx));
-      b.addEventListener('click', function () { choose(idx); });
-      mcq.appendChild(b);
+    mcq.innerHTML = item.options.map(function (o, idx) {
+      return '<button type="button" class="opt" data-idx="' + idx + '">' + o.html + '</button>';
+    }).join('');
+    mcq.querySelectorAll('.opt').forEach(function (btn) {
+      btn.addEventListener('click', function () { choose(Number(btn.getAttribute('data-idx'))); });
     });
   }
 
@@ -871,30 +1593,30 @@
     var item = current();
     if (!item || item.locked) return;
     item.locked = true;
-    var opt = item.options[idx];
+    var opts = item.options;
+    var chosen = opts[idx];
     var btns = $('mcq').querySelectorAll('.opt');
     btns.forEach(function (b, i) {
       b.disabled = true;
-      if (item.options[i].correct) b.classList.add('right');
-      if (i === idx && !opt.correct) b.classList.add('wrong');
+      if (opts[i].correct) b.classList.add('right');
+      if (i === idx && !opts[i].correct) b.classList.add('wrong');
     });
-    var key = KEYMAP[item.keyId];
     state.answered += 1;
-    if (opt.correct) {
-      if (!item.retry) state.firstTry += 1;
+    if (chosen.correct) {
       state.correct += 1;
-      $('stars').textContent = String(state.correct);
-      $('feedback').className = 'feedback good pop';
-      $('feedback').textContent = pick(PRAISE) + ' 答案係 ' + pair(key) + '。';
+      if (!item.retry) state.firstTry += 1;
+      $('feedback').className = 'feedback good';
+      $('feedback').textContent = pick(PRAISE);
     } else {
+      var key = KEYMAP[item.keyId];
       $('feedback').className = 'feedback bad';
-      $('feedback').textContent = '唔係呀，正確係 ' + pair(key) + '。';
+      $('feedback').textContent = '唔係呢個。正確係 ' + pair(key) + '。';
       $('why').innerHTML = '<div class="why">' + item.why + '</div>';
-      var retry = markRetry(similarItem(item));
-      state.queue.push(retry);
+      var similar = similarItem(item);
+      state.queue.splice(state.i + 1, 0, markRetry(similar));
     }
     $('nextBtn').classList.remove('hidden');
-    $('bar').style.width = (state.planned ? Math.min(100, (state.answered / Math.max(state.queue.length, state.planned)) * 100) : 0) + '%';
+    $('stars').textContent = String(state.firstTry);
   }
 
   function nextQ() {
